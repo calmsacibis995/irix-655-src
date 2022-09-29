@@ -1,0 +1,7 @@
+*
+*  ST Protocol stubs
+*
+*FLAG	PREFIX	SOFT	#DEV	DEPENDENCIES
+oxu	-	-	-
+        st_if_attach(){}
+$$$

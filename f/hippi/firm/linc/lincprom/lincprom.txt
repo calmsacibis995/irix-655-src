@@ -1,0 +1,137 @@
+/**************************************************************************
+ *                                                                        *
+ *               Copyright (C) 1997, Silicon Graphics, Inc                *
+ *                                                                        *
+ *  These coded instructions, statements, and computer programs  contain  *
+ *  unpublished  proprietary  information of Silicon Graphics, Inc., and  *
+ *  are protected by Federal copyright law.  They  may  not be disclosed  *
+ *  to  third  parties  or copied or duplicated in any form, in whole or  *
+ *  in part, without the prior written consent of Silicon Graphics, Inc.  *
+ *                                                                        *
+ **************************************************************************/
+
+
+  $Revision: 1.3 $
+
+	The Generic LINC Prom
+	---------------------
+
+1. Introduction
+---------------
+
+The "lincprom" is a generic PROM image to be used in a
+LINC-based design to get the on-board R4650 up and running.
+The lincprom performs the following tasks on power-up:
+
+	 * Initializes CPU, LINC, CPU caches, etc.
+
+	 * Initializes and sanity checks SDRAM memory.
+
+	 * Tests SSRAM (optional-- currently compile-time option).
+
+	 * Checks sector #2 (phys addr 0x0fc08000) of PROM for magic #.
+	   If present, copy firmware to SDRAM or SSRAM and execute.
+
+
+2. Layout of the Flash PROM
+---------------------------
+
+
+	phys addr	     regions		sector #
+			+---------------+	
+	0x1fc00000	|   lincprom	|	0
+			| (power-on)	|
+			+---------------+
+	0x1fc04000	| persistent    |	1
+			| store         |
+			+---------------+
+	0x1fc08000	| operational	|	2
+			| firmware	|
+			+-             -+
+			| (copied to	|
+			| SSRAM/SDRAM)	|
+			.		.
+			.		.
+			.		.
+			|		|
+			|		|	7
+	0x1fc1ffff	+---------------+
+
+
+The flash PROM used on LINC devices (AMD Am29F010) is a 128K
+PROM divided into 8 16K individually erasable sectors.  The
+"lincprom" image resides in the sector #0.
+
+NOTE:  Any utilities developed to modify the flash prom should never
+erase all the sectors.  We should take advantage of the individually
+erasable sectors to preserve the information in the first and second
+sectors.
+
+Sector #0 of the PROM will be mapped by the LINC into
+physical addresses 0x1fc00000-0x1fc03fff.  0x1fc00000 is the
+location where the R4650 expects its reset vector upon
+cold reset.  Execution will begin there.
+
+Sector #1 should be reserved for persistent store.  This is
+where a device can store MAC addresses or other configuration
+parameters that should be valid across resets.  The layout of
+this is left up to the individual designs.
+
+Sector #2 of the PROM is the beginning of the operational
+firmware store.  This sector (and the 5 sectors after it) can 
+contain operational firmware that will be copied to SSRAM or SDRAM
+by the lincprom and executed there.  The lincprom code looks for a
+magic number in the first word (phys addr 0x1fc08000) to indicate
+that operational firmware is present in those sectors.  If the magic
+number is present, th lincprom will interpret the first 8 words of
+that sector as an "F header" which tells the lincprom the destination
+address to copy the firmware, how many bytes to copy, what the final
+checksum should be, and where execution should begin.  The first byte
+of the firmware to be copied shoud be at physical address 0x1fc08020
+(i.e. immediately after the 8 word F header).
+
+Here is the C data structure describing the "F header" as defined in
+lincprom.h:
+
+typedef struct {
+	u_int	magic;			/* magic num (LINCPROM_FHDR_MAGIC) */
+	u_int	start_addr;		/* where to copy firmware */
+	u_int	size;			/* how many bytes to copy */
+	u_int	entry;			/* entry point */
+	u_int	cksum;			/* checksum */
+	u_int	version;		/* date firmware was built */
+	u_int	pad[2];			/* whatever */
+} lincprom_fhdr_t;
+
+
+If the magic number is not present, the lincprom will drop into a loop
+where it will spin forever until an address is written to the 8th 
+mailbox region.  Then the controller will jump to that address.  This
+feature allows the host to write code into SDRAM and then tell the
+lincprom to begin executing at the address written to the mailbox.
+
+
+3. Progress LEDs
+----------------
+
+While the lincprom is going through its initial power-on stages, it will
+indicate its progress on the LINC LEDs.  Listed here are the settings of
+the LEDs while the lincprom is performing specific tests.  If the LEDs
+freeze on any of these values, then the R4650 probably died in that
+particular stage.
+
+The location of the particular LEDs is dependent on the board design.
+In this table, "0" means the LED is off.
+
+   LED: 3 2 1 0		stage
+	--------	-----
+	0 0 0 0		LINC reset (LEDs turned off by reset)
+	0 0 0 1		lincprom entered reset vector, is initializing LINC
+	0 0 1 0		is configuring SDRAM.
+	0 0 1 1		is initializing caches
+	0 1 0 0		is testing SDRAM
+	0 1 0 1		is testing SSRAM
+	0 1 1 0		has completed memory tests
+	0 1 1 1		has no firmware to run...spin-looping waiting
+			for a mailbox write
+

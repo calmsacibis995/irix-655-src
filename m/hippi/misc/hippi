@@ -1,0 +1,17 @@
+*
+* hippi: Challenge/Onyx HIPPI board
+*
+* $Revision: 1.2 $
+*
+*FLAG	PREFIX	SOFT	#DEV	DEPENDENCIES
+csn	hippi	251	-
+$$$
+
+/*
+ * This flag changes the behavior of the HIPPI destination.  If a parity
+ * or LLRC error is encountered, the destination normally drops the HIPPI
+ * connection.  Setting this flag to a non-zero value overrides this
+ * behavior for these two error cases.
+ */
+int hippi_ndisc_perr = 0;
+

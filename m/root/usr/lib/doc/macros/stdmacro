@@ -1,0 +1,406 @@
+.\"		Copyright (c) 1984 AT&T
+.\"		  All Rights Reserved
+.\"     THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF AT&T
+.\"   The copyright notice above does not evidence any actual
+.\"   or intended publication of such source code.
+.\"
+.\"	The value in number register s (passed to nroff/troff on the command
+.\"	line via -rs<n>) is ignored in this version.  It used to be used to
+.\"	specify various appearance dimensions, but now we have just two
+.\"	appearance flavors: online (nroff) and 7.5 x 9 SGI standard (troff).
+.\"
+.\"	The font positions are used as follows:
+.\"	    1   default font
+.\"	    2   italic (SGI standard for command names)
+.\"	    3   bold (SGI standard for literal stuff like flags)
+.\"	    4   typewriter bold (AT&T standard for command names, literals and
+.\"		file names)
+.\"	    5   typewriter bold (AT&T standard for system output)
+.\"	    6   bold Helvetica for section headings
+.\"	    7   typewriter (for examples - .Ex in localmacs and .X* in atria)
+.\"	    8   set to Helvetica in atria macros for user input in examples
+.\"
+.\"	The value in number register C (also passed via command line) controls 
+.\"	several things:
+.\"	    4	embolddening is turned off (.bd is redefined to be a 
+.\"		null macro).
+.\"	    5	an off-page footer containing the strings Dm, Ys, and Dp
+.\"		is printed
+.\"
+.\"	The value in number register t (also passed via the command line)
+.\"	controls whether odd/even headers and footers are used in printed
+.\"	pages:
+.\"	    1   every page is the same (name on both sides, page number on
+.\"		right)
+.\"	    2   odd and even pages are differentiated (name and page number
+.\"		are on the "outside" edge)
+.\"
+.\"	The following string registers are initialized by "magic" from the
+.\"	makefiles:
+.\"	    Dm	file last modified date for hardcopy off-page footer
+.\"	    Dp	print date for hardcopy off-page footer
+.\"	    Ys	file checksum for hardcopy off-page footer
+.\"
+.\"	An initial page number is passed via -nN on the command line.  This
+.\"	is overridden for nroff pages (they always start at 1).
+.\"	
+.\" $Revision: 1.40 $
+.ifn .ds Tm \uTM\d
+.ift .ds Tm \v'-0.5m'\s-4TM\s+4\v'0.5m'
+.de}E
+.}f
+.in\\n()Ru+\\n(INu
+.ll\\n(LLu
+.lt\\n(LLu
+.pl\\n()Lu
+.if t .if \\nt=2 \{\
+.if o .po \\n()Ou
+.if e .po \\n()Pu
+.\}
+..
+.deDT
+.ift .ta 3m 6m 9m 12m 15m 18m 21m 24m 27m 30m 33m 36m 39m
+.ifn .ta 5n 10n 15n 20n 25n 30n 35n 40n 45n 50n 55n 60n 65n
+..
+.de}f
+.ift .vs \\n()Vp
+.ps\\n()S
+.ft1
+..
+.de}F
+.ev1
+.}E
+.if\\n()s 'sp |\\n(.pu-1v-1p
+.if\\n()t 'sp |\\n(.pu-3v
+.ifn 'sp |\\n(.pu-4v
+.bd1 3
+.if n .tl \\f6\\s9\\*(OfPage %
+.if t .ie \\nt=2 \{\
+.if o .tl \\f6\\s9\\*(Of%
+.if e .tl \\f6\\s9%\\*(Of
+.\}
+.el .tl \\f6\\s9\\*(Of%
+.bd1
+.if \\nC==5 \{ .pl 11i
+.lt 6.5i
+.ch }F 11i	    \" move footer trap out of the way
+'sp |10.5i
+.tl [\s-2file last modified: \\*(Dmchecksum: \\*(Ysprinted: \\*(Dp\s+2]
+.lt
+.ch }F -\\n(:mu	    \" move it back
+.pl \}
+'bp
+.ev
+..
+.if n .ig
+'\" no cut marks if psroff
+.if '\*(.T'psc' .ig
+.de}C
+.po0i
+.lt7.5i
+.if\\n()s .tl \l0.25i\l0.25i\h1i\l0.25i
+.if\\n()t .tl \l0.25i\l0.25i
+.lt
+.po
+..
+.de}M
+.}N
+.wh-.5p }C
+.ll\\n(LLu
+.bp
+..
+.de}K
+.}N
+.pl1
+.ll\\n(LLu
+.af 1 %
+.tm \\n% pages
+..
+.deTH
+.\" ignore 3rd and 4th arguments
+.Ne					\" 6/12/89 csk
+.PD
+.nrIN \\n()Mu
+.ift .ds ]E \\$1
+.ifn .ds ]E \\$1
+.if!\\$2 .as ]E (\^\\$2\^)
+.wh0 }H
+.wh-\\n(:mu }F
+.em}M
+.if\\n(nl .bp
+.nr)I \\n()Mu
+.nr)R 0
+.}E
+.DT
+.ifn .na
+.ift .bd S 3 3
+..
+.deSH
+.}X 0 "\\$1" smaller
+.nr)E 2
+.ne 4
+.ft \\n(HF
+\&\\$1 \|\\$2 \|\\$3 \|\\$4 \|\\$5 \|\\$6
+.ft 1
+..
+.deSS
+.}X 3n "" ""
+.nr)E 2
+.ft \\n(HF
+\&\\$1 \|\\$2 \|\\$3 \|\\$4 \|\\$5 \|\\$6
+.ft 1
+..
+.de}X
+.}E
+.ti\\$1
+.sp\\n(PDu
+.ne\\n(Neu
+.Ne
+.nr)R 0
+.fi
+.ss12
+.if\\$2SYNOPSIS .ss 18
+.it1 }N
+.if!\\$3 .SM
+.bd1 3
+.if\\n(RR .na		\" optional ragged right (see -rs<n> settings)
+..
+.de}2
+.nr)E 0
+.}E
+.nr)I \\n()Mu
+.ns
+.bd1
+..
+.deSM
+.ps\\n()S-1
+.if!\\$1 \&\\$1
+.if!\\$2 \&\\$2
+.if!\\$3 \&\\$3
+.if!\\$4 \&\\$4
+.if!\\$5 \&\\$5
+.if!\\$6 \&\\$6
+.if!\\$1 .ps \\n()S
+.if\\$1 .it 1 }N
+..
+.deI
+.ft2
+.it1 }N
+.if!\\$1 \&\\$1 \\$2 \\$3 \\$4 \\$5 \\$6
+..
+.deB
+.ft3
+.it1 }N
+.if!\\$1 \&\\$1 \\$2 \\$3 \\$4 \\$5 \\$6
+..
+.deRI
+.}S 1 2 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+..
+.deIR
+.}S 2 1 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+..
+.deIB
+.ift .}S 2 3 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+.ifn .}S 2 3 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+..
+.deRB
+.ift .}S 1 3 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+.ifn .}S 1 3 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+..
+.deBR
+.ift .}S 3 1 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+.ifn .}S 3 1 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+..
+.deBI
+.ift .}S 3 2 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+.ifn .}S 3 2 \& "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6"
+..
+.de}S
+.ds]C
+.if\\$12 .if !\\$5 .ds ]C\^
+.ie!\\$4 .}S \\$2 \\$1 "\\$3\f\\$1\\$4\\*(]C" "\\$5" "\\$6" "\\$7" "\\$8" "\\$9"
+.el\\$3
+.}f
+..
+.dePP
+.sp\\n(PDu
+.ne\\n(Neu
+.Ne
+.}E
+.nr)I \\n()Mu
+.ns
+..
+.deP
+.PP
+..
+.deLP
+.PP
+..
+.dePD
+.ift .nr PD .8v
+.ifn .nr PD 1v
+.if!\\$1 .nr PD \\$1v
+..
+.\" Use this macro to set the Ne register, before a call to .SH, .SS, .PP, 
+.\" .HP, .IP, or .TP .  The Ne register is the value given to the .ne 
+.\" issued by this macros.  The register is reset to the default 3v after 
+.\" each use by these macros.
+.\" Added by CSK  6/12/89
+.de Ne	
+.nr Ne 3v
+.if!\\$1 .nr Ne \\$1v
+..
+.deHP
+.sp\\n(PDu
+.ne\\n(Neu
+.Ne
+.if!\\$1 .nr )I \\$1n
+.ll\\n(LLu
+.in\\n()Ru+\\n(INu+\\n()Iu
+.ti\\n()Ru+\\n(INu
+.}f
+..
+.deIP
+.TP \\$2
+\&\\$1
+..
+.deTP
+.if!\\$1 .nr )I \\$1n
+.sp\\n(PDu
+.ne\\n(Neu
+.Ne
+.in\\n()Ru
+.lg0
+.ns
+.it1 }N
+.nr)E 1
+.di]B
+..
+.de}1
+.ds]Y \&\\*(]B\\
+.rm]B
+.nr)E 0
+.if!\\$1 .nr )I \\$1n
+.}f
+.ll\\n(LLu
+.in\\n()Ru+\\n(INu+\\n()Iu
+.ti\\n(INu
+.ie!\\n()Iu+\\n()Ru-\w\\*(]Yu-3p \{\\*(]Y
+.br\}
+.el\\*(]Y\h|\\n()Iu+\\n()Ru\c
+.}f
+.lg
+..
+.de}N
+.if\\n()E .br
+.di
+.if\\n()E0 .}f
+.if\\n()E1 .}1
+.if\\n()E2 .}2
+..
+.deRS
+.nr]\\n+()p \\n()I
+.nr)\\n()p \\n()R
+.ie!\\$1 .nr )R +\\$1n
+.el.nr )R +\\n()I
+.nr)I \\n()Mu
+.}E
+..
+.deRE
+.if!\\$1 \{.ie \\$10 .nr )p 1 1
+.el.nr )p \\$1 1 \}
+.ds]a \\*(]N\\n()p
+.ds]r \\*(]S\\n()p
+.nr)I \\*(]a
+.nr)R \\*(]r
+.if\\n()p .nr )p -1
+.}E
+..
+.>S>NOCOMPACT<<name>>
+.
+.\" Start of default processing; this stuff is executed directly, right now.
+.
+.\" The -rs<n> command line switch used to be used to set various appearance 
+.\" dimensions below.  Now we do one thing for nroff and another for troff.
+.
+.if n \{.\"	if we are doing nroff, ignore the -rs switch and do the
+.\"		right settings for online reference pages
+.		fp 1 R			\" use Times rather than Palatino so
+.		fp 2 I			\" that pages that use \fI, etc. appear
+.		fp 3 B			\" correctly online (but wrong printed)
+.		fp 4 CB
+.		fp 5 CB
+.		fp 6 HB
+.		fp 7 C
+.		fp 8 CB
+.\"		nr )L 132i		\" page length
+.		nr )L 11i		\" page length
+.		nr LL 78n		\" page width (line length)
+.		nr )O 0i		\" page offset
+.		nr )S 10		\" point size
+.		nr )V 12		\" vertical spacing
+.		nr HF 1			\" font 1 for heads and sub heads
+.		nr RR 1			\" ragged right (0 = no, 1 = yes)
+.		pn 1			\" always start at page 1
+.\}
+.if t \{.\"	if we are doing troff, ignore the -rs switch, too, for now,
+.\"		since we always want to do SGI style 8.25 x 9.
+.		fp 1 PA
+.		fp 2 PI
+.		fp 3 PB
+.		fp 4 CB
+.		fp 5 CB
+.		fp 6 HB
+.		fp 7 C
+.		nr )L 9.51i	\" distance from top of page to page number
+.		nr LL 7i	\" line length
+.		nr )O .87i	\" left margin on all or odd pages
+.		nr )P .63i	\" left margin on even pages (if doing o/e)
+.		nr )S 10
+.		nr )V 12
+.		nr HF 6
+.		nr RR 1
+.\}
+.
+.	nr)s 0
+.	ift .if \ns .nr )s 1
+.	nr)t 0
+.	ift .if !\ns .nr )t 1
+.
+.	if n .if \ns>1 .nr s 0	\" if nroff, and s>1, reset it to 0.
+.
+.ift \{.ds R \(rg
+.dsS \s\n()S
+'br\}
+.dsR (Reg.)
+.dsS
+'br\}
+'\" include lq and rq string definitions from 4.3  CSK 2/8/87
+.ie n \{\
+.	ds lq \&"\"
+.	ds rq \&"\"
+.\}
+.el \{\
+.	ds rq ''
+.	ds lq ``
+.\}
+.nr)p 0 1
+.ds]N \\\\n(]
+.ds]S \\\\n()
+.pl\n()Lu
+.ll\n(LLu
+.lt\n(LLu
+.po\n()Ou
+.}f
+.if\n()s .nr :m 3.5v
+.if\n()t .nr :m 6v
+.ifn .nr :m 7v
+.ift .nr )M 3m
+.ifn .nr )M 5n
+.em}K
+.>E>NOCOMPACT<<name>>
+.if \nC==4 \{ .de bd
+.. \}
+.\" Set the number register A to 2 so that the atria macros know they are
+.\" doing SGI-flavor man pages.
+.nr A 2

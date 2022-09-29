@@ -1,0 +1,769 @@
+#Begining
+INCORRECT_USAGE:Incorrect usage\n
+BASENAME_USAGE:Usage: basename [ path [ suffix-pattern ] ]\n
+UXCORE_3:Usage: dirname [ path ]\n
+UXCORE_4:Bad date specification\n
+UXCORE_5:Bad first argument\n
+UXCORE_6:Hours field is too large\n
+UXCORE_7:Bad month and day specification\n
+UXCORE_8:Minutes field is too large\n
+UXCORE_9:Because your login shell is not /usr/bin/sh, you cannot use %s\n
+UXCORE_10:Commands will be executed using /usr/bin/sh\n
+UXCORE_11:Cannot change directory to the \"%s\" directory: %s\n
+UXCORE_12:Cannot change the owner of your job to you\n
+UXCORE_13:Cannot create a job for you\n
+UXCORE_14:You are not a valid user (no entry in /etc/passwd)\n
+UXCORE_15:Proper syntax is:\n\tat -ln\nwhere n is a number\n
+UXCORE_16:Cannot open the at directory: %s\n
+UXCORE_17:You are not authorized to use %s.  Sorry.\n
+UXCORE_18:Nothing specified\n
+UXCORE_19:It is past that time\n
+UXCORE_20:You do not own %s\n
+CANT_ACCESS_C_E:Cannot access %s: %s\n
+UXCORE_22:%a %b %e %H:%M:%S %Y
+UXCORE_23:getdate: The DATEMSK environment variable is not set\n
+UXCORE_24:getdate: Cannot open the template file\n
+UXCORE_25:getdate: Cannot access the template file\n
+UXCORE_26:getdate: The template file is not a regular file\n
+UXCORE_27:getdate: An error is encountered while reading the template\n
+UXCORE_28:getdate: Out of memory\n
+UXCORE_29:getdate: There is no line in the template that matches the input\n
+UXCORE_30:getdate: Invalid input specification\n
+UXCORE_31:Out of memory: %s\n
+UXCORE_32:Cannot access spooling directory for at: %s\n
+UXCORE_33:user = %s\t%s\t%s\n
+UXCORE_34:Invalid job name %s\n
+UXCORE_35:No queue specified\n
+UXCORE_36:Too late\n
+UXCORE_37:%s: %s\n
+UXCORE_38:Job %s at %s\n
+UXCORE_39:This job may not be executed at the proper time.\n
+UXCORE_40:Queue full\n
+UXCORE_41:No prototype\n
+UXCORE_42:Pipe open failed: %s\n
+UXCORE_43:fork() failed: %s\n
+UXCORE_44:Usage:\tat [-m] [-f filename] time [date] [+ increment]\n
+UXCORE_45:\t\t\tat -l job\n
+UXCORE_46:\t\t\tat -r [jobs]\n
+UXCORE_47:Cannot allocate list of users: %s\n
+UXCORE_48:No such user %s\n
+UXCORE_49:Printing queue information only for %s:\n
+UXCORE_50:Non-priviledged user cannot request information regarding other users\n
+UXCORE_51:Cannot scan spooling directory for at: %s\n
+UXCORE_52:No files in queue.\n
+UXCORE_53:No files for %s\n
+UXCORE_54:No files for specified users\n
+UXCORE_55: Rank	  Execution Date     Owner     Job         Queue   Job Name\n
+UXCORE_56:Cannot access spoolfile %s: %s\n
+UXCORE_57:%b %d, %Y %H:%M
+UXCORE_58:Cannot open job file %s: %s\n
+UXCORE_59:Usage: atq [-c] [-n] [name ...]\n
+UXCORE_60:Cannot read the at directory: %s
+UXCORE_61:%s: no such job number\n
+UXCORE_62:Usage: atrm [-f] [-i] [-a] [[job #] [user] ...]\n
+UXCORE_63:%s: 
+UXCORE_64:Permission denied\n
+UXCORE_65:\t(owned by 
+UXCORE_66:remove it? 
+UXCORE_67:Cannot remove\n
+UXCORE_68:removed\n
+UXCORE_69:Bad time\n
+UXCORE_70:Bad hour\n
+UXCORE_71:Bad date\n
+UXCORE_72:Bad year\n
+UXCORE_73:Canot read the crontab directory.
+UXCORE_74:Unable to read your at job.\n
+UXCORE_75:Cannot access your crontab file.  Resubmit it.\n
+UXCORE_76:Cannot change directory to your home directory.\nYour commands will not be executed.\n
+UXCORE_77:Unable to exec the shell for one of your commands.\n
+UXCORE_78:Unexpected end of line.\n
+UXCORE_79:Cannot read your crontab file.  Resubmit it.\n
+UXCORE_80:Unable to create a standard input file for one of your crontab commands.\nThat command was not executed\n.
+UXCORE_81:Number too large or too small for field\n
+UXCORE_82:\n\n*************************************************\nCron: The previous message is the standard output\n      and standard error of one of your cron commands.\n
+UXCORE_83:One of your commands generated output or errors, but cron was unable to mail you this output.\nRemember to redirect standard output and standard error for each of your commands.
+UXCORE_84:Unexpected symbol found\n
+UXCORE_85:The error was \"%s\"\n
+UXCORE_86:*** cron started ***   pid = %d
+UXCORE_87:Cannot stat QUEDEFS file
+UXCORE_88:Cannot create fifo queue: %s
+UXCORE_89:Cannot access fifo queue: %s
+UXCORE_90:Cannot start cron; FIFO exists
+UXCORE_91:Cannot open fifo queue: %s
+CANNOT_OPEN:Cannot open %s: %s\n
+UXCORE_93:Cannot change directory to the \"%s\" directory: %s
+UXCORE_94:Your crontab file has an error in it
+UXCORE_95:This entry has been ignored.\n
+UXCORE_96:Couldn't run your \"%s\" job\n\n
+UXCORE_97:%c queue max run limit reached
+UXCORE_98:MAXRUN (%d) procs reached
+UXCORE_99:ATLIMIT (%d) reached for uid %d
+UXCORE_100:CRONLIMIT (%d) reached for uid %d
+UXCORE_101:fork() failed: %s
+UXCORE_102:Unexpected pid returned %d (ignored)
+UXCORE_103:Output from \"cron\" command\n\n
+UXCORE_104:Your \"%s\" job
+UXCORE_105:Output from \"at\" job\n\n
+UXCORE_106:produced the following output:\n\n
+UXCORE_107:completed.\n
+UXCORE_108:Read error: %s
+UXCORE_109:Message received - bad format
+UXCORE_110:SIGTERM
+UXCORE_111:Cannot unlink FIFO: %s\n
+UXCORE_112:cron aborted: 
+UXCORE_113:******* CRON ABORTED ********
+UXCORE_114:Rescheduling \"%s\" job
+UXCORE_115:Cannot open quedefs file: %s
+UXCORE_116:Using default queue definitions
+UXCORE_117:Cannot create your crontab file in\n\tthe crontab directory.: %s\n
+UXCORE_118:Cannot open your crontab file: %s\n
+UXCORE_119:Usage: crontab [file | -e | -l | -r ] [user]\n
+UXCORE_120:You must be super-user to access another user's crontab file\n
+UXCORE_121:Unexpected character found in line.\n
+UXCORE_122:Number out of bounds.\n
+UXCORE_123:Errors detected in input, no crontab file generated.\n
+UXCORE_124:Error reading your crontab file\n
+UXCORE_125:Write error on temporary file: %s\n
+UXCORE_126:Cannot open temporary file: %s\n
+UXCORE_127:Cannot access temporary file: %s\n
+UXCORE_128:Cannot create temporary file: %s\n
+UXCORE_129:Temporary file empty\n
+UXCORE_130:The crontab file was not changed.\n
+UXCORE_131:%s: error on previous line;
+UXCORE_132:cron may not be running\n
+UXCORE_133:Consult your system administrator\n
+UXCORE_134:Cannot open message queue: %s\n
+UXCORE_135:Cannot send message: %s\n
+UXCORE_136:Cannot send message: Premature EOF\n
+CUT_USAGE:Usage:\n\tcut [-s] [-d<char>] {-c<list> | -f<list>} file ...\n
+UXCORE_138:Bad list for c/f option\n
+NO_DELIMITER:No delimiter\n
+NO_FIELDS:No fields\n
+UXCORE_141:Line too long\n
+UXCORE_142:Cannot handle multiple adjacent backspaces\n
+UXCORE_143:Use -C num\n
+UXCORE_144:Read error in %s: %s\n
+UXCORE_145:Missing newline at end of file %s\n
+UXCORE_146:Only in %.*s
+UXCORE_147:Binary files %s and %s differ\n
+UXCORE_148:Cannot execute %s: %s\n
+UXCORE_149:Use -D string\n
+UXCORE_150:Use -S name\n
+UXCORE_151:Usage:\n\tdiff [ -bcefhilnrstw -C num -D string -S name ] file1 file2\n
+UXCORE_152:Two filename arguments required\n
+UXCORE_153:-h doesn't support -e, -f, -n, -c, or -I\n
+UXCORE_154:Cannot specify - -\n
+UXCORE_155:No differences encountered\n
+UXCORE_156:Cannot specify -D with directories\n
+UXCORE_157:Shouldn't give -s or -l with -e\n
+UXCORE_158:Common identical files in %.*s and %.*s
+UXCORE_159:Binary files which differ in %.*s and %.*s
+UXCORE_160:Common subdirectories of %.*s and %.*s
+UXCORE_161::\n
+UXCORE_162:Only in %.*s: %s\n
+UXCORE_163:Common subdirectories: %s and %s\n
+UXCORE_164:Special files %s and %s differ\n
+UXCORE_165:Named pipes %s and %s differ\n
+UXCORE_166:File %s is %s while file %s is %s\n
+UXCORE_167:Files %s and %s are identical\n
+UXCORE_168:a directory
+UXCORE_169:a character special file
+UXCORE_170:a block special file
+UXCORE_171:a plain file
+UXCORE_172:a named pipe
+UXCORE_173:a file of unknown type
+UXCORE_174:Cannot create %s: %s\n
+UXCORE_175:Write error in %s: %s\n
+UXCORE_176:Files too big\n
+UXCORE_177:Try -h\n
+UXCORE_178:Program error %s\n
+UXCORE_179:---change record omitted\n
+UXCORE_180:Cannot resynchronize\n
+UXCORE_181:Usage: du [-ars] [name ...]\n
+UXCORE_182:Cannot reopen '.' in %s: %s\n
+UXCORE_183:Cannot change back to '..' in %s: %s\n
+UXCORE_184:Syntax error\n
+UXCORE_185:Regular expression too long\n
+UXCORE_186:[ -bchilnsv ] [ -e exp ] [ -f file ] [ strings ] [ file ] ...
+UXCORE_187:Usage:\n\tegrep %s\n
+UXCORE_188:%s:
+UXCORE_189:%ld:
+UXCORE_190:[ -bchilnvx ] [ -e exp ] [ -f file ] [ strings ] [ file ] ...
+UXCORE_191:Usage:\n\tfgrep %s\n
+UXCORE_192:%d:
+UXCORE_193:Wordlist too large\n
+FILE_INCORRECT_USAGE_:Incorrect usage:\n
+FILE_USAGE:Usage: file [-S] [-c] [-h] [-f ffile] [-m mfile] file...\n
+FILE_CHARACTER_SPECIAL_DD_:character special (%d/%d)
+FILE_DIRECTORY_:directory\n
+FILE_FIFO_:fifo\n
+FILE_XENIX_SEMAPHORE_:Xenix semaphore\n
+FILE_XENIX_SHARED_MEMORY_HANDLE_:Xenix shared memory handle\n
+FILE_UNKNOWN_XENIX_NAME_SPECIAL_FILE_:unknown Xenix name special file\n
+FILE_CANNOT_READ_SYMBOLIC_LINK_S_S_:Cannot read symbolic link %s: %s\n
+FILE_SYMBOLIC_LINK_TO_S_:symbolic link to %s\n
+FILE_BLOCK_SPECIAL_DD_:block special (%d/%d)
+FILE_CANNOT_READ_S_S_:Cannot read %s: %s\n
+UXCORE_206:empty file\n
+FILE_SCCS_:sccs\n
+FILE_DATA_:data\n
+FILE_TROFF_OUTPUT_:troff output\n
+FILE_C_PROGTEXT_W_GARBAGE_:c program text with garbage\n
+FILE_FORT_PROGTEXT_W_GARBAGE_:fortran program text with garbage\n
+FILE_ASSEM_PROGTEXT_W_GARBAGE_:assembler program text with garbage\n
+FILE_NTROFF_TEXT_W_GARBAGE_:[nt]roff, tbl, or eqn input text with garbage\n
+FILE_COM_TEXT_W_GARBAGE_:commands text with garbage\n
+FILE_ENGTEXT_W_GARBAGE_:English text with garbage\n
+FILE_ASCII_TEXT_W_GARBAGE_:ascii text with garbage\n
+FILE_TEXT_W_GARBAGE_:text with garbage\n
+FILE_C_PROGTEXT_:c program text\n
+FILE_FORT_PROGTEXT_:fortran program text\n
+FILE_ASSEM_PROGTEXT_:assembler program text\n
+FILE_NTROFF_TEXT_:[nt]roff, tbl, or eqn input text\n
+FILE_COM_TEXT_:commands text\n
+FILE_ENGTEXT_:English text\n
+FILE_ASCII_TEXT_:ascii text\n
+FILE_TEXT_:text\n
+FILE_32BIT_:32-bit
+FILE_LSB_:LSB
+FILE_MSB_:MSB
+FILE_UNKNOWN_TYPE_:unknown type
+FILE_RELOCATABLE_:relocatable
+FILE_EXECUTABLE_:executable
+FILE_DYNAMIC_LIB_:dynamic lib
+FILE_CORE_FILE_:core file
+FILE_UNKNOWN_MACHINE_:unknown machine
+FILE_VERSION_1_:Version 1
+FILE_MAU_REQUIRED_:MAU Required
+FILE_CPIO_ARCHIVE_:cpio archive
+UXCORE_238:ASCII cpio archive
+UXCORE_239:cpio archive - CRC header
+UXCORE_240:ASCII cpio archive - CRC header
+UXCORE_241:cpio archive - CHR (-c) header
+UXCORE_242:ASCII cpio archive - CHR (-c) header
+FILE_OBSOLETE_AR_ARCHIVE_:obsolete ar archive
+FILE_PDP11PRE_SYSTEM_V_AR_ARCHIVE_:pdp11/pre System V ar archive
+FILE_APL_WORKSPACE_:apl workspace
+FILE_PACKED_DATA_:packed data
+FILE_SYSTEM_V_RELEASE_1_AR_ARCHIVE_:System V Release 1 ar archive
+FILE_CURRENT_AR_ARCHIVE_:current ar archive
+FILE_PDP11PRE_SYSTEM_V_VAX_EXECUTABLE_:pdp11/pre System V vax executable
+FILE_NOT_STRIPPED_:not stripped
+FILE__VERSION_LD_:- version %ld
+FILE_UNIXRT_LDP_:unix-rt ldp
+FILE_PDP11_OVERLAY_:pdp11 overlay
+FILE_PDP11PRE_SYSTEM_V_VAX_PURE_EXECUTABLE_:pdp11/pre System V vax pure executable
+FILE_PDP11_SEPARATE_ID_:pdp11 separate I&D
+FILE_COMPILED_TERMINFO_ENTRY_:Compiled Terminfo Entry
+FILE_CURSES_SCREEN_IMAGE_:Curses screen image
+FILE_PDP11_KERNEL_OVERLAY_:pdp11 kernel overlay
+FILE_VAX_EXECUTABLE_:vax executable
+FILE_VAX_PURE_EXECUTABLE_:vax pure executable
+FILE_BASIC16_EXECUTABLE_:basic-16 executable
+FILE_BASIC16_EXECUTABLE_TV_:basic-16 executable (TV)
+FILE_X86_EXECUTABLE_:x86 executable
+FILE_X86_EXECUTABLE_TV_:x86 executable (TV)
+FILE_3B20_EXECUTABLE_:3b20 executable
+FILE_3B20_EXECUTABLE_TV_:3b20 executable (TV)
+FILE_WE32000_EXECUTABLE_:WE32000 executable
+FILE__NA_ON_3B2300_WPAGING_:- N/A on 3b2/300 w/paging
+FILE__32100_REQUIRED_:- 32100 required
+FILE_AND_MAU_HARDWARE_REQUIRED_:and mau hardware required
+FILE_TARGET_SHARED_LIBRARY_:(target shared library)
+FILE_SWAPPED_:(swapped)
+FILE_PAGED_:(paged)
+FILE_WE32000_EXECUTABLE_TV_:WE32000 executable (TV)
+FILE_IAPX_286_EXECUTABLE_SMALL_MODEL_COFF_:iAPX 286 executable small model (COFF)
+FILE_IAPX_286_EXECUTABLE_LARGE_MODEL_COFF_:iAPX 286 executable large model (COFF)
+FILE_MC68K_EXECUTABLE_:mc68k executable
+FILE_MC68K_EXECUTABLE_SHARED_:mc68k executable (shared)
+FILE_MC68K_EXECUTABLE_SHARED_DEMAND_PAGED_:mc68k executable (shared demand paged)
+FILE_8086_RELOCATABLE_MICROSOFT_:8086 relocatable (Microsoft)
+FILE_MSDOS_LIBRARY_:MS-DOS library
+FILE_RANDOMIZED_: randomized
+FILE_ARCHIVE_:archive
+FILE_MICROSOFT_AOUT_:Microsoft a.out
+FILE_OVERLAY_:overlay
+FILE_SEPARATE_:separate
+FILE_PURE_:pure
+FILE_SEGMENTED_:segmented
+FILE_STANDALONE_:standalone
+FILE_FIXEDSTACK_:fixed-stack
+FILE_BYTESWAPPED_:byte-swapped
+FILE_WORDSWAPPED_:word-swapped
+FILE_NOTSTRIPPED_:not-stripped
+FILE_PRESYSV_:pre-SysV
+FILE_OBJECT_FILE_:object file
+FILE_LARGE_TEXT_:Large Text
+FILE_LARGE_DATA_:Large Data
+FILE_HUGE_OBJECTS_ENABLED_:Huge Objects Enabled
+FILE_VAX_DEMAND_LOAD_FORMAT_AOUT_OBJECT_FILE_:VAX demand load format a.out object file
+FILE_OLD_MICROSOFT_8086_XOUT_:old Microsoft 8086 x.out
+FILE_OBJECT_FILE_Z8000_AOUT_:object file (z8000 a.out)
+FILE_PURE_OBJECT_FILE_Z8000_AOUT_:pure object file (z8000 a.out)
+FILE_SEPARATE_OBJECT_FILE_Z8000_AOUT_:separate object file (z8000 a.out)
+FILE_OVERLAY_OBJECT_FILE_Z8000_AOUT_:overlay object file (z8000 a.out)
+FILE_BELL_50_EXECUTABLE_:Bell 5.0 executable
+GETOPT_USAGE:Usage: getopt legal-args $*\n
+UXCORE_307:login: 
+UXCORE_308:Password:
+UXCORE_309:Login incorrect\n
+UXCORE_310:Only one of -r and -h allowed\n
+UXCORE_311:Looking at a login line.\n
+UXCORE_312:Not on system console\n
+UXCORE_313:No utmpx entry\n
+UXCORE_314:You must exec \"login\" from the lowest level \"sh\".\n
+UXCORE_315:No Root Directory\n
+UXCORE_316:Subsystem root: %s\n
+UXCORE_317:No /usr/bin/login or /etc/login on root\n
+UXCORE_318:Could not set ULIMIT to %ld\n
+UXCORE_319:Bad group id.\n
+UXCORE_320:Could not initialize groups.\n
+UXCORE_321:Bad user id.\n
+UXCORE_322:You don't have a password.\n
+UXCORE_323:Choose one.\n
+UXCORE_324:Your password has been expired for too long\n
+UXCORE_325:Your password has expired.\n
+UXCORE_326:Choose a new one\n
+UXCORE_327:Your password will expire in %d days\n
+UXCORE_328:%c
+UXCORE_329:Last login: %.*s from %.*s\n
+UXCORE_330:Last login: %.*s on %.*s\n
+UXCORE_331:No shell\n
+UXCORE_332:Dialup Password:
+UXCORE_333:Usage: login [-h|-r] [ -d device ] [ name [ env-var ... ]]\n
+IS_YES:is y\n
+IS_NO:is n\n
+CANT_CHNG_MODE_C_E:Cannot change mode of %s: %s\n
+MESG_USAGE:Usage: mesg [-y] [-n]\n
+UXCORE_338:No news.\n
+UXCORE_339:Usage: news [-a] [-n] [-s] [items]\n
+UXCORE_340:Options are mutually exclusive\n
+UXCORE_341:Options are not allowed with file names\n
+UXCORE_342:Cannot change directory to \"%s\" directory: %s\n
+UXCORE_343:Cannot open %s/%s: %s\n
+UXCORE_344:Cannot find HOME variable\n
+UXCORE_345:%d news items.\n
+UXCORE_346:1 news item.\n
+UXCORE_347:%s  %s Page %d\n\n\n
+UXCORE_348:%b %e %H:%M %Y
+UXCORE_349:Too many files\n
+UXCORE_350:Only one of either -m or -column allowed\n
+UXCORE_351:-a valid only with -column\n
+UXCORE_352:Width too small\n
+UXCORE_353:Cannot open stdin\n
+UXCORE_354:Page-buffer overflow\n
+UXCORE_355:[-column [-wwidth] [-a]] [-ect] [-ict] [-drtfp] [+page] [-nsk]
+UXCORE_356:[-ooffset] [-llength] [-sseparator] [-h header] [-F] [file ...]
+UXCORE_357:[-m      [-wwidth]]      [-ect] [-ict] [-drtfp] [+page] [-nsk]
+UXCORE_358:[-ooffset] [-llength] [-sseparator] [-h header] [-F] file1 file2 ...
+UXCORE_359:Usage:\n\tpr %s  \\\n\t   %s\n\n\tpr %s  \\\n\t   %s\n
+UXCORE_360:Empty file -- %s\n
+UXCORE_361:%s is an invalid non-numeric argument for the -%c option\n
+UXCORE_362:-n option ignored\n
+UXCORE_363:One of -esdatpug must be used with -r sysname\n
+UXCORE_364:Cannot find controlling terminal\n
+UXCORE_365:Cannot change root to %s\n
+UXCORE_366: F S
+UXCORE_367:     UID
+UXCORE_368:   UID
+UXCORE_369:   PID
+UXCORE_370:  PPID
+UXCORE_371:  PGID   SID
+UXCORE_372:  CLS PRI
+UXCORE_373:  C
+UXCORE_374: PRI NI
+UXCORE_375:     ADDR     SZ    WCHAN
+UXCORE_376:    STIME
+UXCORE_377: TTY      TIME COMD\n
+UXCORE_378:Cannot open PROC directory %s%s: %s\n
+UXCORE_379:PIOCPSINFO on %s: %s\n
+UXCORE_380:ps [ -edalfcj ] [ -r sysname ] [ -t termlist ]
+UXCORE_381:   [ -u uidlist ] [ -p proclist ] [ -g grplist ] [ -s sidlist ]
+UXCORE_382:Usage:\n\t%s\n\t%s\n
+UXCORE_383:Not enough memory for device table: %s\n
+UXCORE_384:Not enough memory for udata table: %s\n
+UXCORE_385:ftw() encountered problem\n
+UXCORE_386:ftw() failed: %s\n
+UXCORE_387:ftw() unexpected return, rcode=%d\n
+UXCORE_388:Not enough memory for %d devices\n
+UXCORE_389:gdev() error, %d, encountered\n
+UXCORE_390:Not enough memory for %d users\n
+UXCORE_391:Cannot unlink /etc/ps_data: %s\n
+UXCORE_392:Cannot open /etc/ps_data for writing: %s\n
+UXCORE_393:Unknown user %s\n
+UXCORE_394:psread() error on read, rbs=%d, bs=%d\n
+UXCORE_395:pswrite() error on write, wbs=%d, bs=%d\n
+UXCORE_396:%b %d
+UXCORE_397:%H:%M:%S
+UXCORE_398: <defunct>
+UXCORE_399:Not enough memory for remote pathname\n
+UXCORE_400:Cannot find path to system %s\n
+TAIL_USAGE:Usage:\ttail [-f] [ -c number | -n number ] [file]\n\ttail [+/-[n][lbc][f]] [file]\n\ttail [+/-[n][l][r|f]] [file]\n
+UXCORE_402:Cannot open %s
+UXCORE_403:Missing argument for -I flag\n
+UXCORE_404:%c and %c are mutually exclusive\n
+UXCORE_405:Cannot open %s: %s
+UXCORE_406:Cannot change directory to %s
+UXCORE_407:seek = %luK\t
+UXCORE_408:%luK\n
+UXCORE_409:1 tape block\n
+UXCORE_410:%lu tape blocks\n
+UXCORE_411:Cannot change back to %s
+UXCORE_412:Could not get passwd information for %s: %s\n
+UXCORE_413:Could not get group information for %s: %s\n
+UXCORE_414:%s: linked to %s\n
+UXCORE_415:%s: linked name too long\n
+UXCORE_416:a %s link to %s\n
+UXCORE_417:Single file cannot fit on volume\n
+UXCORE_418:%s excluded\n
+UXCORE_419:%s: Cannot link: %s\n
+UXCORE_420:%s linked to %s\n
+UXCORE_421:%s: mknod() failed
+UXCORE_422:x %s, 1 byte, 
+UXCORE_423:x %s, %lu bytes, 
+UXCORE_424:Cannot create special %s: %s\n
+UXCORE_425:Cannot create directory %s
+UXCORE_426:Cannot allocate physio buffer: %s\n
+UXCORE_427:Exclude file must be specified with 'X' option\n
+UXCORE_428:t, x, r and u are mutually exclusive\n
+UXCORE_429:Missing filenames
+UXCORE_430:Blocked tapes cannot be updated
+UXCORE_431:Device argument required
+UXCORE_432:SYS_BLOCK == %d, TBLOCK == %d\n
+UXCORE_433:Blocksize must be multiple of %d.
+UXCORE_434:'S' option requires 'k' option.
+UXCORE_435:'s' option results are predictable only with 'c' option or 'x' or 't' option and 0 'file' arguments\n
+UXCORE_436:Cannot create %s: %s
+UXCORE_437:Can only create standard output archives.
+UXCORE_438:Cannot create blocked standard output archives.
+UXCORE_439:Suppressing absolute pathnames\n
+UXCORE_440:Cannot read blocked standard input archives.
+UXCORE_441:Suppressing absolute pathnames.\n
+UXCORE_442:Cannot read blocked standard input archives
+UXCORE_443:Usage: tar -{txruc}[0-9vfbk[FX]hLiBelmnopwA] [tapefile] [blocksize] [tapesize] [argfile] [exclude-file] [-I include-file] files ...\n
+UXCORE_444:Volume size not a multiple of block size.
+UXCORE_445:Volume ends at %luK, blocking factor = %dK\n
+UXCORE_446:F requires a file name.\n
+UXCORE_447:Missing file name for -I flag.\n
+UXCORE_448:Only one of F or C\n
+UXCORE_449:Cannot change back to %s?
+UXCORE_450:Missing links to %s\n
+UXCORE_451:Directory checksum error\n
+UXCORE_452:Directory nesting too deep, %s not dumped\n
+UXCORE_453:%s same as archive file\n
+UXCORE_454:a %s excluded\n
+UXCORE_455:%s: File name too long\n
+UXCORE_456:%s: Filename is greater than %d\n
+UXCORE_457:%s: prefix is greater than %d\n
+UXCORE_458:Cannot get passwd information for %s\n
+UXCORE_459:Cannot get group information for %s\n
+UXCORE_460:Cannot open directory %s
+UXCORE_461:%s: Symbolic link too long\n
+UXCORE_462:Cannot read symbolic link %s
+UXCORE_463:a %s symbolic link to %s\n
+UXCORE_464:Interrupted in the middle of a file\n
+UXCORE_465:Read error on %s
+UXCORE_466:%s: File changed size\n
+UXCORE_467:%s is not a file. Not dumped\n
+UXCORE_468:%s needs unusual number of volumes to split\n
+UXCORE_469:%s not dumped\n
+UXCORE_470:Large file %s needs %d extents.\n
+UXCORE_471:Current device seek position = %luK\n
+UXCORE_472:+++ a %s %luK [extent #%d of %d]\n
+UXCORE_473:%s: file changed size\n
+UXCORE_474:Aborting split file %s\n
+UXCORE_475:a %s %luK (in 1 extent)\n
+UXCORE_476:a %s %luK (in %d extents)\n
+UXCORE_477:x %s, 0 bytes, 
+UXCORE_478:0K\n
+UXCORE_479:0 tape blocks\n
+UXCORE_480:%s: symbolic link failed
+UXCORE_481:x %s symbolic link to %s\n
+UXCORE_482:Ignoring bad extent info for %s\n
+UXCORE_483:Cannot set time on %s
+UXCORE_484:Problem reading passwd entry: %s\n
+UXCORE_485:%s: owner not changed\n
+UXCORE_486:Problem reading group entry: %s\n
+UXCORE_487:%s: group not changed\n
+UXCORE_488:Cannot access extracted file %s: %s\n
+UXCORE_489:File permissions have changed for %s\n
+UXCORE_490:1 file not extracted\n
+UXCORE_491:%d files not extracted\n
+UXCORE_492:%s: HELP - extract write error: %s\n
+UXCORE_493:%s split across %d volumes\n
+UXCORE_494:First extent read is not #1\n
+UXCORE_495:OK to read file beginning with extent #%d (y/n) ? 
+UXCORE_496:+++ x %s [extent #%d], %lu bytes, %luK\n
+UXCORE_497:First record is null\n
+UXCORE_498:Need volume with extent #%d of %s\n
+UXCORE_499:First file on that volume is not the same file\n
+UXCORE_500:Extent #%d received out of order\nshould be #%d\n
+UXCORE_501:Ignore error, Abort this file, or load New volume (i/a/n) ? 
+UXCORE_502:x %s (in 1 extent), 
+UXCORE_503:x %s (in %d extents), 
+UXCORE_504:1 byte, %luK\n
+UXCORE_505:%lu bytes, %luK\n
+UXCORE_506:\n [extent #%d of %d] %lu bytes total
+UXCORE_507: [extent #%d of %d]
+UXCORE_508: linked to %s
+UXCORE_509: symbolic link to %s
+UXCORE_510:1 file not found\n
+UXCORE_511:%d files not found\n
+UXCORE_512:Impossible file type\n
+UXCORE_513:\007Needs new volume:\n
+UXCORE_514:Please insert new volume, then press RETURN.
+UXCORE_515:Cannot reopen output file %s: %s\n
+UXCORE_516:Cannot reopen input file %s: %s\n
+UXCORE_517:update=%d, usefile=%s, mt=%d, [%s]\n
+UXCORE_518:pwd failed!: %s\n
+UXCORE_519:No process to get directory name!: %s\n
+UXCORE_520:Device seek error: %s\n
+UXCORE_521:Read error while skipping file: %s\n
+UXCORE_522:Tape read error: %s\n
+UXCORE_523:Tape blocksize error\n
+UXCORE_524:Cannot update blocked tapes\n
+UXCORE_525:buffer size = %dK\n
+UXCORE_526:blocksize = %d\n
+UXCORE_527:Tape read error after seek: %s\n
+UXCORE_528:Tape write error: %s\n
+UXCORE_529:%s is not a regular file\n
+UXCORE_530:Sizes below %luK not supported (%lu).\n
+UXCORE_531:Bad size entry for %s in %s.\n
+UXCORE_532:Invalid blocksize. (Max %d)\n
+UXCORE_533:Bad blocksize entry for '%s' in %s.\n
+UXCORE_534:Error setting parameters for %s.\n
+UXCORE_535:Missing or invalid '%s' entry in %s.\n
+UXCORE_536:'%s' entry in %s is empty!\n
+UXCORE_537:Block component missing in '%s' entry in %s.\n
+UXCORE_538:Size component missing in '%s' entry in %s.\n
+UXCORE_539:Out of memory, link and directory modtime info lost: %s\n
+UXCORE_540:: %s\n
+UXCORE_541:%a %b %e %H:%M:%S
+UXCORE_542:uname() failed: %s\n
+UXCORE_543:'%s' too big.\n
+UXCORE_544:Cannot allocate memory for '%s': %s\n
+UXCORE_545:Cannot send to %.-8s on %s: %s\n
+UXCORE_546:\07\07\07Broadcast Message from %s (%s) on %s %19.19s to group %s...\n
+UXCORE_547:\07\07\07Broadcast Message from %s (%s) on %s %19.19s...\n
+UXCORE_548:\n\007Write failed: %s\n
+UXCORE_549:Only one group allowed\n
+UXCORE_550:Unknown group %s\n
+WC_TOTAL: total\n
+WC_USAGE:Usage: wc [-clw] [name ...]\n
+UXCORE_553:%s is logged on more than one place.\nYou are connected to \"%s\".\nOther locations are:\n
+UXCORE_554:I cannot determine your terminal name.  No reply possible.\n
+UXCORE_555:%s is not at \"%s\".\n
+UXCORE_556:%s is not logged on.\n
+UXCORE_557:Cannot determine who you are.\n
+UXCORE_558:You have your terminal set to \"mesg -n\".  No reply possible.\n
+UXCORE_559:\n\007\007\007\tMessage from %s on %s (%s) [ %s ] ...\n
+UXCORE_560:Can no longer write to %s\n
+UXCORE_561:\n\007Write failed (%s logged out?): %s\n
+UXCORE_562:Try again later.\n
+UXCORE_563:Timeout trying to open %s's line(%s).\n
+UXCORE_564:Usage: write user [terminal]\n
+FILE_DOS_EXECUTABLE_EXE_:DOS executable (EXE)
+FILE_DOS_BUILTIN_:DOS built-in
+FILE_DOS_EXECUTABLE_COM_:DOS executable (COM)
+FILE_IAPX_386_EXECUTABLE_:iAPX 386 executable
+FILE_CORE_FILE_XENIX_:core file (Xenix)
+FILE_COMPRESSED_DATA_3B2_:compressed data (3b2)
+FILE_COMPRESSED_DATA_:compressed data
+FILE__WITH_12_BITS_:- with 12 bits
+FILE__WITH_13_BITS_:- with 13 bits
+FILE__WITH_14_BITS_:- with 14 bits
+FILE__WITH_15_BITS_:- with 15 bits
+FILE__WITH_16_BITS_:- with 16 bits
+UXCORE_577:Sorry, your login was unsuccessful.\n\tThis system has been configured to support %d users,\n\tthere are currently this many users logged in.\n
+UXCORE_578:Cannot enable user: %s\n
+UXCORE_579:This system does not implement per user licensing.\n
+UXCORE_580:This system has unlimited per user licensing.\n
+UXCORE_581:This system has per user licensing limited to %d concurrent users.\n
+UXCORE_582:\r\n\07\07\07Broadcast Message from %s (%s) on %s %19.19s to group %s...\r\n
+UXCORE_583:\r\n\07\07\07Broadcast Message from %s (%s) on %s %19.19s...\r\n
+UXCORE_584:Cannot change the mode of your job\n
+UXCORE_585:Cannot determine current directory\n
+UXCORE_586:Current directory pathname too long\n
+UXCORE_587:Process terminated to enforce least privilege\n
+UXCORE_588:lvlproc() failed\n
+UXCORE_589:Attributes changed between stat() and open()\n
+UXCORE_590:user = %s\t%s\t%s
+UXCORE_591:Not enough memory to print level for job %s\n
+UXCORE_592:Cannot translate level to text format for job %s\n
+UXCORE_593:System service not installed\n
+UXCORE_594:\### BEGIN        %s        BEGIN ###\n
+UXCORE_595:\### END        %s        END ###\n
+UXCORE_596:Usage:\n\tat [-m] [-f filename] time [date] [+ increment]\n
+UXCORE_597:\tat -d job [job ...]\n
+UXCORE_598:\tat -l [job ...]\n
+UXCORE_599:\tat -r job [job ...]\n
+UXCORE_600:\tat -z [job ...]\n
+UXCORE_601:\tat -Z [job ...]\n
+UXCORE_602:Cannot get level for /etc/cron.d.\n
+UXCORE_603:lvlin() on SYS_ALL failed.\n
+UXCORE_604:Cannot change multi-level directory mode.\n
+UXCORE_605:\"%s\" directory is not a multi-level directory.\n
+UXCORE_606:\"%s\" multi-level directory is corrupt.\n
+UXCORE_607:Cannot read the \"%s\" multi-level directory.\n
+UXCORE_608:Cannot read a \"%s\" effective directory.\n
+UXCORE_609:Cannot change directory to \"%s\" multi-level directory.\n
+UXCORE_610:Cannot set required privilege.\n
+UXCORE_611:Cannot open lockfile.\n
+UXCORE_612:Cannot set lock on file.\n
+UXCORE_613:File descriptor for lockfile.\n
+UXCORE_614:flock or its data is invalid.\n
+UXCORE_615:Unknown error in attempt to lock file.\n
+UXCORE_616:lvlproc() failed: %s\n
+UXCORE_617:fcntl() failed: %s\n
+UXCORE_618:Cannot create %s
+UXCORE_619:pipe() failed: %s\n
+UXCORE_620:Cannot attach pipe: %s\n
+UXCORE_621:Cannot push connld: %s\n
+UXCORE_622:ioctl() I_S_RECVFD failed: %s\n
+UXCORE_623:Cannot get level for unique pipe\n
+UXCORE_624:Cannot get data on login %s:
+UXCORE_625:Can't determine privileges of sending process\n
+UXCORE_626:Attempt by uid %d to delete at/cron job rejected
+UXCORE_627:Attempt by uid %d to add/change at/cron job rejected
+UXCORE_628:Attempt by uid %d to manipulate at/cron job rejected
+UXCORE_629:Deleting at job %s for login %s
+UXCORE_630:Adding/modifying at job %s for login %s
+UXCORE_631:Deleting cron job(s) for %s
+UXCORE_632:Adding/modifying cron job(s) for %s
+UXCORE_633:Cannot unlink %s: %s\n
+UXCORE_634:No least privilege at crabort(): %s\n
+UXCORE_635:Cannot create crontab file in\n\tthe crontab directory.: %s\n
+UXCORE_636:Cannot open crontab file: %s\n
+UXCORE_637:Usage: crontab [file] | [ [  -e | -l | -r ] [user] ]\n
+UXCORE_638:Cannot perform lvlproc() call.\n
+UXCORE_639:Cannot change owner as owner of file.\n
+UXCORE_640:Cannot determine current directory.\n
+UXCORE_641:Cannot remove crontab file: %s.\n
+UXCORE_642:Invalid input to crontab was saved in %s\n
+UXCORE_643:Cannot allocate physio buffer\n
+FILE_EMPTY_FILE_:Empty file\n
+FILE_TAR__:tar \n
+UXCORE_646:postscript program text with garbage\n
+UXCORE_647:postscript program text\n
+FILE_EXPANDED_ASCII_CPIO_ARCHIVE_:expanded ASCII cpio archive
+FILE_EXPANDED_ASCII_CPIO_ARCHIVE__CRC_HEADER_:expanded ASCII cpio archive - CRC header
+FILE_ASCII_CPIO_ARCHIVE_:ASCII cpio archive 
+UXCORE_651:lvlproc() set lid_user failed\n
+UXCORE_652:Abort to enforce least privilege\n
+UXCORE_653:invalid combination of options -%c and -%c.\n
+UXCORE_654: TTY      TIME COMD
+UXCORE_655:      LEVEL
+UXCORE_656:ps [ -edalfcj[Z|z] ] [ -r sysname ] [ -t termlist ]
+UXCORE_657:lvlfile() get lid of /etc failed\n
+UXCORE_658:mktemp() failed\n
+UXCORE_659:rename() failed\n
+UXCORE_660:Not enough memory to print level for pid %u: %s\n
+UXCORE_661:Cannot translate level to text format for pid %u\n
+UXCORE_662:Cannot get passwd information for %s: %s\n
+UXCORE_663:Cannot get group information for %s: %s\n
+UXCORE_664:Usage: tar -{txruc}[0-9vfbk[FX]hLielmnopwA] [tapefile] [blocksize] [tapesize] [argfile] [exclude-file] [-I include-file] files ...\n
+UXCORE_665:Unexpected EOF\n
+UXCORE_666:cannot execute login at shell level.\n
+UXCORE_667:auditctl() ASTATUS failed\n
+UXCORE_668:Cannot specify -%c more than once\n
+UXCORE_669:Invalid options -h, -v\n
+UXCORE_670:Usage: login [[ -p ]  [ -v def_level ] [ -h level ] name [ env-var ... ]]\n
+UXCORE_671:Current Level: %s\n
+UXCORE_672:Last login: %.*s on %.*s at level %s\n
+UXCORE_673:Invalid default login security level specified\n
+UXCORE_674:Level file busy, default level unchanged\n
+UXCORE_675:Update of I&A files failed, default level unchanged.\n
+UXCORE_676:Login for %s not allowed on this terminal\n
+UXCORE_677:Password unchanged\n
+UXCORE_678:Your password will expire in 1 day\n
+UXCORE_679:putava() failed for \"%s %s\"\n
+UXCORE_680:argvtostr() failed\n
+UXCORE_681:setava() failed; *avaptr = %s\n
+UXCORE_682:Only one of -R and -H allowed\n
+UXCORE_683:Usage: in.login [[ -R | -H ] [ -p ] [ -v def_level ] [ -h level ] name [ env-var ... ]]\n
+UXCORE_684:secadvise() failed
+UXCORE_685:Unable to stat or open cron logfile.
+UXCORE_686:chmod failed\n
+FILE_KBD_MAP_FILE_:kbd map file
+FILE_VER_D_:Ver %d:
+FILE_WITH_D_TABLES_:with %d table(s)
+UXCORE_690:Job number %s does not exist\n
+UXCORE_691:Invalid combination of options -Z and -z\n
+UXCORE_692:Bad entry found in \"%s\"\n
+UXCORE_693:Cannot access file \"%s\"\n
+UXCORE_694:\"%s\" not an executable file\n
+UXCORE_695:Incompatible options specified\n
+UXCORE_696:\"%s\" is not an absolute pathname\n
+UXCORE_697:Undefined process privilege \"%s\"\n
+UXCORE_698:No such file or directory for file \"%s\"\n
+UXCORE_699:\"filepriv\" system call not in operation\n
+UXCORE_700:Cannot determine supported privilege sets\n
+UXCORE_701:\"%s\" set not supported by this privilege mechanism\n
+UXCORE_702:Usage: filepriv [-f priv[,...]] [-i priv[,...]] file ...\n
+UXCORE_703:Cannot use \"%s\" as both fixed and inheritable privilege\n
+UXCORE_704:Problem writing \"%s\"\n\t\t      privileges for \"%s\" unchanged\n
+UXCORE_705:filepriv -d file ...\n
+UXCORE_706:Cannot clear file privileges on %s\n
+UXCORE_707:File ``%s'' fails validation: entry ignored\n
+UXCORE_708:1 entry ignored in ``%s''\n
+UXCORE_709:%d entries ignored in ``%s''\n
+UXCORE_710:unable to allocate space\n
+UXCORE_711:unable to obtain event class information\n
+UXCORE_712:syntax error in <%s>, line <%d>\n
+UXCORE_713:event type or class \"%s\" exceeds <%d> characters\n
+UXCORE_714:event type or class \"%s\" contains non-printable characters\n
+UXCORE_715:event type \"%s\" is not currently audited\n
+UXCORE_716:invalid event type or class \"%s\" specified\n
+UXCORE_717:malloc() failed\n
+UXCORE_718:\"open_rd\" and \"open_wr\" events should be set for events that may use a File Descriptor\n
+UXCORE_719:event type \"%s\" is a fixed event and may not be manipulated\n
+UXCORE_720:event type \"%s\" is not valid for object-level auditing\n
+UXCORE_721:keyword \"%s\" may not be used in conjunction with event types or classes\n
+UXCORE_722:usage: ttymap\n
+UXCORE_723:search of /dev failed\n
+UXCORE_724:cannot access \"%s\"\n
+OUT_OF_MEMORY:out of memory\n
+UXCORE_726:cannot open \"%s\"\n
+UXCORE_727:cannot write \"%s\"\n
+UXCORE_728:cannot stat \"%s\"\n
+UXCORE_729:cannot chmod \"%s\"\n
+UXCORE_730:cannot chown \"%s\"\n
+UXCORE_731:failed retava in shserv\n
+UXCORE_732:failed getava of SHELL\n
+UXCORE_733:failed getava of HOMEDIR\n
+UXCORE_734:unable to set environment\n
+UXCORE_735:unable to change directory to %s\n
+UXCORE_736:usage: defadm [ filename [name1[=value1]] [name2[=value2]] [...] ]\n       defadm [ -d filename name1 [name2] [...] ]\n
+UXCORE_737:permission denied\n
+UXCORE_738:name %s does not exist\n
+UXCORE_739:unexpected failure\n
+UXCORE_740:cannot access file %s\n
+UXCORE_741:file %s does not exist\n
+UXCORE_742:cannot access directory %s\n
+UXCORE_743:directory %s does not exist\n
+UXCORE_744:file %s is locked, try again later\n
+UXCORE_745:invalid option\n
+UXCORE_746:Rescheduling cron job: \"%s\"
+UXCORE_747:Cannot get data on login %s: %s
+UXCORE_748:Last login: %.*s by %.*s@%.*s\n
+FILE_SBRU_ARCHIVE_:%sbru archive\n
+#End
+LINE_TOO_LONG:Line too long, memory exhausted\n
+CUT_BAD_LIST:Bad list for b/c/f option\n
+READ_FAILED_WITH_ARGV:%s: read failed (%s)\n
+READ_FAILED:read failed (%s)\n
+TRUNC_CHAR_FILE:truncated character at offset: %lld in file: %s - processing terminated\n
+TRUNC_CHAR:truncated character at offset: %lld - processing terminated\n
+CANNOT_MALLOC:Cannot malloc new string\n
+MB_WC_ERR:Multibyte to wide character conversion not successful\n
+PATHCHK_USAGE:pathchk  [-p]  pathname ...\n
+PATHNAME_LONGER_THAN_PATHMAX:Pathname %s longer than %s\n
+COMPONENT_LONGER_THAN_PATHMAX:Component %s longer than %s\n
+COMPONENT_CONTAINS_NONPORTABLE_CHAR:Component %s contains non-portable character\n
+SUBPATH_IS_NOT_SEARCHABLE:Subpath %s is not searchable\n
+PATHSOFAR_IS_NOT_DIR:%s is not a directory\n
+MISSING_ARGUMENTS:Missing arguments\n
+LACK_OF_MEMORY:Lack of memory\n
+PROGRAM_ERROR:Program error\n
+FILE_CANNOT_OPEN:cannot open %s: %s\n

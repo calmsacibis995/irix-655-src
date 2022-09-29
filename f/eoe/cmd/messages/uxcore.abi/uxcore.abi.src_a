@@ -1,0 +1,1093 @@
+#ident  "@(#)messages:uxcore.abi/msgs   1.25"
+#*      Copyright (c) 1990, 1991 UNIX System Laboratories, Inc. */
+#*      Copyright (c) 1984, 1986, 1987, 1988, 1989, 1990 AT&T   */
+#*        All Rights Reserved   */
+#
+#*      THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF          */
+#*      UNIX System Laboratories, Inc.                          */
+#*      The copyright notice above does not evidence any        */
+#*      actual or intended publication of such source code.     */
+#Begining
+WRITE_ERROR:Write error: %s\n
+CAT_USAGE:Usage: cat -usvte [-|file] ...\n
+CANNOT_ACCESS_STDOUT:Cannot access stdout: %s\n
+CANNOT_OPEN:Cannot open %s: %s\n
+CANNOT_ACCESS:Cannot access %s: %s\n
+FILES_IDENTICAL:Input/output files '%s' identical\n
+WRITE_ERR_NCHAR:Write error (%d/%d characters written): %s\n
+INCORRECT_USAGE:Incorrect usage\n
+UXCORE_ABI_9:Usage: chgrp [-h] [-R] gid file...\n
+UXCORE_ABI_10:Unknown group: %s\n
+CANT_CHNGBK_TO:Cannot change back to %s: %s\n
+FRMT_12:%s: %s\n
+CHMOD_FAILED_ON:chmod() failed on %s: %s\n
+INVLD_MODE:Invalid mode\n
+CHMOD_USAGE:Usage: chmod [-R] [ugoa][+-=][rwxlstugo] file ...\n
+UXCORE_ABI_16:Could not getcwd %s: %s\n
+GROUP_LOCK_NOT_PERMIT:Group execution and locking not permitted together\n
+GROUP_EXEC_NOT_PERMIT:Group execution not permitted\n\ton %s, a lockable file\n
+SET_GID_LOCK_NOT_PERMIT:Set-group-ID and locking not permitted together\n
+SET_GID_NOT_PERMIT:Set-group-ID not permitted\n\ton %s, a lockable file\n
+SET_ID_EXEC_PERM_REQ_4:Execute permission required for set-ID\n\ton execution for %s\n
+LOCK_NOT_PERMIT_GRP:Locking not permitted\n\ton %s, a group executable file\n
+SET_ID_DISABL:Corresponding set-ID also disabled\n\ton %s since set-ID requires execute permission\n
+SET_ID_EXEC_PERM_REQ:Execute permission required for set-ID on execution\n
+UXCORE_ABI_25:Usage: chown [-h] [-R] uid file ...\n
+UNKNOWN_USERID_S:Unknown user id: %s\n
+UXCORE_ABI_27:Numeric user id too large\n
+FILE_DIFFER_C_L:%s %s differ: char %ld, line %ld\n
+UXCORE_ABI_29:Usage: cmp [-l|-s] [-|file1] file2 [skip1] [skip2]\n
+EOF_FOUND:EOF on %s\n
+CFTIME_FMT:%b %e %H:%M %Y
+CHANGE_PART:Change to part %d and press RETURN key. [q] 
+MUTEX:-%c and -%c are mutually exclusive.
+BAD_ACCESS:Cannot access \"%s\"
+BAD_ACCESS_AR:Cannot access the archive
+BAD_CREAT:Cannot create \"%s\"
+BAD_CREAT_DIR:Cannot create directory for \"%s\"
+BAD_FOLLOW:Cannot follow \"%s\"
+READ_ERR:Read error in \"%s\"
+BAD_READ_SYM:Cannot read symbolic link \"%s\"
+BAD_READ_TTY:Cannot read tty.
+BAD_RM_INC:Cannot remove incomplete \"%s\"
+BAD_RM_TMP:Cannot remove temp file \"%s\"
+WRITE_ERR:Write error in \"%s\"
+BAD_INIT:Error during initialization
+SAME_AGE:Existing \"%s\" same age or newer
+CANT_MKDIR_MKNOD:Cannot make directories or inodes.
+BAD_HDR_TYPE:Invalid header type.
+MEM_ERR:Out of memory
+BAD_APPEND_AR:Cannot append to this archive
+BAD_CHMOD:chmod() failed on \"%s\"
+BAD_CHOWN:chown() failed on \"%s\"
+BAD_PASSWD:Cannot get passwd information for %s
+BAD_GROUP:Cannot get group information for %s
+BAD_ORIG:Cannot recover original \"%s\"
+OPT_ERR:Invalid option.
+BLOCK_FMT:%lld blocks
+1_ERR:1 error
+ERR_FMT:%d error(s)
+RECOVER_ERR:Cannot recover.
+LSEEK_ERR:lseek() failed
+END_MEDIUM_O:\007End of medium on output.
+END_MEDIUM_I:\007End of medium on input.
+DEVICE_PRMT:To continue, type device/file name when ready.
+CANT_OPEN_STR:Cannot open \"%s\"
+CANT_CHNG_MED:Cannot change media types in mid-stream.
+CANT_WRITE_MED:Cannot write on this medium, try another.
+NAME_LEN_ERR:Name exceeds maximum length - skipped.
+RENAME_FMT:Rename \"%s\"? 
+SKIP_FMT:%s Skipped.
+MUST_OPT:One of -i, -o or -p must be specified.
+M_NEED_OPT:-M not meaningful without -O or -I.
+A_NEED_OPT:-A requires the -O option.
+C_OPT_SIZE:Illegal size given for -C option.
+HDR_ERR:Invalid header \"%s\" specified
+CANT_RENAME:Cannot rename, \"%s\" missing
+CANT_OPEN_PATT:Cannot open \"%s\" to read patterns
+CANT_OPEN_I:Cannot open \"%s\" for input
+CANT_OPEN_APP:Cannot open \"%s\" for append
+CANT_OPEN_O:Cannot open \"%s\" for output
+R_OPT_SU:R option only valid for super-user.
+UNKNOWN_USER_ID:Unknown user id: %s
+CKSUM_ERR:Error computing checksum.
+CANT_RESET_CKSUM:Cannot reset file after checksum
+FILE_TOO_LONG:%s: file name too long
+FILE_LEN_ERR:%s: filename is greater than %d
+PREFIX_LEN_ERR:%s: prefix is greater than %d
+CANT_UNLINK:Cannot unlink \"%s\"
+LINK_FMT:%s linked to %s\n
+CANT_LINK_STR:Cannot link \"%s\" and \"%s\"
+CANT_CREAT_DIR_2:Cannot create directory \"%s\"
+MKNOD_ERR:mknod() failed for \"%s\"
+PASS_SELF:Attempt to pass a file to itself.
+CANT_OVERWRITE:Cannot overwrite \"%s\"
+CANT_TMPNAME:Cannot get temporary file name.
+CANT_CREATE_TMP:Cannot create temporary file
+CANT_UNLINK_CUR:Cannot unlink current \"%s\"
+CANT_SWAP_BYTES:Cannot swap bytes of \"%s\", odd number of bytes
+CANT_SWAP_HWORD:Cannot swap halfwords of \"%s\", odd number of halfwords
+CKSUM_ERR_FMT:\"%s\" - checksum error
+Q_STR_FMT:\"%s\" ?
+SKIP_FMT_2:\"%s\" skipped
+OPEN_SKIP_FMT:Cannot open \"%s\", skipped
+USE_D_COPY:Use -d option to copy \"%s\"
+DISAPPEAR_FMT:\"%s\" has disapeared
+BAD_HDR_CKSUM:Bad header - checksum error.
+BAD_HDR_LOST:Corrupt header, file(s) may be lost.
+MAGIC_SEARCH:Searching for magic number/header.
+BAD_HDR_CPIO:Not a cpio file, bad header.
+BAD_MAGIC:Bad magic number/header.
+MAGIC_SYNC:Re-synchronized on magic number/header.
+EXTND_FMT:Old format cannot support expanded types on %s
+ULIMIT_ERR:ulimit reached for output file.
+SPACE_ERR:No space left for output file.
+IO_ERR:I/O error - cannot continue
+EOF_ERR:Unexpected end-of-file encountered.
+IO_OUTPUT_ERR:\007I/O error on output
+IO_INPUT_ERR:\007I/O error on input
+NEED_D_OPT:Missing -d option.
+ERRNO_STR:, errno %d, %s\n
+1_ERR_NEWLINE:1 error\n
+ERRS_FMT:%d errors\n
+ULIMIT_BYTE_FMT:Skipping \"%s\": exceeds ulimit by %lld bytes
+EOF_AR:Unexpected end-of-archive encountered.
+OWNER_SAME:%s: owner not changed
+GROUP_SAME:%s: group not changed
+EXIST_RESTORE:Restoring existing \"%s\"
+ONLY_1_ALLOW:Only one occurrence of -%c allowed
+CANT_DET_CUR_DIR:Cannot determine current directory
+NOT_DIR:\"%s\" is not a directory
+CANT_RESET_ATIME:Cannot reset access time for \"%s\"
+CANT_RESET_MTIME:Cannot reset modification time for \"%s\"
+CPIO_USAGE:Usage:\n
+CPIO_USAGE_2:\tcpio -i[bcdfkmrstuvBSV6] [-C size] 
+CPIO_USAGE_3:[-E file] [-H hdr] [[-I file] [-M msg]] 
+CPIO_USAGE_4:[-R id] [patterns]\n
+CPIO_USAGE_5:\tcpio -o[acvABLV] [-C size] 
+CPIO_USAGE_6:[-H hdr] [[-M msg] [-O file]]\n
+CPIO_USAGE_7:\tcpio -p[adlmuvLV] [-R id] directory\n
+INVALID_FTYPE:Invalid file type
+UXCORE_ABI_141:Usage:\n\tdate [-u] [+format] [hhmm | mmddhhmm[[cc]yy]] [-a sss.fff]\n
+DATE_CANNOT_ADJUST:Cannot adjust date: %s\n
+DATE_TIME_FMT:%a %b %e %H:%M:%S GMT %Y
+DATE_BAD_CONVERSION:Bad conversion\n
+BAD_ARGUMENT:Bad argument: \"%s\"\n
+DD_BUFFER_SIZES_CANNOT:Buffer sizes cannot be zero\n
+DD_CBS_MUST_BE_ZERO:cbs must be zero if no block conversion requested\n
+CANNOT_CREATE:Cannot create %s: %s\n
+NOT_ENOUGH_MEMORY:Not enough memory: %s\n
+SKIP_FAILED:Skip failed: %s\n
+DD_READ_ERROR_DURING:Read error during skip: %s\n
+DD_CANNOT_SKIP_PAST:Cannot skip past end-of-file: %s\n
+INPUT_SEEK_ERROR:Input seek error: %s\n
+OUTPUT_SEEK_ERROR:Output seek error: %s\n
+READ_ERROR_S:Read error: %s\n
+ARG_OUTOFRANGE:Argument out of range: \"%lu\"\n
+BAD_NUMERIC_ARGUMENT:Bad numeric argument: \"%s\"\n
+DD_RECORDS_IN:%llu+%u records in\n
+DD_RECORDS_OUT:%llu+%u records out\n
+DD_TRUNCATED_RECORD:1 truncated record\n
+DD_FORMAT_U_TRUNCATED:%u truncated records\n
+UXCORE_ABI_162:Write or open on pipe failed
+UXCORE_ABI_163:Expecting `w'
+UXCORE_ABI_164:Mark not lower case ascii
+UXCORE_ABI_165:Cannot open input file
+UXCORE_ABI_166:PWB spec problem
+UXCORE_ABI_167:Nothing to undo
+UXCORE_ABI_168:Restricted shell
+UXCORE_ABI_169:Cannot create output file
+UXCORE_ABI_170:Filesystem out of space!
+UXCORE_ABI_171:Cannot open file
+UXCORE_ABI_172:Cannot link
+UXCORE_ABI_173:Range endpoint too large
+UXCORE_ABI_174:Unknown command
+UXCORE_ABI_175:Search string not found
+UXCORE_ABI_176:Line out of range
+UXCORE_ABI_177:Bad number
+UXCORE_ABI_178:Bad range
+UXCORE_ABI_179:Illegal address count
+UXCORE_ABI_180:Incomplete global expression
+UXCORE_ABI_181:Illegal suffix
+UXCORE_ABI_182:Illegal or missing filename
+UXCORE_ABI_183:No space after command
+UXCORE_ABI_184:fork() failed - try again
+UXCORE_ABI_185:Maximum of 64 characters in file names
+UXCORE_ABI_186:`\\digit' out of range
+UXCORE_ABI_187:Line too long
+UXCORE_ABI_188:Illegal character in input file
+UXCORE_ABI_189:Write error
+UXCORE_ABI_190:Out of memory for append
+UXCORE_ABI_191:Temp file too big
+UXCORE_ABI_192:I/O error on temp file
+UXCORE_ABI_193:Multiple globals not allowed
+UXCORE_ABI_194:Global too long
+UXCORE_ABI_195:No match
+UXCORE_ABI_196:Illegal or missing delimiter
+UXCORE_ABI_197:Replacement string too long
+UXCORE_ABI_198:Illegal move destination
+UXCORE_ABI_199:No remembered search string
+UXCORE_ABI_200:'\\( \\)' imbalance
+UXCORE_ABI_201:Too many `\\(' s
+UXCORE_ABI_202:More than two numbers given in '\\{ \\}'
+UXCORE_ABI_203:'\\}' expected
+UXCORE_ABI_204:First number exceeds second in '\\{ \\}'
+UXCORE_ABI_205:Incomplete substitute
+UXCORE_ABI_206:Newline unexpected
+UXCORE_ABI_207:'[ ]' imbalance
+UXCORE_ABI_208:Regular expression overflow
+UXCORE_ABI_209:Regular expression error
+UXCORE_ABI_210:Command expected
+UXCORE_ABI_211:a, i, or c not allowed in G
+UXCORE_ABI_212:End of line expected
+UXCORE_ABI_213:No remembered replacement string
+UXCORE_ABI_214:No remembered command
+UXCORE_ABI_215:Illegal redirection
+UXCORE_ABI_216:Possible concurrent update
+UXCORE_ABI_217:The x command has become X (upper case)
+UXCORE_ABI_218:'w' may destroy input file (due to `illegal char' read earlier)
+UXCORE_ABI_219:'q' may lose data in buffer; 'w' may destroy input file
+UXCORE_ABI_220:Encryption of string failed
+UXCORE_ABI_221:Encryption facility not available\n
+UXCORE_ABI_222:Cannot encrypt temporary file\n
+UXCORE_ABI_223:Enter key:
+UXCORE_ABI_224:Illegal byte sequence
+UXCORE_ABI_225:Usage: ed [- | -s] [-p string] [-x] [-C] [file]\n
+UXCORE_ABI_226:file name too long\n
+UXCORE_ABI_227:%d nulls replaced by '\\0'\n
+UXCORE_ABI_228:\007read may be incomplete - beware!\007\n
+UXCORE_ABI_229:'\\n' appended\n
+UXCORE_ABI_230:line too long: lno = %d\n
+UXCORE_ABI_231:too long
+UXCORE_ABI_232:Tab count\n
+UXCORE_ABI_233:Syntax error\n
+EXPR_DIV_ZERO:Division by zero
+EXPR_NON_NUM_ARG:non-numeric argument
+UXCORE_ABI_236:Too many `\\(' s\n
+UXCORE_ABI_237:string too long\n
+EXPR_RE_ERROR:RE error
+UXCORE_ABI_239:Incomplete statement\n
+UXCORE_ABI_240:time() failed: %s\n
+UXCORE_ABI_241:Operand follows operand\n
+UXCORE_ABI_242:Cannot find %s name\n
+UXCORE_ABI_243:%s not octal\n
+UXCORE_ABI_244:No action specified\n
+UXCORE_ABI_245:Illegal option -- %s\n
+UXCORE_ABI_246:Usage: find path-list predicate-list\n
+UXCORE_ABI_247:Cannot read dir %s: %s\n
+UXCORE_ABI_248:Cannot follow symbolic link %s: %s\n
+UXCORE_ABI_249:< %s ... %s >?   
+UXCORE_ABI_250:statvfs() on %s failed: %s\n
+UXCORE_ABI_251:%s mounted as a %s file system\n
+UXCORE_ABI_252:Usage:\ndf [-F FSType] [-begklntV] [current_options] [-o specific_options] [directory | special ...]\n
+UXCORE_ABI_253:%s not found\n
+UXCORE_ABI_254:More than one FSType specified\n
+UXCORE_ABI_255:FSType %s exceeds 8 characters\n
+UXCORE_ABI_256:(%-10.32s) not a file system, directory or mounted resource\n
+UXCORE_ABI_257:FSType cannot be identified\n
+UXCORE_ABI_258:Options g, n or l not supported for unmounted FSTypes\n
+UXCORE_ABI_259:Line in mnttab exceeds %d characters\n
+UXCORE_ABI_260:Line in mnttab has too few entries\n
+UXCORE_ABI_261:Line in mnttab has too many entries\n
+UXCORE_ABI_262:%-18s(%-15s):  %6u block size  %7u frag size\n
+UXCORE_ABI_263:%7u total blocks%7u free blocks%7u available   %7u total files\n
+UXCORE_ABI_264:%7u free files  %7u filesys id %32s \n
+UXCORE_ABI_265:%7s fstype   0x%8.8X flag       %7u filename length\n\n
+UXCORE_ABI_266:%-19s(%-16s):  %8d blocks%8d files\n
+UXCORE_ABI_267:                                total:\t%8d blocks%8d files\n
+UXCORE_ABI_268:%-19s(%-16s):  %8d kilobytes\n
+UXCORE_ABI_269:Filesystem             avail\n
+UXCORE_ABI_270:%-16s       %-8d\n
+UXCORE_ABI_271:%-19s(%-16s):  %8d files\n
+UXCORE_ABI_272:Filesystem             ifree\n
+UXCORE_ABI_273:%-19s: %-10s\n
+UXCORE_ABI_274:filesystem         kbytes   used     avail    capacity  mounted on\n
+UXCORE_ABI_275:%-18s %-8ld %-8ld %-8ld %2ld%%       %-19s\n
+UXCORE_ABI_276:%-19s(%-16s):%8d blocks%8d files\n
+UXCORE_ABI_277:fork() failed: %s\n
+CANNOT_EXECUTE:Cannot execute %s: %s\n
+UXCORE_ABI_279:Operation not applicable for FSType %s\n
+UXCORE_ABI_280:%-10.32s is not a special device or directory\n
+UXCORE_ABI_281:%-10.32s is not a s5 file system\n
+UXCORE_ABI_282:Usage:\ndf [-F s5] [generic_options] [-f] [directory | special ...]\n
+UXCORE_ABI_283:Usage: devnm [directory]\n
+UXCORE_ABI_284:          (%-12s): can't verify logical block size\n\t\t\t  root inode or root directory may be corrupted\n
+UXCORE_ABI_285:          (%-12s): can't determine logical block size\n
+UXCORE_ABI_286:%-18s %-8ld %-8ld %-8ld %2ld%%        %-19.6s\n
+UXCORE_ABI_287:(%-16s):
+UXCORE_ABI_288:  %8d blocks%8u files\n
+UXCORE_ABI_289:                                total:
+UXCORE_ABI_290:(%-16s):  %8d kilobytes\n
+UXCORE_ABI_291:Filesystem              avail\n
+UXCORE_ABI_292:  %8u files\n
+UXCORE_ABI_293:Filesystem              ifree\n
+UXCORE_ABI_294:(%-16s):  %8d blocks%8u files\n
+UXCORE_ABI_295:(%-16s):  %8d blocks\n
+UXCORE_ABI_296:(%-16s):  %8u files\n
+UXCORE_ABI_297:Bad free count, b=%ld\n
+UXCORE_ABI_298:Bad free block (%ld)\n
+UXCORE_ABI_299:seek() failed in bread(): %s\n
+UXCORE_ABI_300:Read error in bread() (%x, count = %d): %s\n
+UXCORE_ABI_301:'-g' and '-o i' are mutually exclusive\n
+UXCORE_ABI_302:Could not find mount point for %s\n
+UXCORE_ABI_303:VFStype name - ufs\n
+UXCORE_ABI_304:Filesystem            ifree\n
+UXCORE_ABI_305:Filesystem             iused   ifree  %%iused
+UXCORE_ABI_306:Filesystem        f_type f_fsize f_bfree f_bavail f_files f_ffree f_fsid f_flag f_fstr\n
+UXCORE_ABI_307:Filesystem            avail\n
+UXCORE_ABI_308:Filesystem            kbytes    used   avail capacity
+UXCORE_ABI_309:  Mounted on\n
+UXCORE_ABI_310:%s: not a ufs file system\n
+UXCORE_ABI_311:Premature EOF on %s (%x, expected = %d, count = %d)\n
+OUT_OF_MEM:Out of memory: %s\n
+UXCORE_ABI_313:Usage:\ndf [-F ufs] [generic options] [-o i] [directory | special]\n
+UXCORE_ABI_314:Totals              %8d%8d%8d
+UXCORE_ABI_315:Totals              %8d%8d%6.0f%%\n
+UXCORE_ABI_316:Usage: gettxt msgid [ dflt_msg ]\n
+UXCORE_ABI_317:Usage: grep -hblcnsvi pattern file . . .\n
+UXCORE_ABI_318:%s:
+UXCORE_ABI_319:%ld:
+UXCORE_ABI_320:RE error %d: %s\n
+LS_DATE_FMT: %b %e  %Y 
+LS_DATE_TIME_FMT: %b %e %H:%M 
+UXCORE_ABI_323:Usage: lc -1RadCxmnlogrtucpFbqisfL [files]\n
+UXCORE_ABI_324:Usage: ls -1RadCxmnlogrtucpFbqisfL [files]\n
+LS_SEP::
+TOTAL_UNITS:total %llu
+CANT_ACCESS_DIR:Cannot access directory %s: %s\n
+CANT_CREATE_DIR_SS:Cannot create directory \"%s\": %s\n
+MKDIR_USAGE_1:Usage: mkdir [-m mode] [-p] dirname ...\n
+UXCORE_ABI_330:Cannot set effective user/group ids to real user/group ids\n
+UXCORE_ABI_331:<%s> is a directory\n
+UXCORE_ABI_332:Cannot unlink %s: %s\n
+WRITE_ERROR_IN:Write error in %s: %s\n
+UXCORE_ABI_334:Not enough memory to %s %s %s: %s\n
+UXCORE_ABI_335:Target %s must be a directory\n
+UXCORE_ABI_336:%s and %s are on different file systems\n
+UXCORE_ABI_337:Cannot link %s to %s: %s\n
+UXCORE_ABI_338:%s: Not a directory.\n
+UXCORE_ABI_339:Cannot rename %s to %s: %s\n
+UXCORE_ABI_340:Cannot move directories across file systems\n
+READ_ERROR:Read error in %s: %s\n
+UXCORE_ABI_342:Unknown file type %o\n
+UXCORE_ABI_343:%s and %s are identical\n
+UXCORE_ABI_344:%s: File exists\n
+UXCORE_ABI_345:%s: overwrite %s? 
+UXCORE_ABI_346:%s: Existing %s: %o mode. Remove (y/n)? 
+UXCORE_ABI_347:%s/%s: Name too long\n
+UXCORE_ABI_348:Usage: %s%s f1 f2\n                      %s%s f1 ... fn d1\n
+UXCORE_ABI_349:                      mv [-f] [-i] d1 d2\n
+UXCORE_ABI_350:                      ln [-f] [-n] [-s] d1 d2\n
+UXCORE_ABI_351:                      cp [-i] [-p] [-r] d1 d2\n
+PASSWORD:Password:
+SORRY:Sorry\n
+UXCORE_ABI_354:Permission denied\n
+NO_SHELL:No shell\n
+UXCORE_ABI_356:Invalid argument to option -%c\n
+UXCORE_ABI_357:Invalid combination of options\n
+UXCORE_ABI_358:Unexpected failure. Password file unchanged.\n
+UXCORE_ABI_359:Unexpected failure. Password file missing.\n
+UXCORE_ABI_360:Password file(s) busy.\n
+UXCORE_ABI_361:Password aging is disabled\n
+UXCORE_ABI_362:Usage: passwd [-s] [name]\n
+UXCORE_ABI_363:Usage:\n\tpasswd [name]\n\tpasswd  [-l|-d]  [-n min] [-f] [-x max] [-w warn] name\n\tpasswd -s [-a]\n\tpasswd -s [name]\n
+UXCORE_ABI_364:Try again later.\n
+UXCORE_ABI_365:Bad entry found in the password file.\n
+UXCORE_ABI_366:Changing password for %s\n
+UXCORE_ABI_367:%s does not exist\n
+UXCORE_ABI_368:Too many failures\n
+UXCORE_ABI_369:New password:
+UXCORE_ABI_370:Password is too short - must be at least 6 characters\n
+UXCORE_ABI_371:Password cannot be circular shift of logonid\n
+UXCORE_ABI_372:Password must contain at least two alphabetic characters\n\tand at least one numeric or special character.\n
+UXCORE_ABI_373:Passwords must differ by at least 3 positions\n
+UXCORE_ABI_374:Re-enter new  password:
+UXCORE_ABI_375:Too many tries\n
+UXCORE_ABI_376:They don't match\n
+UXCORE_ABI_377:Try again.\n
+UXCORE_ABI_378:Old password:
+UXCORE_ABI_379:Sorry: < %ld days since the last change\n
+UXCORE_ABI_380:You may not change this password\n
+UXCORE_ABI_381:Usage:\n\tlfmt [-c] [-f flags] [-l label] [-s sev] [-g cat:msgid] format [args]\n
+UXCORE_ABI_382:Usage:\n\tpfmt [-l label] [-s severity] [-g cat:msgid] format [args]\n
+UXCORE_ABI_383:Invalid flag\n
+UXCORE_ABI_384:Valid flags are: soft, hard, firm, util, appl and opsys\n
+UXCORE_ABI_385:Can only specify one label\n
+UXCORE_ABI_386:Label too long. Maximum is %d characters\n
+UXCORE_ABI_387:Can only specify one severity\n
+UXCORE_ABI_388:Cannot add user-defined severity\n
+UXCORE_ABI_389:Can only specify one message identifier\n
+PG_USAGE:Usage:\n\tpg [-number] [-p string] [-cefnrs] [+line] [+/pattern/] files\n
+PG_PATTERN_TOO_LONG:Pattern too long\n
+PG_PROMPT_TOO_LONG:Prompt too long\n
+PG_SKIPPING_BACKWARD:...skipping backward\n
+PG_SKIPPING_FORWARD:...skipping forward\n
+PG_EOF:(EOF)
+PG_CANNOT_OPEN:Cannot open %s: %s
+PG_SAVE_FILE:saving file 
+PG_SAVED:saved
+PG_RESTRICTED_MODE:!command not allowed in restricted mode.\n
+PG_FORK_FAILED:fork() failed, try again later
+PG_HELP_HELP:  h                     help\n
+PG_HELP_QUIT:  q or Q                quit\n
+PG_HELP_NXT_PAGE:  <blank> or <newline>  next page\n
+PG_HELP_NXT_LINE:  l                     next line\n
+PG_HELP_HALF_PAGE:  d or <^D>             display half a page more\n
+PG_HELP_REDISPLAY:  . or <^L>             redisplay current page\n
+PG_HELP_SKIP_PAGE:  f                     skip the next page forward\n
+PG_HELP_NEXT_FILE:  n                     next file\n
+PG_HELP_PREVIOUS_FILE:  p                     previous file\n
+PG_HELP_LAST_PAGE:  $                     last page\n
+PG_HELP_WIN_SIZE:  w or z                set window size and display next page\n
+PG_HELP_SAVE_FILE:  s savefile            save current file in savefile\n
+PG_HELP_PATTERN1:  /pattern/             search forward for pattern\n
+PG_HELP_PATTERN2:  ?pattern? or\n
+PG_HELP_PATTERN3:  ^pattern^             search backward for pattern\n
+PG_HELP_COMMAND:  !command              execute command\n
+PG_HELP_STATEMENT1:Most commands can be preceeded by a number, as in:\n
+PG_HELP_STATEMENT2:+1<newline> (next page,stdout); -1<newline> (previous page); 1<newline> (page 1).\n
+PG_HELP_STATEMENT3:See the manual page for more detail.\n
+NO_PREVIOUS_FILE:No previous file
+NO_NEXT_FILE:No next file
+IS_DIR:%s is a directory\n
+SPL_FILE:Special files only handled as standard input\n
+CANNOT_CREATE_TMP:Cannot create temp file: %s\n
+CANNOT_WRITE_TMP:Cannot get temp file for writing: %s\n
+CANNOT_READ_TMP:Cannot get temp file for reading: %s\n
+PATTRN_NOT_FND:Pattern not found
+PIPED_INPUT:Piped input only partially saved
+PG_OUT_MEM:Out of memory - line %d\n
+CANNOT_STDOUT:Cannot reopen stdout: %s\n
+PG_NXT_FILE:(Next file: 
+UXCORE_ABI_432:rm: Directory %s. Remove (y/n)? 
+RM_USAGE:Usage: rm [-fir] file ...\n
+UXCORE_ABI_434:rm: File %s. Remove (y/n)? 
+UXCORE_ABI_435:rm: %s: %o mode. Remove (y/n)? 
+NOT_RMVD:%s not removed: %s.\n
+NOT_RMVD_DIR:%s not removed: directory\n
+PATH_TOO_LONG:Path too long (%d/%d).\n
+CANT_RM_DIR_IN_PATH:Cannot remove any directory in the path\n\tof the current working directory\n\t%s\n
+CANT_RM_DIR:Cannot remove directory %s: %s\n
+UXCORE_ABI_441:setuid() failed: %s\n
+UXCORE_ABI_442:Usage: rmdir [-ps] dirname ...\n
+UXCORE_ABI_443:%s: Whole path removed.\n
+UXCORE_ABI_444:Cannot remove . or ..
+UXCORE_ABI_445:Cannot remove current directory
+UXCORE_ABI_446:%s: %s not removed: %s\n
+UXCORE_ABI_447:Path component not a directory
+UXCORE_ABI_448:Directory does not exist
+UXCORE_ABI_449:Search or write permission needed
+UXCORE_ABI_450:Directory is a mount point or in use
+UXCORE_ABI_451:I/O error accessing file system
+UXCORE_ABI_452:Cannot remove current directory or ..
+UXCORE_ABI_453:Command garbled: %s\n
+UXCORE_ABI_454:Too much text: %s\n
+UXCORE_ABI_455:Label too long: %s\n
+UXCORE_ABI_456:No addresses allowed: %s\n
+UXCORE_ABI_457:Only one address allowed: %s\n
+UXCORE_ABI_458:Suffix too large - 512 max: %s\n
+UXCORE_ABI_459:Too many labels: %s\n
+UXCORE_ABI_460:Cannot open pattern-file %s: %s\n
+UXCORE_ABI_461:Too many {'s\n
+UXCORE_ABI_462:First RE may not be null\n
+UXCORE_ABI_463:Unrecognized command: %s\n
+UXCORE_ABI_464:Too many commands: %s\n
+UXCORE_ABI_465:Too many }'s\n
+UXCORE_ABI_466:Duplicate labels: %s\n
+UXCORE_ABI_467:Too many files in w commands\n
+UXCORE_ABI_468:Too many commands, last: %s\n
+SORT_LONG_LINE:Line too long\n
+UXCORE_ABI_470:Too many line numbers\n
+UXCORE_ABI_471:Undefined label: %s\n
+UXCORE_ABI_472:Output line too long\n
+UXCORE_ABI_473:Too many appends after line %ld\n
+UXCORE_ABI_474:Hold space overflow !\n
+UXCORE_ABI_475:Too many reads after line%ld\n
+TEST_SQ_BRACKET_MISSING:] missing\n
+TEST_ARG_EXPECTED:Argument expected\n
+TEST_ROUND_BRC_EXPECTED:) expected\n
+UXCORE_ABI_479:Unknown builtin\n
+UXCORE_ABI_480:hits	cost	command\n
+UXCORE_ABI_481: is a shell builtin\n
+UXCORE_ABI_482: is a function\n
+UXCORE_ABI_483: not found\n
+UXCORE_ABI_484: is hashed (
+UXCORE_ABI_485: is 
+UXCORE_ABI_486:Bad option(s)
+UXCORE_ABI_487:You have mail\n
+UXCORE_ABI_488:Bad signal
+UXCORE_ABI_489:Invalid ID
+UXCORE_ABI_490:Parameter null or not set
+UXCORE_ABI_491:Parameter not set
+UXCORE_ABI_492:Bad substitution
+UXCORE_ABI_493:Cannot create
+UXCORE_ABI_494:fork() failed: too many processes
+UXCORE_ABI_495:fork() failed: no swap space
+UXCORE_ABI_496:Restricted
+UXCORE_ABI_497:Cannot make pipe
+UXCORE_ABI_498:Cannot open
+UXCORE_ABI_499: - core dumped
+UXCORE_ABI_500:Text busy
+UXCORE_ABI_501:Too big
+UXCORE_ABI_502:Cannot execute
+UXCORE_ABI_503:Not found
+UXCORE_ABI_504:Cannot shift
+UXCORE_ABI_505:Bad directory
+UXCORE_ABI_506:Bad trap
+UXCORE_ABI_507:is read only
+UXCORE_ABI_508:is not an identifier
+UXCORE_ABI_509:Bad ulimit
+UXCORE_ABI_510:No such resource
+UXCORE_ABI_511:Cannot return when not in function
+UXCORE_ABI_512:Cannot export functions
+UXCORE_ABI_513:Cannot unset
+UXCORE_ABI_514:No home directory
+UXCORE_ABI_515:Execute permission denied
+UXCORE_ABI_516:Pwd too long
+UXCORE_ABI_517:Missing arguments
+UXCORE_ABI_518:Cannot access a needed shared library
+UXCORE_ABI_519:Attempting to link in too many libs
+UXCORE_ABI_520:Null directory
+UXCORE_ABI_521:Does not exist
+UXCORE_ABI_522:Remote link inactive
+UXCORE_ABI_523:Bad scaling
+UXCORE_ABI_524:Done
+UXCORE_ABI_525:Running
+UXCORE_ABI_526:Ambiguous
+UXCORE_ABI_527:Usage: %s\n
+UXCORE_ABI_528:No job control
+UXCORE_ABI_529:stop id ...
+UXCORE_ABI_530:ulimit [ -HSacdfnstv ] [ limit ]
+UXCORE_ABI_531:kill [ [ -sig ] id ... | -l ]
+UXCORE_ABI_532:jobs [ [ -l | -p ] [ id ... ] | -x cmd ]
+UXCORE_ABI_533:No such job
+UXCORE_ABI_534:No such process group
+UXCORE_ABI_535:No current job
+UXCORE_ABI_536:There are stopped jobs
+UXCORE_ABI_537:There are running jobs
+UXCORE_ABI_538:Cannot stop login shell
+TEST_UNKNOWN_OP:Unknown operator: %s\n
+UXCORE_ABI_540:end of file
+UXCORE_ABI_541: unexpected
+UXCORE_ABI_542: at line 
+UXCORE_ABI_543:export
+UXCORE_ABI_544:Cannot dup
+UXCORE_ABI_545:readonly
+UXCORE_ABI_546:time
+UXCORE_ABI_547:seconds
+UXCORE_ABI_548:file
+UXCORE_ABI_549:blocks
+UXCORE_ABI_550:data
+UXCORE_ABI_551:kbytes
+UXCORE_ABI_552:stack
+UXCORE_ABI_553:coredump
+UXCORE_ABI_554:nofiles
+UXCORE_ABI_555:descriptors
+UXCORE_ABI_556:memory
+UXCORE_ABI_557:unlimited
+UXCORE_ABI_558:newline or ;
+UXCORE_ABI_559:Signal 
+UXCORE_ABI_560:(wd: 
+UXCORE_ABI_561:h
+UXCORE_ABI_562:m
+UXCORE_ABI_563:s
+SLEEP_USAGE:Usage: sleep time\n
+BAD_CHARACTER_IN_ARGUMENT:Bad character in argument\n
+SORT_NEWLINE_ADDED_END_FILE:Missing NEWLINE added at end of file\n
+SORT_CANNOT_IDENTIFY:Cannot identify output file\n
+SORT_LONG_PATH:Path name too long: %s\n
+SORT_MANY_KEYS:Too many keys\n
+SORT_CAN_CHECK_ONE:Can check only 1 file\n
+SORT_NOMEM_BEFORE_SORT:Out of memory before sort: %s\n
+SORT_CANNOT_LOCATE_TEMP_FILE:Cannot locate temporary file: %s\n
+SORT_NOMEM_BEFORE_MERGE:Out of memory before merge: %s\n
+SORT_NEWLINE_ADDED_INPUT_FILE:Missing NEWLINE added at end of input file %s\n
+SORT_LARGE_RECORD:Record too large\n
+SORT_DISORDER:disorder: %s\n
+SORT_NON_UNIQUE:non-unique: %s\n
+SORT_STDIN_READ_ERROR:Read error on stdin: %s\n
+SORT_SORTING_WRITE_ERROR:Write error while sorting: %s\n
+SORT_MERGING_WRITE_ERROR:Write error while merging: %s\n
+UXCORE_ABI_581:Invalid user id\n
+UXCORE_ABI_582:Usage: tee [ -i ] [ -a ] [file ] ...\n
+TOUCH_USAGE_OB:Usage: %s [%s] [mmddhhmm[yy]] file ...\n
+F_USAGE_ID:-f file
+BAD_DATE_CONV:Bad date conversion\n
+CANT_CHNG_TIME_ON:Cannot change times on %s: %s\n
+UXCORE_ABI_587:Bad string\n
+UXCORE_ABI_588:Usage: stty [-ag] [modes]\n
+UXCORE_ABI_589:Unknown mode: %s\n
+UXCORE_ABI_590:User not privileged for operation.\n
+UXCORE_ABI_591:%s version number is incorrect or missing.\n
+UXCORE_ABI_592:Error accessing temp file.\n
+UXCORE_ABI_593:nextlabel <%s> of <%s> does not reference any existing ttylabel.\n
+UXCORE_ABI_594:ttylabel <%s> not found.\n
+UXCORE_ABI_595:Invalid argument -- %s.\n
+UXCORE_ABI_596:String too long, truncated to %s.\n
+UXCORE_ABI_597:Usage:\n\tsttydefs -a ttylabel [-n nextlabel] [-i initial-flags]\n\t\t [-f final-flags] [-b]\n
+UXCORE_ABI_598:\tsttydefs -r ttylabel\n
+UXCORE_ABI_599:\tsttydefs -l [ttylabel]\n
+UXCORE_ABI_600:Invalid request -- ttylabel <%s> already exists.\n
+UXCORE_ABI_601:Invalid request -- ttylabel <%s> does not exist.\n
+UXCORE_ABI_602:%s failed: %s\n
+UXCORE_ABI_603:Tempfile busy\n
+UXCORE_ABI_604:autobaud: Read error: %s
+UXCORE_ABI_605:%s: poll() failed: %s
+UXCORE_ABI_606:Set final termio failed
+UXCORE_ABI_607:Speed of <%s> may be not supported by the system
+UXCORE_ABI_608:openline: turnon_canon() failed
+UXCORE_ABI_609:%s's next speed-label (%s) is bad.
+UXCORE_ABI_610:Unable to find (%s) again
+UXCORE_ABI_611:Cannot expand service <%s> environment
+UXCORE_ABI_612:Cannot allocate controlling tty on \"%s\",\n
+UXCORE_ABI_613:           there may be another session active on this port.\n
+UXCORE_ABI_614:invoke_service: account() failed
+UXCORE_ABI_615:system error
+UXCORE_ABI_616:doconfig() failed on line %d of script %s
+UXCORE_ABI_617:Cannot set group id to %ld: %s
+UXCORE_ABI_618:Cannot set user id to %ld: %s
+UXCORE_ABI_619:Cannot change directory to \"%s\" directory: %s
+UXCORE_ABI_620:Starting service (%s) on %s
+UXCORE_ABI_621:tmchild: Cannot execute %s: %s
+UXCORE_ABI_622:ttymon_express: ALLOC_PMTAB failed
+UXCORE_ABI_623:ttymon_express: parse_args() failed
+UXCORE_ABI_624:ttyname cannot find the device on fd 0
+UXCORE_ABI_625:Invalid argument for \"-t\" -- number expected.
+UXCORE_ABI_626:Usage: ttymon\n  ttymon -g [-h] [-d device] [-l ttylabel] [-t timeout] [-p prompt] [-m modules]\n
+UXCORE_ABI_627:Timeout argument <%s> invalid
+UXCORE_ABI_628:Use \"sttydefs -l\" to check /etc/ttydefs.
+UXCORE_ABI_629:No terminal line specified.
+UXCORE_ABI_630:tmchild() for <%s> returns unexpectedly
+UXCORE_ABI_631:do_poll: Cannot find fd %d in pmtab
+UXCORE_ABI_632:Caught SIGTERM
+UXCORE_ABI_633:Not enough memory for Pollp: %s
+UXCORE_ABI_634:mark_service: Cannot find child (%ld) in pmtab
+UXCORE_ABI_635:Read error on PCpipe: %s
+UXCORE_ABI_636:read() returns incorrect size, ret = %d
+UXCORE_ABI_637:********** ttymon starting **********
+UXCORE_ABI_638:%a %b %e %H:%M:%S %Y
+UXCORE_ABI_639:********** ttymon exiting ***********
+UXCORE_ABI_640:POLLHUP received, about to exit
+UXCORE_ABI_641:Check pmtab version failed
+UXCORE_ABI_642:Entry too long.
+UXCORE_ABI_643:Out of memory: %s
+UXCORE_ABI_644:wait_read() count must be a positive number
+UXCORE_ABI_645:Timeout value must be a positive number
+UXCORE_ABI_646:Cannot add more entries to pmtab, Maxfds = %d
+UXCORE_ABI_647:Parsing failure for entry: \n%s
+UXCORE_ABI_648:Parsing failure in the \"%s\" field,\n%s<--error detected here
+UXCORE_ABI_649:Invalid flag -- %c
+UXCORE_ABI_650:Invalid ttyflag -- %c
+UXCORE_ABI_651:Ignoring duplicate entry for <%s>
+UXCORE_ABI_652:pmtab ptr is NULL
+UXCORE_ABI_653:Port/service tag is missing
+UXCORE_ABI_654:Port/service tag <%s> is longer than %d
+UXCORE_ABI_655:Port/service tag <%s> is not alphanumeric
+UXCORE_ABI_656:Identity field is missing
+UXCORE_ABI_657:no group entry for %ld
+UXCORE_ABI_658:Pid file is locked. ttymon may already be running!
+UXCORE_ABI_659:Lock pid file failed: %s
+UXCORE_ABI_660:PMTAG is missing
+UXCORE_ABI_661:ISTATE is missing
+UXCORE_ABI_662:Read error on pmpipe: %s
+UXCORE_ABI_663:Got %s message
+UXCORE_ABI_664:Got unknown message
+UXCORE_ABI_665:Sanity response to SAC failed: %s
+UXCORE_ABI_666:set_termio: get_ttymode() failed: %s
+UXCORE_ABI_667:sttyparse: Unknown mode: %s
+UXCORE_ABI_668:set_termio: set_ttymode() failed: %s
+UXCORE_ABI_669:push (%s) on %s failed: %s
+UXCORE_ABI_670:Initial termio on (%s) failed
+UXCORE_ABI_671:ttylabel:\t%s
+UXCORE_ABI_672:Initial flags:\t%s
+UXCORE_ABI_673:Final flags:\t%s
+UXCORE_ABI_674:autobaud:\tyes
+UXCORE_ABI_675:autobaud:\tno
+UXCORE_ABI_676:nextlabel:\t%s
+UXCORE_ABI_677:Cannot add more entries to ttydefs table, Maximum entries = %d
+UXCORE_ABI_678:Parsing failure in the \"%s\" field\n%s<--error detected here\n
+UXCORE_ABI_679:Invalid mode: %s
+UXCORE_ABI_680:Duplicate entry <%s>, ignored
+UXCORE_ABI_681:strsave: Out of memory: %s
+UXCORE_ABI_682:Cannot access %s: %s
+UXCORE_ABI_683:Device field is missing
+UXCORE_ABI_684:Must specify full path name for \"%s\".
+UXCORE_ABI_685:\"%s\" not character special device
+UXCORE_ABI_686:Device \"%s\" does not exist
+UXCORE_ABI_687:Server command is missing
+UXCORE_ABI_688:\"%s\" not executable\n
+UXCORE_ABI_689:\"%s\" not a regular file
+UXCORE_ABI_690:\"%s\" does not exist
+UXCORE_ABI_691:Too many modules in <%s>
+UXCORE_ABI_692:Cannot validate module list, /dev/sad/user busy
+UXCORE_ABI_693:Validate modules ioctl failed, modules = <%s>: %s
+UXCORE_ABI_694:Invalid STREAMS module list <%s>.
+UXCORE_ABI_695:makeut() for pid %d failed
+UXCORE_ABI_696:Modify utmp failed\n
+UXCORE_ABI_697:Invalid argument for \"-%c\" -- positive number expected.\n
+UXCORE_ABI_698:Usage:\n\tttyadm [ options ] -d device -s service -l ttylabel\n
+UXCORE_ABI_699:\tttyadm -V\n
+UXCORE_ABI_700:\n\tValid options are:\n
+UXCORE_ABI_701:\t-c\n
+UXCORE_ABI_702:\t-h\n
+UXCORE_ABI_703:\t-b\n
+UXCORE_ABI_704:\t-r count\n
+UXCORE_ABI_705:\t-t timeout\n
+UXCORE_ABI_706:\t-p prompt\n
+UXCORE_ABI_707:\t-m modules\n
+UXCORE_ABI_708:\t-i msg\n
+UXCORE_ABI_709:ttylabel is missing\n
+UXCORE_ABI_710:\"%s\" does not exist, cannot verify ttylabel <%s>\n
+UXCORE_ABI_711:Cannot find ttylabel <%s> in \"%s\"\n
+UXCORE_ABI_712:%s: ioctl() %s failed: %s
+UXCORE_ABI_713:%s: ioctl() %s failed, fd = %d: %s
+UXCORE_ABI_714:fcntl() %s failed: %s
+UXCORE_ABI_715:%s failed: %s
+UXCORE_ABI_716:PMTAG:\t\t %s
+UXCORE_ABI_717:Starting state: %s
+UXCORE_ABI_718:enabled
+UXCORE_ABI_719:disabled
+UXCORE_ABI_720:ioctl() I_SETSIG on pmpipe failed: %s
+UXCORE_ABI_721:Max open files\t = %d
+UXCORE_ABI_722:Max ports ttymon can monitor = %d
+UXCORE_ABI_723:Check /etc/ttydefs version failed
+UXCORE_ABI_724:No group entry for <tty>, default is used
+UXCORE_ABI_725:Initialization Completed
+UXCORE_ABI_726:Service <%s> is respawning too rapidly
+UXCORE_ABI_727:Active session exists on <%s>
+UXCORE_ABI_728:Unable to find <%s> in \"%s\"
+UXCORE_ABI_729:Not super user\n
+NAME_N_LETTERS:Name must be <= %d letters\n
+SYSINFO_FAILED:Sysinfo failed: %s\n
+UXCORE_ABI_732:Usage:\n\tuname [-snrvmap]\n\tuname [-S system name]\n
+UXCORE_ABI_733:Usage:  uname [-snrvmap]\n
+UXCORE_ABI_734:%b %e %H:%M
+USERS_PER_LINE:Number of users per line must be at least 1\n
+UXCORE_ABI_736:Usage:\t [-abdHlnpqrstTu] [am i] [utmp_like_file]\n
+WHO_A_OPT:a\tall (Abdlprtu options)\n
+WHO_B_OPT:b\tboot time\n
+WHO_D_OPT:d\tdead processes\n
+WHO_H_OPT:H\tprint header\n
+WHO_L_OPT:l\tlogin processes\n
+WHO_N_OPT:n #\tspecify number of users per line for -q\n
+WHO_P_OPT:p\tprocesses other than getty or users\n
+WHO_Q_OPT:q\tquick %s\n
+WHO_R_OPT:r\trun level\n
+WHO_S_OPT:s\tshort form of %s (no time since last output or pid)\n
+WHO_TIME_OPT:t\ttime changes\n
+WHO_TTY_OPT:T\tstatus of tty (+ writable, - not writable, ? hung)\n
+WHO_U_OPT:u\tuseful information\n
+WHO_AM_I_OPTION:Must be attached to a terminal for the 'am I' option\n
+WHO_HEADING:NAME       LINE         TIME          IDLE    PID  COMMENTS\n
+WHO_CANNOT_ALLOC:Cannot allocate %d bytes: %s\n
+WHO_NAME_LINE_TIME:NAME       LINE         TIME\n
+WHO_NO_OF_USERS:\n# users=%d\n
+WHO_HR_FMT: %2d:%2.2d
+WHO_OLD:  old 
+WHO_ID_TERM_EXIT_FMT:  id=%4.4s term=%-3d exit=%d
+WHO_ID_FMT: id=%4.4s
+WHO_UT_TYPE:Entry has ut_type of %d when maximum is %d\n
+WHO_NOT_UTMP_FILE:File '%s' is not a utmp file\n
+UXCORE_ABI_761:Not enough memory (%d)\n
+UXCORE_ABI_762:Use a smaller '%s' size\n
+UXCORE_ABI_763:Use a smaller buffer size\n
+UXCORE_ABI_764:Usage:\ndf [-F FSType] [-begklntVv] [current_options] [-o specific_options] [directory | special ...]\n
+UXCORE_ABI_765:Mount Dir  Filesystem         blocks      used      free  %%used\n
+UXCORE_ABI_766:%-10.10s %-15.15s %9ld %9ld %9ld %4d%%\n
+UXCORE_ABI_767:+1<newline> (next page); -1<newline> (previous page); 1<newline> (page 1).\n
+UXCORE_ABI_768:System name: 
+UXCORE_ABI_769:Cannot create %s: %s
+UXCORE_ABI_770:Usage: cmp [-l] [-s] filename1 filename2 [skip] [skip]\n
+UXCORE_ABI_771:%d errors
+UXCORE_ABI_772:Cannot rename %s
+UXCORE_ABI_773:\"%s\" has disappeared
+UXCORE_ABI_774:Cannot get level of \"%s\"
+UXCORE_ABI_775:Cannot get level of process
+UXCORE_ABI_776:Cannot restore level of process
+UXCORE_ABI_777:Not enough memory to get ACL for \"%s\"
+UXCORE_ABI_778:Usage:\n\tdate [-u] [+format]\n\tdate [-u] [[mmdd] HHMM | mmddHHMM[[cc]yy]] \n\tdate [-a [-]sss.fff]\n
+UXCORE_ABI_779:%s:Cannot allocate space\n
+UXCORE_ABI_780:SAK database is not accessible\n
+UXCORE_ABI_781:parsing error has occurred\n
+UXCORE_ABI_782:%s is not defined in SAK database\n
+UXCORE_ABI_783:%s: %s +%s\n
+UXCORE_ABI_784:SAK disabled for \"%s\" -- terminal is no longer secure\n
+UXCORE_ABI_785:Cannot create pipe: %s\n
+UXCORE_ABI_786:Cannot dup: %s\n
+UXCORE_ABI_787:Cannot fork: %s\n
+UXCORE_ABI_788:exec of %s failed: %s\n
+UXCORE_ABI_789:waitid failed: %s\n
+UXCORE_ABI_790:\n\tdefsak -d SAK [-x] path [...]\n\tdefsak -d none path [...]\n\tdefsak -r path [...]\n\tdefsak [path ...]\n
+UXCORE_ABI_791:incorrect usage:\n
+UXCORE_ABI_792:Illegal operator: \"%s\"\n
+UXCORE_ABI_793:Invalid level name \"%s\"\n
+UXCORE_ABI_794:System service not installed\n
+UXCORE_ABI_795:Invalid argument\n
+UXCORE_ABI_796:Invalid level identifier \"%s\"\n
+UXCORE_ABI_797:Cannot get level of file \"%s\"\n
+UXCORE_ABI_798:Level compare failed on operation: %s\n
+UXCORE_ABI_799:Usage:\ndf [-F FSType] [-begklntVv] [current_options] [-o specific_options] [directory | special | resource...]\n
+UXCORE_ABI_800:Mount Dir  Filesystem           blocks      used	free  %%used\n
+UXCORE_ABI_801:%-10.10s %-17.17s %9ld %9ld %9ld %4d%%\n
+UXCORE_ABI_802:%7u total blocks%7u free blocks%7u available   %7d total files\n
+UXCORE_ABI_803:%7d free files  %7u filesys id %32s \n
+UXCORE_ABI_804:%7s fstype   0x%8.8X flag       %7d filename length\n\n
+LS_USAGE:Usage: %s %s [files]\n
+LS_MUEXL_MSG:-%c and -%c are mutually exclusive\n
+UXCORE_ABI_807:Cannot translate level to text format for file %s\n
+UXCORE_ABI_808:cannot create multilevel directories\n
+UXCORE_ABI_809:File system for file %s does not support per-file labels\n
+UXCORE_ABI_810:Usage: mkdir [-m mode] [-p] [-M] [-l level] dirname ...\n
+UXCORE_ABI_811:specified level is not defined\n
+UXCORE_ABI_812:LTDB is inaccessible\n
+UXCORE_ABI_813:Cannot translate level: %s\n
+UXCORE_ABI_814:Not enough memory to get ACL for %s\n
+UXCORE_ABI_815:Unexpected failure. Password file(s) unchanged.\n
+UXCORE_ABI_816:Unexpected failure. Password file(s) missing.\n
+UXCORE_ABI_817:Unexpected failure.\n
+UXCORE_ABI_818:Unknown logname: %s\n
+UXCORE_ABI_819:Password may only be changed at login time\n
+UXCORE_ABI_820:Must select an offered value\n
+UXCORE_ABI_821:Select a password from the following:\n\n
+UXCORE_ABI_822:Re-enter new password:
+UXCORE_ABI_823:virtual
+UXCORE_ABI_824:real
+UXCORE_ABI_825:Cannot retrieve process privileges
+UXCORE_ABI_826:Cannot restore process privileges
+UXCORE_ABI_827:Cannot turn on privilege
+UXCORE_ABI_828:Cannot turn off privilege
+UXCORE_ABI_829:Unrecognized privilege set name
+UXCORE_ABI_830:Unrecognized privilege name
+UXCORE_ABI_831:No privilege set specified
+UXCORE_ABI_832:System does not support privilege!
+UXCORE_ABI_833:mldmode [-r | -v] [cmd]
+UXCORE_ABI_834:Cannot set multilevel mode
+UXCORE_ABI_835:Cannot obtain multilevel mode
+UXCORE_ABI_836:System service not installed
+UXCORE_ABI_837:Invalid combination of options -r & -v.
+UXCORE_ABI_838:multilevel mode=
+UXCORE_ABI_839:Arg list or environment too large
+SORT_CANNOT_CHANGE_MODE:Cannot change mode for file %s: %s\n
+INVALID_GID:Invalid GID\n
+INVALID_SUP_GID:Invalid supplementary GIDs\n
+INVALID_UID:Invalid UID\n
+UXCORE_ABI_844:could not set level on %s: %s\n
+UXCORE_ABI_845:could not set attributes on %s: %s\n
+UXCORE_ABI_846:set_id(%s) failed: %s
+UXCORE_ABI_847:Cannot invoke iascheme <%s>: %s
+UXCORE_ABI_848:Starting service (%s) on tp device %s muxed under tty device %s
+UXCORE_ABI_849:%s: ALLOC_PMTAB failed
+UXCORE_ABI_850:%s: parse_args() failed
+UXCORE_ABI_851:%s: %s could not SET to DEV_SYSTEM on %s: %s
+UXCORE_ABI_852:%s: %s could not change level %s: %s
+UXCORE_ABI_853:%s: devstat() could not SET security attrs on %s: %s
+UXCORE_ABI_854:Usage: ttymon\n\tttymon -g [-h] [-d device] [-l ttylabel] [-t timeout] [-p prompt] [-m modules]\n\t\t[ -k SPECSAKtype | -k SAKtype -K SAK [-x] ]\n
+UXCORE_ABI_855:Usage: ttymon\n\tttymon -g [-h] [-d device] [-l ttylabel] [-t timeout] [-p prompt] [-m modules]\n
+UXCORE_ABI_856:%s: %s
+UXCORE_ABI_857:%s: tpctrl_termio() failed on ctrl channel for (%s)
+UXCORE_ABI_858:%s: getmsg() failed (%s) realdev = %s
+UXCORE_ABI_859:%s: %s: %s
+UXCORE_ABI_860:%s: no data connection id for fid %d
+UXCORE_ABI_861:%s: invalid tp protocol type = %d
+UXCORE_ABI_862:%s:tp: invalid poll type %d 
+UXCORE_ABI_863:%s: Cannot find fd %d in pmtab
+UXCORE_ABI_864:%s: %s, %s\n
+UXCORE_ABI_865:%s: Cannot find child (%ld) in pmtab
+UXCORE_ABI_866:%s; %ld; 
+UXCORE_ABI_867:identity and scheme fields are missing
+UXCORE_ABI_868:%s: get_ttymode failed: %s
+UXCORE_ABI_869:%s: sttyparse unknown mode: %s
+UXCORE_ABI_870:%s: set_ttymode failed: %s
+UXCORE_ABI_871:Entry too long
+UXCORE_ABI_872:\"%s\" is an invalid SAK definition for SAK type '%c'
+UXCORE_ABI_873:\"%s\" is an invalid SAK type
+UXCORE_ABI_874:\t-k SPECSAKtype\n
+UXCORE_ABI_875:\t-k SAKtype -K SAK [-x]\n
+UXCORE_ABI_876:%s: opening data channel failed for (%s)
+UXCORE_ABI_877:%s: could not GET security attrs of %s from DDB\n
+UXCORE_ABI_878:%s: %s could not SET level on %s: %s
+UXCORE_ABI_879:%s: %s\nTP setup failed: %s
+UXCORE_ABI_880:%s: fcntl() F_SETFD failed: %s
+UXCORE_ABI_881:%s\n\topen (%s) failed on data channel: %s
+UXCORE_ABI_882:%s\n\t connect failed on data channel for (%s): %s
+UXCORE_ABI_883:%s\n\t for (%s): %s
+UXCORE_ABI_884:%s: Re-open of %s via its Device Special File failed: %s
+UXCORE_ABI_885:%s: dup of file descriptor opened on %s via its Device Special File failed: %s
+UXCORE_ABI_886:%s: could not GET security attrs of %s from DDB for TP device %s
+UXCORE_ABI_887:%s: I_PUNLINK failed on real device %s: %s
+USING_INIT_BASE:Using /etc/conf/cf.d/init.base instead\n\n
+WHO_USAGE_MSG:Usage:\t%s [-abdHlnpqrstTu] [am i] [utmp_like_file]\n
+UXCORE_ABI_890:Cannot retrieve file privileges
+UXCORE_ABI_891:Must be privileged for %s option
+CMP_USAGE:Usage: cmp [-l] [-s] filename1 filename2 [skip1] [skip2]\n
+UXCORE_ABI_893:mldmode [-r | -v] [string]
+UXCORE_ABI_894:%s:Out of memory: %s
+UXCORE_ABI_895:Encountered failure during modifing SAK database, Try Again\n
+UXCORE_ABI_896:The following devices may not have been modified as specified\n
+UXCORE_ABI_897:%s\n
+UXCORE_ABI_898:Password is too short - must be at least %d characters\n
+UXCORE_ABI_899:Cannot get ACL for parent directory for \"%s\"
+UXCORE_ABI_900:Secure Attention Key is disabled\n
+UXCORE_ABI_901:Invalid Secure Attention Specification in %s/%s for %s\n
+UXCORE_ABI_902:Cannot open %s/%s\n
+UXCORE_ABI_903:%s not found in %s/%s\n
+UXCORE_ABI_904:Parsing error in %s/%s for %s\n
+UXCORE_ABI_905:Cannot restore level of \"%s\"
+UXCORE_ABI_906:Cannot restore attributes of \"%s\"
+UXCORE_ABI_907:Cannot write to device
+UXCORE_ABI_908:Cannot read from device
+UXCORE_ABI_909:Cannot retrieve file privileges for \"%s\"
+UXCORE_ABI_910:Medium too small, try another
+UXCORE_ABI_911:Process not attached to terminal.  Cannot change medium
+UXCORE_ABI_912:%s skipped.
+UXCORE_ABI_913:Must specify -I with -i option.
+UXCORE_ABI_914:Must specify -O with -o option.
+UXCORE_ABI_915:Cannot access translation table file \"%s\"
+UXCORE_ABI_916:Specified level %s is invalid.
+UXCORE_ABI_917:-X: syntax
+UXCORE_ABI_918:-X: Low level '%s' is invalid.
+UXCORE_ABI_919:-X: High level '%s' is invalid.
+UXCORE_ABI_920:-X: High level \"%s\" does not dominate low level \"%s\".
+UXCORE_ABI_921:Impossible case: %s
+UXCORE_ABI_922:Corrupt header, files may be lost.
+UXCORE_ABI_923:%s file level not within archive level range. File not archived.
+UXCORE_ABI_924:Cannot count the ACL entries for \"%s\", skipping
+UXCORE_ABI_925:Too many ACLs for file \"%s\", skipping
+UXCORE_ABI_926:Cannot read ACLs of <%s>\n
+UXCORE_ABI_927:Cannot get host name
+UXCORE_ABI_928:Extra arguments at end
+UXCORE_ABI_929:\nUsage:
+UXCORE_ABI_930:\ttcpio -i -I file [-bdfkPrsStuvVx] [-C size] 
+UXCORE_ABI_931:[-E file]\n\t\t  [-M msg] 
+UXCORE_ABI_932:[-n num] [-N level] [-R ID] [-T file]\n
+UXCORE_ABI_933:\t\t  [-X lo,hi] [patterns]\n
+UXCORE_ABI_934:\ttcpio -o -O file [-aLvVx] [-C size] [-M msg] [-X lo,hi]\n
+UXCORE_ABI_935:File \"%s\" has no LID, skipping
+UXCORE_ABI_936:Bad value in security header for \"%s\", skipping
+UXCORE_ABI_937:Too many privileges for file \"%s\", skipping
+UXCORE_ABI_938:Misformed privileges for \"%s\", skipping.
+UXCORE_ABI_939:Read failure--check medium and try again
+UXCORE_ABI_940:Incomplete/misformed medium header
+UXCORE_ABI_941:Bad value in medium header
+UXCORE_ABI_942:Archive level range unbounded.
+UXCORE_ABI_943:Archive level range is (%d, %d), inclusive.
+UXCORE_ABI_944:Write failure--check medium and try again
+UXCORE_ABI_945:Cannot open DB \"%s\".
+UXCORE_ABI_946:Cannot seek DB \"%s\".
+UXCORE_ABI_947:Misformed DB file.
+UXCORE_ABI_948:the DB for Type Specifier \"%s\" cannot be accessed.
+UXCORE_ABI_949:Must be able to access the DB or the LOG file.
+UXCORE_ABI_950:Corrupt tcpio header.
+UXCORE_ABI_951:DB changed, but no data saved
+UXCORE_ABI_952:Wrong volume, expected %d, got %d
+UXCORE_ABI_953:Medium header of volume %d does not match previous medium header.
+UXCORE_ABI_954:Medium header of volume %d: wrong medium, host should be %s, is %s
+UXCORE_ABI_955:Read error in translation table at line #%d.
+UXCORE_ABI_956:Invalid translation table entry on line #%d, skipping to next entry.
+UXCORE_ABI_957:TTOCTT at line #%d: %s: no such ID, skipping to next entry.
+UXCORE_ABI_958:TTOCTT at line #%d: ID %s of type %s does not exist on archive, skipping to next entry.
+UXCORE_ABI_959:TTOCTT at line #%d: LID mapped twice, skipping to next entry.
+UXCORE_ABI_960:TTOCTT at line #%d: %s: no such name on archive (type %s), skipping to next entry.
+UXCORE_ABI_961:TTOCTT at line #%d: ID %s of type %s mapped twice, skipping to next entry.
+UXCORE_ABI_962:TTOCTT at line #%d: %s: field must be alphanumeric, skipping to next entry.
+UXCORE_ABI_963:TTOCTT at line #%d: %d: no such ID on archive (type %s), skipping to next entry.
+UXCORE_ABI_964:TTOCTT at line #%d: ID %s of type %s does not exist on system, skipping to next entry.
+UXCORE_ABI_965:TTOCTT at line #%d: %s: no such group, skipping to next entry.
+UXCORE_ABI_966:TTOCTT at line #%d: %s: field is too long, skipping to next entry.
+UXCORE_ABI_967:TTOCTT at line #%d: %d: illegal level, skipping to next entry.
+UXCORE_ABI_968:Internal hash table overflow.
+UXCORE_ABI_969:No information available on \"%s\"
+UXCORE_ABI_970:No information is available on ID %ld of type \"%s\"
+UXCORE_ABI_971:ID %d of type LI is invalid.
+UXCORE_ABI_972:ID %d of type LI is inactive.
+UXCORE_ABI_973:using invalid ID <%d> anyway.
+UXCORE_ABI_974:Invalid ID <%ld>, type <%s>
+UXCORE_ABI_975:Archive low level (%d) is invalid.
+UXCORE_ABI_976:Archive low level (%d) is inactive.
+UXCORE_ABI_977:Archive high level (%d) is invalid.
+UXCORE_ABI_978:Archive high level (%d) is inactive.
+UXCORE_ABI_979:Bad medium header
+UXCORE_ABI_980:System name %s does not match name %s in header
+UXCORE_ABI_981:Privilege header not found.  Privilege information unavailable.
+UXCORE_ABI_982:Set of definable privileges differ between archive and system.  \nUsing archive privilege set.
+UXCORE_ABI_983:Cannot access system privilege information.  No privilege information available.
+UXCORE_ABI_984:Cannot set ACL of \"%s\"
+UXCORE_ABI_985:Cannot set level of process
+UXCORE_ABI_986:Cannot create \"%s\" as an MLD, making regular directory.
+UXCORE_ABI_987:Usage:\trtcpio -i -I file [-bdfkPrsStuvVx] [-C size] [-E file]\n
+UXCORE_ABI_988:\t  [-M msg] [-n num] [-N level] [-R ID] [-T file]\n
+UXCORE_ABI_989:\t  [-X lo,hi] [patterns]\n
+UXCORE_ABI_990:\trtcpio -o -O file [-aLvVx] [-C size] [-M msg] [-X lo,hi]\n
+UXCORE_ABI_991:Invalid level, %s.\n
+UXCORE_ABI_992:-X option: range must be within %s,%s.\n
+UXCORE_ABI_993:Unexpected failure, master and index files unchanged\n
+UXCORE_ABI_994:missing or invalid entry in passwd/shadow file\n
+UXCORE_ABI_995:missing or invalid entry \"%s\" in /etc/security/ia/audit\n
+UXCORE_ABI_996:missing or invalid entry \"%s\" in /etc/security/ia/level\n
+UXCORE_ABI_997:/etc/security/ia/audit file missing\n
+UXCORE_ABI_998:Invalid command syntax\n
+UXCORE_ABI_999:Usage: creatiadb\n
+UXCORE_ABI_1000:could not log entry to ``%s''\n
+UXCORE_ABI_1001:A directory in the path could not be archived, \"%s\" skipped
+UXCORE_ABI_1002:Cannot set level of file \"%s\".
+UXCORE_ABI_1003:Cannot reopen file \"%s\" after setting level.
+UXCORE_ABI_1004:Time of archive creation, %s, is later than current time, %s
+UXCORE_ABI_1005:Specified level %s is inactive.
+UXCORE_ABI_1006:Descendants of directory \"%s\" will be silently skipped.
+UXCORE_ABI_1007:A directory in the path of %s could not be found in archive, skipping.
+UXCORE_ABI_1008:Corrupt security header for \"%s\", skipping
+UXCORE_ABI_1009:TTOCTT at line #%d: %s: no such ID type, skipping to next entry.
+UXCORE_ABI_1010:Invalid ID <%ld>, type <%s> for file \"%s\", skipping.
+UXCORE_ABI_1011:Level %d of file %s invalid, restoring at level of process.
+CPIO_HOLE_ERR:\"%s\" skipped due to error in processing information about holes
+CPIO_SKIP_SWAPF:\"%s\" skipped because it appears to be a swapfile
+CPIO_HOLE_MAP:\"%s\" skipped because holey file map too large. Use at least -C %u
+CPIO_SEEK_HOLE:\"%s\": lseek error skipping over hole
+CPIO_AUDIO_DRIVE:Warning: drive was in audio mode, turning audio mode off
+CPIO_TAPE_READ_ERR:Warning: unable to disable audio mode.  Tape may not be readable
+CPIO_BAD_FTYPE:Cannot backup sockets or unknown file types: \"%s\"
+UXCORE_ABI_1019:POSIX shell builtin - cannot execute
+#End
+INVALID_CAPABILITY:Invalid capability set \"%s\"\n
+INVALID_MACLBL:Invalid MAC label\n
+CMP_EOF:cmp:  EOF  on  %s\n
+SORT_KEYDEF:Need key definition\n
+SORT_FIELDSEP:Need field separator\n
+MBTOWC_ERR:Invalid multibyte character to wide character conversion \n
+SU_USER_NOT_CLEARED:SU|-|%s|user %s not cleared to su
+SU_INCORRECT_PASSWORD:SU|-|%s|Incorrect password for user %s
+SU_USER_SUCCEEDED:SU|+|%s|su to user %s succeeded
+MALLOC_FAILED:malloc failed. Program terminating\n
+SU_USAGE_MESSAGE:usage: su [-] [name] -M<label> -C<capability> [arg ...]\n
+INSUFFICIENT_PRIVILEGE:Running with insufficient privilege.\n
+CANT_RECOGNIZE:Can't figure out who you are.\n
+SU_USER_CHANGING:%s: %s changing from %s to %s
+SU_SUCCEEDED:succeeded
+SU_FAILED:failed
+INVALID_USERNAME:Invalid user name specified
+FOLD_USAGE:Usage: fold [-bs] [-w width] [file ...]\n
+UNAME_INVALID_INST_VER:`%ld': invalid inst version-number\n
+UNAME_UNDET_EXT_RELEASE:Unable to determined extended release name
+UNAME_USAGE_STRING:uname [-snrvmpadR]\n\tuname [-S system name]\n\tuname [-V INSTVERSIONNUM]
+UNAME_USAGE_FORMAT:Usage:\n\t%s\n
+UNAME_DO_ALPHAVERSION_NULL:!!??do_alphaversion: NULL release_str!\n
+UNAME_RELEASE_STR_LENGTH:!!??release_str len %d\n
+UNAME_MISSING_VER_NO:uname:  missing or invalid inst version-number in \"%s\"\n
+UNAME_DEVELOPER:developer
+UNAME_PROJECT:project
+UNAME_BUILD_GROUP:build group
+UNAME_NULL_OUTBUF_PTR:!!??version_info: NULL outbuf ptr\n
+UNAME_INVALID_VERS:invalid version # %ld (%d digits long)\n
+UNAME_MATCHED_FIELDS_NOT2:!!patrelnum/patfieldval scanf matched %d fields, not 2\n
+UNAME_MATCHED_FIELDS_NOT4:!!??major/alpha/bld/tree scanf matched %d fields not 4\n
+UNAME_PATCH_BASED_RELEASE:Patch %d based on release %d, %s (%ld)
+UNAME_INVALID_BUILDER:<invalid builder `%d'>
+UNAME_RELEASE_BY:Release %d, %s, by %s 
+UNAME_IN_TREE:in tree %d (%ld)
+UNAME_NULL_BUFP:!!ERROR, old_anums: NULL bufp (vnum %ld)\n
+UNAME_MATCHED_FIELDS_NOT4_OLD_ANUMS:!!ERROR, old_anums: scanf matched %d fields not 4\n
+UNAME_MAJOR_AND_MINOR:Major %d, minor %0.2d, 
+UNAME_MAINTENANCE_RELEASE:maintenance release %0.2d, 
+UNAME_ALPHA_VERSION:alpha %0.4d (%ld)
+UNAME_USAGE_I386_FORMAT:uname [-snrvmpa]\n\tuname [-S system name]
+DD_COULDNT_SEEK_OVER_FAILED:couldn't seek over failed read
+PG_DOTS_TO_FILE_ST:::::::::::::::\n
+PG_DOTS_TO_FILE_EN:\n::::::::::::::\n
+PG_EX_NEW_LINE:!\n
+PG_DASHES:-------------------------------------------------------\n
+EXPR_REG_EXPR:regular expression
+EXPR_ILLEGAL_CHAR_SEQ:Illegal character sequence
+EXPR_MALLOC_FAILURE:Malloc failed\n
+SU_STAT_FAILED:su: stat failed. Program terminating\n
+SU_SETREUID_FAILED:su: setreuid failed. Program terminating\n
+SU_SETREGID_FAILED:su: setregid failed. Program terminating\n
+SU_MAC_GET_PROC_FAILED:su: mac_get_proc failed. Program terminating\n
+SU_MAC_SET_PROC_FAILED:su: mac_set_proc failed. Program terminating\n
+SU_OPEN_SULOG_FAILED:su: open(SULOG) failed. Program terminating\n
+PASSWD_NOT_ACCEPTABLE:Sorry, your new password is not acceptable\n
+PASSWD_REUSED_OLD:Sorry, you have reused an old password\n
+CTAGS_USAGE:Usage: ctags [-BFatuwvx] [-f tagsfile] file ...\n
+CTAGS_TOOMANYTAGS:ctags: too many entries to sort\n
+CTAGS_DUPENTRY:Duplicate entry in file %s, line %d: %s\n
+CTAGS_ENTRYIGN:Second entry ignored\n
+CTAGS_DUPINFILES:Duplicate entry in files %s and %s: %s (Warning only)\n

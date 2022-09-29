@@ -1,0 +1,128 @@
+/*
+exception -- Include file for exception handling (see 18.6)
+*/
+#ifndef _CXX_EXCEPTION
+#define _CXX_EXCEPTION
+
+#ifdef __EXCEPTIONS
+/* __EXCEPTIONS is defined by the compiler if exceptions is supported. */
+#define THROW_NOTHING() throw()
+#else
+#define THROW_NOTHING() /* Nothing */
+#endif
+
+/* exception class is defined in the namespace "std" or in struct "std"
+   to prevent redefinition of a similarly named type in exception.h */
+#ifdef _NAMESPACES
+/* _NAMESPACES is defined by the compiler if namespaces is supported. */
+namespace std {
+#else
+struct std {
+#endif /* _NAMESPACES */
+
+  class exception {
+  public:
+    exception() THROW_NOTHING();
+    exception& operator=(const exception&) THROW_NOTHING();
+    virtual ~exception() THROW_NOTHING();
+    virtual const char* what() const THROW_NOTHING();
+  };
+#ifdef _NAMESPACES
+}  /* namespace std */
+#else
+};  /* struct std */
+#endif /* _NAMESPACES */
+
+#ifdef _NAMESPACES
+/* _NAMESPACES is defined by the compiler if namespaces is supported. */
+namespace std {
+#endif /* _NAMESPACES */
+
+  class bad_exception : public std::exception {
+  public:
+    bad_exception() THROW_NOTHING();
+    bad_exception(const bad_exception&) THROW_NOTHING();
+    bad_exception& operator=(const bad_exception&) THROW_NOTHING();
+    virtual ~bad_exception() THROW_NOTHING();
+    virtual const char* what() const THROW_NOTHING();
+  };
+
+  typedef void (*terminate_handler)();
+  extern terminate_handler set_terminate(terminate_handler);
+  void terminate();
+
+  typedef void (*unexpected_handler)();
+  extern unexpected_handler set_unexpected(unexpected_handler);
+  void unexpected();
+
+#ifdef _NAMESPACES
+}  /* namespace */
+#endif /* _NAMESPACES */
+
+
+#if _SGI_SOURCE
+
+  /* The exception handling runtime needs to know the identity of the thread
+     doing a throw, so that it can process the exception on behalf of that
+     thread.  By default, the exception handling will assume the pid of
+     the process as the thread identity. If the thread model used in the 
+     program allow for more than one thread of execution per process, 
+     set_thread_id_function should be set to point to a function that returns 
+     the thread id.  The exception handling runtime will call this function 
+     when the user program does a throw, to get the id of thread. */
+  typedef long (*_PFL)();
+  /* set_thread_id_function() sets the thread id function and returns the 
+     previous thread identity function. */
+  extern _PFL set_thread_id_function(_PFL);
+
+#if _MIPS_SIM != _MIPS_SIM_ABI32
+  /* When object files compiled with the -no_exceptions flag are linked
+     with object files that raise exceptions, it is possible that during
+     the stack unwind process the destructors for certain local objects
+     in a function are not invoked, because the file containing the function
+     was compiled with -no_exceptions flag.  The default action in such cases, 
+     is to call the abandon_exception_cleanup() which
+     calls abort(3C). The default action can be overridden by calling
+     set_abandon_exception_cleanup_function() with a pointer to a
+     function that takes no arguments and returns no value. The overriding
+     function may choose to ignore the failure by the exception handling
+     runtime to cleanup, if it desires.
+
+     set_abandon_exception_cleanup_function returns a pointer to the
+     previous registered function.
+
+     This functionality is provided only with the new abi (n32 and 64 abi). 
+     The o32 compiled objects will silently ignore the cleanup. */
+  typedef void (*_PFV)();
+  extern _PFV set_abandon_exception_cleanup_function(_PFV);
+#endif /* _MIPS_SIM != _MIPS_SIM_ABI32 */
+     
+
+#if _MIPS_SIM == _MIPS_SIM_ABI32
+  /* When the exception handling runtime encounters a polymorphic type 
+     as part of a throw statement, catch statement or an exception 
+     specification whose definition (the definition of the first non inlined
+     virtual function) has been compiled with a compiler that does not
+     support exception handling, the runtime will call 
+     abandon_exception_rtti_handling() whose action is to print a message to
+     stderr. The default behavior of printing the message
+     to stderr can be overridden by calling 
+     set_abandon_exception_rtti_handling() with a pointer to a function
+     that takes no arguments and returns no value. Processing cannot continue 
+     any further and abort(3C) is called upon return from this function. All 
+     the objects whose defintion was compiled with a older compiler, will need 
+     to be recompiled with a new compiler. 
+
+     set_abandon_exception_rtti_handling_function returns a pointer to the
+     previous registered function.
+
+     This is an issue with only old abi. All new abi compilers generate 
+     the necessary type information regardless of exceptions being enabled. */
+  typedef void (*_PFV)();
+  extern _PFV set_abandon_exception_rtti_handling_function(_PFV);
+#endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
+
+#endif /* if SGI_SOURCE */
+
+#endif /* _CXX_EXCEPTION */
+

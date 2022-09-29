@@ -1,0 +1,242 @@
+#ident  "$Revision: 1.2 $"
+#       Copyright (c) 1990, 1991 UNIX System Laboratories, Inc.
+#       Copyright (c) 1984, 1986, 1987, 1988, 1989, 1990 AT&T
+#         All Rights Reserved
+#
+#       THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF
+#       UNIX System Laboratories, Inc.
+#       The copyright notice above does not evidence any
+#       actual or intended publication of such source code.
+#Begining
+COL_USAGE:Usage: %s [-bfpx]\n
+INCORRECT_USAGE:Incorrect usage\n
+CANNOT_OPEN:Cannot open %s: %s\n
+COMM_USAGE:Usage: comm [ - [123] ] file1 file2\n
+ILLEGAL_REGEXP:%s: Illegal Regular Expression\n
+OUT_OF_RANGE:%s - Out of range\n
+PREFIX_TOOLONG:Prefix %s too long\n
+UXDFM_8:Usage: csplit [-s] [-k] [-f prefix] file args ...\n
+NOSPACE_LEFT:No space left on device\n
+CANT_WRITE_TEMP:Cannot write temporary file: %s\n
+FILE_LIMIT:100 file limit reached at arg %s\n
+CANNOT_CREATE:Cannot create %s: %s\n
+BAD_LINENUMBER:%s: Bad line number\n
+RPTCNT_TOOLARGE:%s: Repeat count too large\n
+MISSING_BRACKET:%s: Missing '}'\n
+ILLEGAL_RPTCNT:Illegal repeat count: %s\n
+NO_OPERATION:No operation for %s\n
+MISSING_DELIM:%s: Missing delimiter\n
+ILLEGAL_OFFSET:%s: Illegal offset\n
+INTERRUPT_ABORT:Interrupt - Program aborted at arg '%s'\n
+JOIN_USAGE:Usage: join [-an] [-e s] [-jn m] [-tc] [-o list] file1 file2\n
+HEADER_ERROR:Header: 
+BODY_ERROR:Body: 
+FOOTER_ERROR:Footer: 
+REGEXP_ERROR:Regular Expression error: %s\n
+NL_ILLEGAL_OPT:%sIllegal option -- %s\n
+OD_USAGE:Usage:\tod [-bcdDfFhoOsSvxX] [file] [[+]offset[.][b]]\n\tod [-v] [-A addr_base] [-j skip] [-N count] [-t type_str] ... [file...]\n
+UXDFM_28:Read error: %s
+UXDFM_29:Write error: %s
+UXDFM_30:Trivial file
+UXDFM_31:Huffman tree has too many levels
+UXDFM_32:No saving
+UXDFM_33:Already packed
+UXDFM_34:Cannot open
+UXDFM_35:Cannot pack a directory
+UXDFM_36:Cannot pack a zero length file
+UXDFM_37:File has links
+UXDFM_38:Already exists
+UXDFM_39:Cannot create: %s
+UXDFM_40:Cannot unlink: %s
+UXDFM_41:%.1f%% Compression\n
+UXDFM_42:\tFrom %ld to %ld bytes\n
+UXDFM_43:\tHuffman tree has %d levels below root\n
+UXDFM_44:\t%d distinct bytes in input\n
+UXDFM_45:\tDictionary overhead = %ld bytes\n
+UXDFM_46:\tEffective  entropy  = %.2f bits/byte\n
+UXDFM_47:\tAsymptotic entropy  = %.2f bits/byte\n
+UXDFM_48:File unchanged
+UXDFM_49:Cannot change times: %s
+UXDFM_50:Cannot change mode to %o: %s
+NO_DELIM:no delimiters\n
+TOO_MANY_FILES:Too many files - limit %d\n
+LINE_LONG:Line too long\n
+PASTE_USAGE:Usage: paste [-s] [-d<delimiterstring>] file1 file2 ...\n
+SPLIT_USAGE:Usage: split [-l line_count][-a suffix_length][file[name]]\nor\nsplit -b n[k|m][-a suffix_length][file[name]]\n
+MSG_STRING:%s: %s\n
+MORE_CHARS_IN_OP_FILE:More than %d characters in output file name\n
+MORE_OP_FILES_NEEDED:More than aa-zz output files needed, aborting split\n
+READERR_S:Read error on %s: %s\n
+READERR_STDIN:Read error on stdin: %s\n
+UXDFM_61:Not in packed format
+UXDFM_62:Unpacking error
+UXDFM_63:Unpacked
+UXDFM_64:Cannot open: %s
+SUFFIX_LENG_NEG:suffix_length should be positive.\n
+LINE_COUNT_NEG:line_count should be positive.\n
+SPLIT_B_L_OPTIONS_TOGETHER:-b and -l shouldn't be used together.\n
+NO_OF_BYTES_NEG:Number of bytes should be positive.\n
+CANNOT_ALLOC_MEM:Cannot allocate enough memory.\n
+#
+#End of original
+#
+ONLY_ONEFILE:Only one file may be named\n
+OUT_OF_MEMORY:Out of memory\n
+UNABLE_TO_SKIP:Unable to skip %d\n
+CANNOT_STAT:Cannot stat %s: %s\n
+ILLEGAL_OPT_C:Illegal option -- %c\n
+ILLEGAL_OPT_WC:Illegal option -- %C\n
+ILLEGAL_OPT_STRING:Illegal option -- %s\n
+ILLEGAL_OPT_MB:Illegal option -- %S\n
+JOIN_INVALID_SEPARATOR_CHARACTER:Invalid separator character\n
+JOIN_INVALID_FIELD_CHARACTER:Invalid field character\n
+NL_NULL_REG_EXP:No remembered search string
+NL_ILLEGAL_CHAR_SEQ:Illegal Character Sequence\n
+OD_FSEEKMB_ERROR:The combination of bytes does not form a valid character\n
+OD_CORRUPTED_FILE:Corrupted file\n
+READ_ERROR:Read error\n
+CKSUM_ILL_OPT:cksum: illegal argument to -o option\n
+CKSUM_FILE:cksum: %s: %s\n
+CKSUM_USAGE:usage: cksum [-o 1 | 2] [file ...]\n
+BC_NO_NEWLINE:newline not allowed
+BC_COMP_EXPR:comparison in expression
+BC_BREAK_OUTSIDE:Break outside a for/while
+BC_CONT_STMT:Continue statement
+BC_CONT_OUT:Continue outside a for
+BC_CMP_IN_FIRST:Comparison in first for expression
+BC_CMP_IN_THIRD:Comparison in third for expression
+BC_PRINT_STMT:print statement
+BC_ELSE_IN_IF:else clause in if statement
+BC_COMP_ARG:comparison in argument
+BC_MISSING_EXPR:Missing expression in for statement
+BC_COMP_RET_EXPR:comparison in return expresion
+BC_COMP_ASSIGN:comparison in assignment
+BC_AND_OP:&& operator
+BC_OR_OP:|| operator
+BC_EXCL_OP:! operator
+BC_READ_FUNC:read function
+BC_COMP_SUBSCRIPT:comparison in subscript
+BC_HIST_VAR:History variable
+BC_LAST_VAR:Last variable
+BC_IBASE:%s: input base must be a number between 2 and %d (inclusive)\n
+BC_SCALE_NONNEG:%s: scale must be a nonnegative number\n
+BC_OBASE_GT1:%s: output base must be a number greater than 1\n
+BC_SQROOT_NONNUMERIC:%s: square root of nonnumeric attempted\n
+BC_REQ_POSTIVE:%s: Q command requires a positive number\n
+BC_INDEX_NONNEG:%s: array index must be a nonnegative integer\n
+BC_UNIMPLEMENTED: unimplemented\n
+BC_NON_STRING:%s: eval called with non-string argument\n
+BC_UNEXP_EOS:%s: unexpected EOS\n
+BC_ARG_EXCEEDED:%s: Q command argument exceeded string execution depth\n
+BC_UNEXP_EOF:%s: unexpected EOF\n
+BC_DC_USAGE:Usage: %s [OPTION] [file ...]\n
+BC_DC_HELP:  --help      display this help and exit\n
+BC_DC_VERSION:  --version   output version information and exit\n
+BC_FILE_ERROR:Could not open file 
+BC_OUTMEM:%s: out of memory\n
+BC_DIV_ZERO:%s: divide by zero\n
+BC_REM_ZERO:%s: remainder by zero\n
+BC_SQROOT_NEG:%s: square root of negative number\n
+BC_RUNERROR:Runtime error: %s\n
+BC_RUNWARN_FUNC:Runtime warning (func=%s, adr=%d): %s\n
+BC_RUNWARN_FUNCS:Runtime warning: %s\n
+BC_EMPTY_STACK:%s: stack empty\n
+BC_NON_NUMERIC:%s: non-numeric value\n
+BC_DC_REGID: is empty\n
+BC_STACK_REG:%s: stack register 
+BC_DC_STACKID: is empty\n
+BC_INTRP_EXECUTED:interrupted execution
+BC_FUNC_ADDR:func=%d addr=%d inst=%c\n
+BC_EMPTY_STCAK:empty stack.\n
+BC_FUNC_NOT_DEFINED:Function %s not defined.
+BC_RET_FROM_MAIN:Return from main program.
+BC_SQRT_NEGNUM:Square root of a negative number
+BC_DIVBY_ZERO:Divide by zero
+BC_ZERO_MODULO:Modulo by zero
+BC_ZERO_DIVIDE:divide by zero
+BC_BAD_INSTR:bad instruction: inst=%c
+BC_INTR_COMPL:Interruption completed.\n
+BC_OPT_AMBIGUOUS:%s: option `%s' is ambiguous\n
+BC_OPT_NOTALLOW:%s: option `--%s' doesn't allow an argument\n
+BC_ARG_NOTALLOW:%s: option `%c%s' doesn't allow an argument\n
+BC_REQ_ARG:%s: option `%s' requires an argument\n
+BC_UNREC_OPT:%s: unrecognized option `--%s'\n
+BC_IILEGAL:%s: illegal option -- %c\n
+BC_INVALID_OPT:%s: invalid option -- %c\n
+BC_OPT_REQ_ARG:%s: option requires an argument -- %c\n
+BC_DIFF_ARGV_DIGITS:digits occur in two different argv-elements.\n
+BC_OPTION_C:option %c\n
+BC_OPTION_A:option a\n
+BC_OPTION_B:option b\n
+BC_OPTION_CS:option c with value `%s'\n
+BC_RET_CHAR_CODE:?? getopt returned character code 0%o ??\n
+BC_NON_OPT_ARGV:non-option ARGV-elements: 
+BC_OPTION_S:option %s
+BC_ARG: with arg %s
+BC_OPTION_D:option d with value `%s'\n
+BC_FUNC_TOO_BIG:Function too big.
+BC_PROG_TOO_BIG:Program too big.\n
+BC_LOAD_FUNC:Loading function number %d\n
+BC_VAR_PARAM_NUM:var parameter number %d\n
+BC_PARAM_NUM:parameter number %d\n
+BC_AUTO_NUM:auto number %d\n
+BC_EXCL_OPTIONS_WM:bc: -w and -m options mutually exclusive\n
+BC_EXCL_OPTIONS_WS:bc: -w and -s options mutually exclusive\n
+BC_MATHLIB_UNAVAIL:Math Library unavailable.\n
+BC_FILE_NOT_FOUND:File %s is unavailable.\n
+BC_INTRP:\n(interrupt) use quit to exit.\n
+BC_NONZERO_SCALE_EXP:non-zero scale in exponent
+BC_EXP_TOO_LARGE:exponent too large in raise
+BC_FLEX_FAILED:read() in flex scanner failed
+BC_ILLEGAL_CHAR:illegal character: %s
+BC_OLD_FASHIONED:Old fashioned =<op>
+BC_ENC_EOF:EOF encountered in a comment.\n
+BC_NUL_CHR:NUL character in string.
+BC_ILLEGAL_CHAR_CARAT:illegal character: ^%c
+BC_ILLEGAL_CHAR_BSLASH:illegal character: \\%3d
+BC_STACK_ERROR:Stack error.
+BC_IBASE_NEG:negative ibase, set to 2
+BC_OBASE_NEG:negative obase, set to 2
+BC_SCALE_NEG:negative scale, set to 0
+BC_IBASE_SMALL_SET2:ibase too small, set to 2
+BC_IBASE_LARGE:ibase too large, set to 16
+BC_OBASE_SMALL_SET2:obase too small, set to 2
+BC_OBASE_LARGE:obase too large, set to %d
+BC_SCALE_LARGE_SETD:scale too large, set to %d
+BC_HIST_LARGE:history too large, set to unlimited
+BC_SUBS_OUTOF_BND:Array %s subscript out of bounds.
+BC_INBASE_SMALL:ibase too small in --
+BC_OBASE_SMALL:obase too small in --
+BC_SCALE_NEGATIVE:scale can not be negative in -- 
+BC_HIST_NEG:history is negative, set to unlimited
+BC_IBASE_BIG:ibase too big in ++
+BC_OBASE_BIG:obase too big in ++
+BC_SCALE_TOOBIG:Scale too big in ++
+BC_HIST_UNLIMITD:history set to unlimited
+BC_PARAMTYPE_MISMATCH:Parameter type mismatch parameter %s.
+BC_PARAMUM_MISMATCH:Parameter number mismatch
+BC_PARAMNUM:Parameter number mismatch
+BC_DUP_PARAM:duplicate parameter names
+BC_VAR_ARRAY_PARAM:Variable array parameter
+BC_DUP_AUTO:duplicate auto variable names
+BC_NOT_ALLOWED:* not allowed here
+BC_VAR_PARAM_AUTO:variable in both parameter and auto lists
+BC_MULTI_LETTER_NAME:multiple letter name - %s
+BC_ARRAY_VAR_TOOMANY:Too many array variables
+BC_MANY_FUNCS:Too many functions
+BC_MANY_VAR:Too many variables
+BC_BASE_MAX:BC_BASE_MAX     = %d\n
+BC_DIM_MAX:BC_DIM_MAX      = %ld\n
+BC_SCALE_MAX:BC_SCALE_MAX    = %d\n
+BC_STRING_MAX:BC_STRING_MAX   = %d\n
+BC_MAX_EXP:MAX Exponent    = %ld\n
+BC_MAX_CODE:MAX code        = %ld\n
+BC_MULTIPLY_DIGITS:multiply digits = %ld\n
+BC_NU_VARS:Number of vars  = %ld\n
+BC_OLD_ASSGIN_VALID:Old assignment operatiors are valid. (=-, =+, ...)\n
+BC_OUT_OF_MEM:Fatal error: Out of memory for malloc.\n
+BC_WARNING:%s %d: (Warning) 
+BC_RUNERROR_FUNC:Runtime error (func=%s, adr=%d): %s\n
+BC_MBSTOWCS_FAILED:mbstowcs failed\n
+BC_MEM_PROBLEM:Memory Problem\n
+BC_UNREC_OPT_CS:%s: unrecognized option `%c%s'\n

@@ -1,0 +1,9 @@
+*#ident "$Revision: 1.2 $"
+*
+* XFS
+*
+*FLAG	PREFIX	SOFT	#DEV	DEPENDENCIES
+oxj	xfs_	-	-	sgi,specfs,io
+
+$$$
+

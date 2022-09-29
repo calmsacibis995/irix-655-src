@@ -1,0 +1,305 @@
+#!/bin/sh
+
+# "$Revision: 1.1 $"
+
+USAGE="$0: [-vt] [-b board] [-p prefix] [-m master] [-u muser] [-c cmd]"
+# defaults args:
+#   -b hippi0 -p 8:0:69 -m bonnie.engr.sgi.com -u fddimac -c allocmac2
+
+FIXER="Marty Castilla at ext 1479 or pager 694-8973"
+
+THISPROG=hipgetmac
+HIPCONFIG=/usr/etc/hipcntl
+PREFIX='08:00:69'
+MASTER=bonnie.engr.sgi.com
+MUSER=fddimac
+MCMD="allocmac2"
+DBM="fddimacs"
+RCDS=/tmp/gotmacs
+BD=hippi0
+
+BINDIR=/usr/bin
+GETMAC=$BINDIR/$THISPROG
+
+ARGS="$*"
+
+# get a yes or no answer
+getyes() {
+    while true; do
+	echo "$1 \c"
+	if read yesno; then
+	    case "$yesno" in
+	    [yY]*)
+		return 0
+		;;
+	    [nN]*)
+		return 1
+		;;
+	    esac
+	else
+	    echo
+	    exit 1
+	fi
+	echo '\tPlease answer "yes" or "no".'
+    done
+}
+
+
+# get a string of minimum size
+getname() {
+    while true; do
+	echo "$2 \c"
+	if read ans; then
+	    anslen=`echo "$ans" | wc -c`
+	    if test $3 -le $anslen -a \( $4 -eq 0 -o $4 -ge $anslen \); then
+		eval "$1='$ans'"
+		return 0
+	    fi
+	else
+	    echo
+	    exit 1
+	fi
+	echo "\t$5"
+    done
+}
+
+# get a serial number
+#   $1=variable to set, $2=mesage,  $3=min significant digits,  $4=max digits
+#   $5=error message
+getnum() {
+    while true; do
+	echo "$2 \c"
+	if read ans; then
+	    ans=`echo "$ans" | tr '[a-z]' '[A-Z]'`
+	    # anslen=totlen length
+	    anslen=`echo "$ans" | wc -c`
+	    # ansblen=number of non-alphanumerics
+	    ansblen=`echo "$ans" | tr -d '[A-Z][0-9]' | wc -c`
+	    # ansdlen=number of digits
+	    ansdlen=`echo "$ans" | tr -d '[A-Z]' | wc -c`
+	    # require minimuml length, not too many characters, no extra
+	    # strange characters (including LF from echo),
+	    # and at least one digit
+	    if test $3 -le $anslen -a $4 -ge $anslen \
+		    -a $ansblen = 1 -a $ansdlen -gt 1; then
+		eval "$1='$ans'"
+		return 0
+	    fi
+	else
+	    echo
+	    exit 1
+	fi
+	echo "\t$5"
+    done
+}
+
+
+# get MAC addresses from board
+getomacs() {
+	OMAC=`$HIPCONFIG $BD getmac`
+}
+
+while getopts "vtb:p:m:u:cf" c; do
+    case $c in
+    v) if test -n "$verbose"; then
+	    verbose="$verbose"v
+	else
+	    verbose=-v
+	fi
+	if test x"$verbose" = "x-vv"; then
+	    set -x
+	fi
+	;;
+    t) TMODE=1;;
+    b) BD="$OPTARG";;
+    p) PREFIX="$OPTARG";;
+    m) MASTER="$OPTARG";;
+    u) MUSER="$OPTARG";;
+    c) MCMD="$OPTARG";;
+    f) REPAIR="yes";;
+    \?) echo $USAGE; exit 1;;
+    esac
+done
+shift `expr $OPTIND - 1`
+if test "$#" != 0; then
+    echo $USAGE
+    exit 1
+fi
+
+# we must be root
+set `id`
+if test "$1" != "uid=0(root)" ; then
+    echo "You must be running as root.  Use the su command."
+    exit 1
+fi
+
+trap 'echo "\ninterrupted--No harm done.\n"; exit 1' 1 2 15
+
+
+# get a new copy of the script daily, unless in test mode
+if test -z "$TMODE" -a \
+	-z "`find $GETMAC -mtime -1 -print 2> /dev/null`"; then
+    rm -f /tmp/$THISPROG
+    rcp guest@$MASTER:~$MUSER/bin/$THISPROG /tmp
+    if test ! -s /tmp/$THISPROG; then
+	echo "failed to rcp a new copy of $THISPROG from $MASTER"
+	exit 1
+    fi
+    if cmp -s $GETMAC /tmp/$THISPROG; then
+	touch $GETMAC
+    else
+	mv /tmp/$THISPROG $GETMAC
+	echo "installing a new copy of $THISPROG from $MASTER"
+	exec $GETMAC $ARGS
+    fi
+fi
+
+case "$BD" in
+    hippi[0-7])
+	TYP=hip
+	MINSN=5
+	NBD=1
+	;;
+
+    *)
+	echo "$BD" is an unknown board
+	exit 1
+	;;
+esac
+
+# get the current MAC addresses
+getomacs
+if test -n "$verbose"; then
+	echo "Old address $OMAC"
+fi
+
+BNUMS=`echo "$OMAC" | sed -e "s/.*$PREFIX"'[0-9a-fA-F:]*/G/g'`
+if test "$BNUMS" = G; then
+    echo "The board already has a valid MAC address."
+    if getyes "Do you want to continue?"; then :
+    else
+	echo "\nOk, no changes made.\n"
+	exit 1
+    fi
+fi
+
+# The user will enter his/her email address one time from the main script.
+# This script will grep the name from /usr/tmp/hippi_number.log whenever
+# this script is invoked.
+
+if test "$REPAIR" != "yes"; then
+        UNAME=`grep "HIPPI-S Unit hippi" /usr/tmp/hippi_number.log | awk '{print $4}'` 
+fi
+
+# The script will detect the serial number and will automatically
+# pass it to the hipgetmac script.
+	SNUM=`grep "HIPPI-S Unit $BD" /usr/tmp/hippi_serial_summary.log | awk '{print $4}'`
+
+fi
+
+# set RCD# to old address from the database
+rsh guest@$MASTER -n egrep -i "'^[^# ]*=$TYP *$SNUM(-[0-9])?	'" \
+	~$MUSER/$DBM >$RCDS
+if test -s $RCDS; then
+    eval `sed -e 's/^\([^# ]*\)='"$TYP *$SNUM"'-*\([0-9]*\).*/RCD\2=\1/' \
+		-e 's/^RCD0=/RCD=/'   $RCDS`
+fi
+
+# only repair returned boards
+if test "$REPAIR" = yes; then
+    if test -s $RCDS; then
+       :
+    else
+	echo "\nThere is no record of a $TYP board with serial number $SNUM."
+	echo "Nothing changed."
+	exit 1
+    fi
+
+elif test -s $RCDS; then
+    echo "\nA board with serial $SNUM already has the following record(s) in the database:"
+    cat $RCDS
+    echo "\nIf this board is not the same as the other board with serial number $SNUM,"
+    echo "please contact $FIXER.\n"
+
+    if getyes "Is this the same board and it only needs repairing"?; then
+	REPAIR=yes
+    elif getyes "Do you really want to allocate a new MAC address?"; then :
+	RCD=
+    else
+	echo "\nOk.  It must be the same board.  Rewrite its address.\n"
+	REPAIR=yes
+    fi
+fi
+
+# Make sure that board can be brought down for reprogramming before
+# allocating a MAC address for it.
+$HIPCONFIG $BD shutdown
+if test $? != 0; then
+    echo "\nCould not bring board $BD down for reprograming."
+    echo "Stop all applications and tests using the board before rerunning $0"
+    exit 1
+fi
+
+echo
+
+if test "$REPAIR" != yes; then
+    if getyes "Are you $UNAME and are you setting the $BD board with serial number $SNUM?";
+    then :
+    else
+	echo "\nOk.  No harm done.\n"
+	exit 1
+    fi
+
+    #disable interrupts when we are committed
+    trap "" 1 2 15
+
+    rsh $MUSER@$MASTER -n $MCMD -t $TYP -d $DBM -c $NBD \
+	    -u "$UNAME" -s $SNUM  >$RCDS 2>&1
+    if test `egrep -v -c "^[^# ]*=$TYP *$SNUM(-[0-9])?	" $RCDS` != 0; then
+	echo "\nThe address allocator on $MASTER failed saying\n"
+	cat $RCDS
+	echo "\nCall $FIXER."
+	exit 1
+    fi
+    eval `sed -e 's/^\([^# ]*\)='"$TYP *$SNUM"'-*\([0-9]*\).*/RCD\2=\1/' \
+		-e 's/^RCD0=/RCD=/'   $RCDS`
+fi
+
+if test $NBD != `echo $RCD $RCD1 $RCD2 $RCD3 $RCD4 $RCD5 $RCD6 $RCD7 | wc -w`\
+	    -o $NBD != `wc -l <$RCDS`; then
+    echo "\nThere are insufficient records for serial number $SNUM:"
+    cat $RCDS
+    echo "\nNothing changed."
+    echo "Call $FIXER."
+    exit 1
+fi
+
+echo
+
+# disable interrupts when we are committed
+trap "" 1 2 15
+
+# program the board
+echo Setting $BD MAC address to "$RCD"
+# program the address
+if test "$REPAIR" != yes; then
+	$HIPCONFIG $BD prog_MAC "$RCD" force
+else
+	$HIPCONFIG $BD prog_MAC "$RCD"
+fi
+if test $? != 0; then
+    echo "\nThe board refused to accept the address."
+    echo "Call $FIXER."
+    exit 1
+fi
+
+# give board enough time to come out of reset
+sleep 3
+
+# bring board back up
+$HIPCONFIG $BD startup
+
+getomacs
+echo "\nThe board now has address $OMAC.\n"
+
+exit 0

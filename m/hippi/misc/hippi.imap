@@ -1,0 +1,33 @@
+#
+# /usr/etc/hippi.imap
+#
+# This is the IP address to HIPPI I-field table.  This file is processed
+# by hipmap(1m) during network startup.
+#
+# The format of the file is an IP name or address followed by an I-field
+# in hexadecimal followed by an optional ethernet-style ULA all on one line.
+# If present, the ULA will be placed in the HIPPI-LE header of packets
+# sent to the specified IP address.
+#
+# Anything to the right of a # sign is ignored by hipmap(1m) to allow
+# comments.
+#
+# Example entries:
+#
+# hippi-shelby	0x0700012e	8:0:69:2:37:84	# logical addr to shelby
+# hippi-trenos	0x01000047			# source route to trenos
+# hippi-astro	0x01000001			# source route to astro
+#
+# When HIPPI sends to a specific IP address, it uses the I-field exactly
+# as it appears in this table.  Thus, it is important that the Path Selection
+# bits (bits 26,25) and the Camp-on bit (bit 24) are set up properly.  The
+# Path Selection bits determine if the switch should use source routing
+# or logical addressing.  The Camp-on bit should always be set or otherwise
+# connection requests will be rejected by the switch if the destination
+# is busy.  If a connection request for an IP packet is rejected, the packet
+# is dropped.
+#
+# See the HIPPI-SC standard for more information on I-field formats.
+#
+# IP address	I-field		HIPPI ULA (optional)
+# ----------	-------		--------------------

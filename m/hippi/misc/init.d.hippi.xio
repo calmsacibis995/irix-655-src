@@ -1,0 +1,81 @@
+#!/sbin/sh
+
+#
+# Initialize/Shutdown the standard and optional hippi software
+#
+# $Revision: 1.3 $
+#
+# hipcntl first checks the revision ID of the firmware on board the
+# HIPPI interfaces.  If the firmware not the proper revision to
+# work with the installed software, the correct firmware is written
+# to flash EEPROM memory.
+#
+
+#set -x
+
+HIPCNTL=/usr/etc/hipcntl
+LN=/sbin/ln
+RM="/sbin/rm -f"
+
+hwgraph=/hw/hippi
+targetdir=/dev
+
+if test ! -d $hwgraph
+then
+	exit
+fi
+
+case "$1" in
+'start')
+
+	# locate all hippi controller boards,
+	# define FP and BP files and
+	# start the controllers
+
+	for board in `ls $hwgraph`; do
+		$RM ${targetdir}/hippi${board} > /dev/null 2>&1
+		$LN -s ${hwgraph}/${board}/hippi ${targetdir}/hippi${board}
+		if [[ $board -lt 10 ]] then
+
+#			Define bypass files for first 10 boards only (since
+#			envariable MPI_BYPASS_DEVS only works for single-digit
+#			devices)
+
+			$RM ${targetdir}/hippibp${board}
+			$LN -s ${hwgraph}/${board}/bypass/ctl ${targetdir}/hippibp${board}
+			$RM ${targetdir}/hippibp${board}00
+			$LN -s ${hwgraph}/${board}/bypass/0 ${targetdir}/hippibp${board}00
+			$RM ${targetdir}/hippibp${board}01
+			$LN -s ${hwgraph}/${board}/bypass/1 ${targetdir}/hippibp${board}01
+			$RM ${targetdir}/hippibp${board}02
+			$LN -s ${hwgraph}/${board}/bypass/2 ${targetdir}/hippibp${board}02
+			$RM ${targetdir}/hippibp${board}03
+			$LN -s ${hwgraph}/${board}/bypass/3 ${targetdir}/hippibp${board}03
+			$RM ${targetdir}/hippibp${board}04
+			$LN -s ${hwgraph}/${board}/bypass/4 ${targetdir}/hippibp${board}04
+			$RM ${targetdir}/hippibp${board}05
+			$LN -s ${hwgraph}/${board}/bypass/5 ${targetdir}/hippibp${board}05
+			$RM ${targetdir}/hippibp${board}06
+			$LN -s ${hwgraph}/${board}/bypass/6 ${targetdir}/hippibp${board}06
+			$RM ${targetdir}/hippibp${board}07
+			$LN -s ${hwgraph}/${board}/bypass/7 ${targetdir}/hippibp${board}07
+		fi
+		$HIPCNTL -q hippi${board} startup
+	done
+
+	;;
+
+'stop')
+
+	# shut down all HIPPIs
+	for board in `ls $hwgraph`; do
+		$HIPCNTL -q hippi${board} shutdown
+	done
+
+	;;
+
+*)
+	echo "usage $0  {start|stop}"
+	;;
+esac
+

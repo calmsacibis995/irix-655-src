@@ -1,0 +1,115 @@
+NAWK_UNKNOWN_TYPE:Unknown type %d in %s
+NAWK_CHAR_CLASS_TOO_BIG:Character class too big
+NAWK_SYNTAX_ERR_IN_REG_EXPSN:Syntax error in regular expression %s at %s
+NAWK_NON_TERMINATED_CHAR_CLASS:Nonterminated character class %s
+NAWK_REG_EXP_TOO_BIG_OUT_OF_SPACE_IN_STR:Regular expression too big: out of space in %s
+NAWK_REG_EXP_TOO_BIG:Regular expression too big: %s
+NAWK_FOLLOW_SET_OVERFLOW:Follow set overflow
+NAWK_EMPTY_REG_EXP:Empty regular expression
+NAWK_ILLEGAL_PRIMARY_IN_REG_EXP:Illegal primary in regular expression %s at %s
+NAWK_NL_IN_CHAR_CLASS:Newline in character class %s...
+NAWK_CANNOT_OPEN:Cannot open %s: %s
+NAWK_INPUT_REC_TOO_LONG:Input record `%.20s...' too long
+NAWK_REC_HAS_TOO_MANY_FLDS:Record `%.20s...' has too many fields
+NAWK_FIELD_IS:field %d: |%s|\n
+NAWK_CREATING_TOO_MANY_FLDS:Creating too many fields
+NAWK_BUILD_GIANT_REC:Built giant record `%.20s...'
+NAWK_TRYING_TO_ACCESS_FLD:Trying to access field %d
+NAWK_AT_SOURCE_LINE: at source line %d
+NAWK_IN_FUNCTION: in function %s
+NAWK_FLOATING_PT_EXCEPTION:Floating point exception
+NAWK_MISSING_CHAR:Missing %c\n
+NAWK_MISSING_NCHARS:%d missing %c's\n
+NAWK_EXTRA_CHAR_NL:Extra %c\n
+NAWK_EXTRA_NCHARS:%d extra %c's\n
+NAWK_INPUT_REC_NO:Input record number %g
+NAWK_FILE_NAME:, file %s
+NAWK_SOURCE_LINE_NO:Source line number %d\n
+NAWK_CONTEXT_IS_NL_TAB:Context is\n\t
+NAWK_ARG_OUT_OF_DOMAIN:%s argument out of domain
+NAWK_RESULT_OUT_OF_RANGE:%s result out of range
+NAWK_VER_OCT_11_1989:version Oct 11, 1989
+NAWK_INCORRECT_USAGE:Incorrect usage\n
+NAWK_USAGE_MSG:Usage: %s [-f programfile | 'program'] [-Ffieldsep] [-v var=value] [files]\n
+NAWK_NO_PROG_FILE_NAME:No program filename
+NAWK_FS_EMPTY:Field separator FS is empty
+NAWK_UNKNOWN_OPTION:Unknown option %s ignored\n
+NAWK_NO_PROG_GIVEN:No program given
+NAWK_NOT_FUNC_AN_ARRAY:%s is a function, not an array
+NAWK_ARRAY_AND_FUNC_NAME:`%s' is an array name and a function name
+NAWK_RESULT_TOO_BIG:%s() result %.20s too big
+NAWK_NOT_AN_ARRAY:%s is not an array
+NAWK_IO_ERR_OCCURRED:I/O error occurred on %s
+NAWK_ILLEGAL_STMT:Illegal statement
+NAWK_ILL_BREAK_CONTINUE_OR_NEXT_FROM_BEGIN:Illegal break, continue or next from BEGIN
+NAWK_ILL_BREAK_CONTINUE_OR_NEXT_FROM_END:Illegal break or next from END
+NAWK_CALLING_UNDEFINED_FUNC:Calling undefined function %s
+NAWK_OUT_OF_SPACE_FOR_STACK_IN_FUNC_CALL:Out of space for stack frames calling %s
+NAWK_FUNC_CALLED_WITH_1ARG:Function %s called with 1 arg, uses only %d
+NAWK_FUNC_CALLED_WITH_NARGS:Function %s called with %d args, uses only %d
+NAWK_FUNC_HAS_NARGS_LIMIT:Function %s has %d arguments, limit %d
+NAWK_CANNOT_USE_FUNC_AS_ARG:Cannot use function %s as argument in %s
+NAWK_OUT_OF_SPACE_FOR_STACK_IN_FUNC:Out of space for stack frames in %s
+NAWK_NTH_ARG_OF_FUNC_NOT_SUPPLIED:Argument #%d of function %s was not supplied
+NAWK_ILLEGAL_JUMP_TYPE:Illegal jump type %d
+NAWK_UNKNOWN_BOOLEAN_OPERATOR:Unknown boolean operator %d
+NAWK_UNKNOWN_RELATIONAL_OPERATOR:Unknown relational operator %d
+NAWK_TEMPCELL_LIST_CURDLED:Tempcell list is curdled
+NAWK_NO_SPACE_FOR_TEMPORARIES:No space for temporaries
+NAWK_ILLEGAL_FIELD:Illegal field $(%s)
+NAWK_FORMAT_ITEM_TOO_BIG:Format item %.20s... too long
+NAWK_NOT_ENOUGH_ARGS_IN_PRINTF:Not enough args in printf(%s)
+NAWK_SPRINTF_STRING_TOO_BIG:sprintf string %.40s ... too long
+UXAWK_63:printf string %.40s ... too long
+NAWK_DIVISION_BY_ZERO:Division by zero
+NAWK_DIVISION_BY_ZERO_IN_MOD:Division by zero in mod
+NAWK_ILLEGAL_ARITHMETIC_OPERATOR:Illegal arithmetic operator %d
+NAWK_DIVISION_BY_ZERO_EQ:Division by zero in /=
+NAWK_DIVISION_BY_ZERO_IN_MOD_EQ:Division by zero in %%=
+NAWK_ILLEGAL_ASSGNMNT_OP:Illegal assignment operator %d
+NAWK_OUT_OF_SPACE_CONCATING_TWO_STRS:Out of space concatenating %.15s and %.15s
+NAWK_ILLEGAL_TYPE_OF_SPLIT:Illegal type of split()
+NAWK_ATAN2_REQUIRES_TWO_ARGS:atan2 requires two arguments; returning 1.0
+NAWK_ILLEGAL_FUNC_TYPE:Illegal function type %d
+NAWK_FUNC_HAS_MANY_ARGS:Function has too many arguments
+NAWK_NULL_FNAME_IN_PRINT_OR_GETLINE:Null file name in print or getline
+NAWK_STR_MAKES_MANY_OPEN_FILES:%s makes too many open files
+NAWK_ILLEGAL_REDIRECTION:Illegal redirection
+NAWK_IO_ERROR_OCCURRED_CLOSING_FILE:I/O error occurred closing %s
+NAWK_IO_ERROR_OCCURRED_WHILE_CLOSING_FILE:I/O error occurred while closing %s
+NAWK_ASSIGN_TO:assign to
+NAWK_READ_VALUE_OF:read value of
+NAWK_OUT_OF_SPACE_IN_STR:Out of space in %s
+NAWK_NL_IN_STRING:Newline in string %.10s ...
+NAWK_SYMBOL_TABLE_OVERFLOW:Symbol table overflow at %s
+NAWK_CANNOT_ITS_AN_ARRAY_NAME:Cannot %s %s; it's an array name.
+NAWK_CANNOT_ITS_A_FUNC:Cannot %s %s; it's a function.
+NAWK_FUNNY_VAR:Funny variable %o: n=%s s=\"%s\" f=%g t=%o
+NAWK_OUT_OF_SPACE_IN_TOSTRING:Out of space in tostring on %s
+NAWK_STRING_TOO_LONG:String %.10s ... too long
+NAWK_STR_OR_REG_EXP_TOO_LONG:String/reg expr %.10s ... too long
+NAWK_EXTRA_CHAR:Extra %c
+NAWK_ILLEGAL_NESTED_FUNCTION:Illegal nested function
+NAWK_RETURN_NOT_IN_FUNC:Return not in function
+NAWK_NEWLINE_IN_REG_EXP:Newline in regular expression %.10s ...
+NAWK_BAILING_OUT:Bailing out
+NAWK_U_CAN_ONLY_DEL_ARR_ELEMENT:You can only delete array[element]
+NAWK_NEXT_IN_FUNC_IS_ILLEGAL:Next is illegal inside a function
+NAWK_INDEX_NOT_PERMIT_REG_EXP:Index() doesn't permit regular expressions
+NAWK_STR_IS_AN_ARR_NOT_A_FUNC:%s is an array, not a function
+NAWK_CANNOT_DEFN_FUNC_MORE_THAN_ONCE:You cannot define function %s more than once
+NAWK_GOTXPG:awk:Cannot exec /usr/bin/pawk
+NAWK_QSTRING:mbtowc failed in qstring
+NAWK_SFORMAT1:mblen failed in sformat
+NAWK_SFORMAT2:mbstowcs failed in sformat
+NAWK_SFORMAT3:mbtowc failed in sformat
+NAWK_FFORMAT1:mblen failed in sformat
+NAWK_FFORMAT2:mbstowcs failed in sformat
+NAWK_FFORMAT3:mbtowc failed in sformat
+NAWK_FLDBLD:mbtowc failed for field separator in fldbld
+NAWK_ISCHAR:mblen failed in IsCharBoundary
+NAWK_READREC:mbtowc failed in readrec
+NAWK_BLTIN:mbstowcs failed in bltin
+NAWK_MATCHOP:mbstowcs failed in matchop 
+NAWK_REGULAR_EXP_TOO_BIG:Regular expression too big
+NAWK_VARIABLE_EMPTY:No variable specified after -v switch

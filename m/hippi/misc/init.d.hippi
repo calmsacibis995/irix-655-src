@@ -1,0 +1,99 @@
+#!/sbin/sh
+
+#
+# Initialize/Shutdown the standard and optional hippi software
+#
+# $Revision: 1.7 $
+#
+# hipcntl first checks the revision ID of the firmware on board the
+# HIPPI interfaces.  If the firmware not the proper revision to
+# work with the installed software, the correct firmware is written
+# to flash EEPROM memory.
+#
+
+HIPCNTL=/usr/etc/hipcntl
+
+case "$1" in
+'start')
+
+	# start up all HIPPIs
+
+	$HIPCNTL -q hippi0 startup
+	$HIPCNTL -q hippi1 startup
+	$HIPCNTL -q hippi2 startup
+	$HIPCNTL -q hippi3 startup
+	$HIPCNTL -q hippi4 startup
+	$HIPCNTL -q hippi5 startup
+	$HIPCNTL -q hippi6 startup
+	$HIPCNTL -q hippi7 startup
+	$HIPCNTL -q hippi8 startup
+	$HIPCNTL -q hippi9 startup
+	$HIPCNTL -q hippi10 startup
+	$HIPCNTL -q hippi11 startup
+	$HIPCNTL -q hippi12 startup
+	$HIPCNTL -q hippi13 startup
+	$HIPCNTL -q hippi14 startup
+	$HIPCNTL -q hippi15 startup
+	$HIPCNTL -q hippi16 startup
+	$HIPCNTL -q hippi17 startup
+	$HIPCNTL -q hippi18 startup
+	$HIPCNTL -q hippi19 startup
+	$HIPCNTL -q hippi20 startup
+	$HIPCNTL -q hippi21 startup
+	$HIPCNTL -q hippi22 startup
+	$HIPCNTL -q hippi23 startup
+	$HIPCNTL -q hippi24 startup
+	$HIPCNTL -q hippi25 startup
+	$HIPCNTL -q hippi26 startup
+	$HIPCNTL -q hippi27 startup
+	$HIPCNTL -q hippi28 startup
+	$HIPCNTL -q hippi29 startup
+	$HIPCNTL -q hippi30 startup
+	$HIPCNTL -q hippi31 startup
+
+	;;
+
+'stop')
+
+	# shut down all HIPPIs
+
+	$HIPCNTL -q hippi0 shutdown
+	$HIPCNTL -q hippi1 shutdown
+	$HIPCNTL -q hippi2 shutdown
+	$HIPCNTL -q hippi3 shutdown
+	$HIPCNTL -q hippi4 shutdown
+	$HIPCNTL -q hippi5 shutdown
+	$HIPCNTL -q hippi6 shutdown
+	$HIPCNTL -q hippi7 shutdown
+	$HIPCNTL -q hippi8 shutdown
+	$HIPCNTL -q hippi9 shutdown
+	$HIPCNTL -q hippi10 shutdown
+	$HIPCNTL -q hippi11 shutdown
+	$HIPCNTL -q hippi12 shutdown
+	$HIPCNTL -q hippi13 shutdown
+	$HIPCNTL -q hippi14 shutdown
+	$HIPCNTL -q hippi15 shutdown
+	$HIPCNTL -q hippi16 shutdown
+	$HIPCNTL -q hippi17 shutdown
+	$HIPCNTL -q hippi18 shutdown
+	$HIPCNTL -q hippi19 shutdown
+	$HIPCNTL -q hippi20 shutdown
+	$HIPCNTL -q hippi21 shutdown
+	$HIPCNTL -q hippi22 shutdown
+	$HIPCNTL -q hippi23 shutdown
+	$HIPCNTL -q hippi24 shutdown
+	$HIPCNTL -q hippi25 shutdown
+	$HIPCNTL -q hippi26 shutdown
+	$HIPCNTL -q hippi27 shutdown
+	$HIPCNTL -q hippi28 shutdown
+	$HIPCNTL -q hippi29 shutdown
+	$HIPCNTL -q hippi30 shutdown
+	$HIPCNTL -q hippi31 shutdown
+
+	;;
+
+*)
+	echo "usage $0  {start|stop}"
+	;;
+esac
+

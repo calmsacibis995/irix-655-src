@@ -1,0 +1,16 @@
+*
+* hippi.sm
+*
+* $Revision: 1.3 $
+*
+
+VECTOR: module=hippi
+
+*
+* Include software module for TCP/IP / HIPPI-LE:
+* Do not delete this line.  If you wish to exclude this software
+* module, use "EXCLUDE: if_hip" or else the kernel will not link
+* properly.
+*
+INCLUDE: if_hip
+

@@ -1,0 +1,10 @@
+CATALOGRULES = $(DEPTH)/catalogrules
+
+#if !defined (CATNAME)
+CWD	!= pwd
+CATNAME	!= basename $(CWD)
+#endif
+
+TARGETS = $(CATNAME)
+LDIRT	= $(CATNAME).msg_a $(CATNAME).msg_x $(CATNAME).h $(CATNAME).m
+

@@ -1,0 +1,23 @@
+*
+* hippi.sm
+*
+* $Revision: 1.2 $
+*
+* XIO HIPPI-Serial driver for Origin2000 systems.
+* lboot checks that there is a bridge chip out there
+VECTOR: module=hps probe_path="/hw/.id/xio/C0020036"
+*
+* Include software module for TCP/IP / HIPPI-LE:
+* Do not delete this line.  If you wish to exclude this software
+* module, use "EXCLUDE: if_hip" or else the kernel will not link
+* properly.
+*
+INCLUDE: if_hip
+
+* Software driver for HIPPI Bypass. 
+* If you are not using HIPPI Bypass (the MPI libraries and applications)
+* and wish to conserve on kernel size, change the following line to
+* "EXCLUDE: hippibp". Do not delete it or else the kernel will not link
+* properly.
+*
+INCLUDE: hippibp

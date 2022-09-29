@@ -1,0 +1,862 @@
+; =======================================================================
+; 
+; Copyright 1996 Silicon Graphics, Inc.
+; All Rights Reserved.
+;
+; This is UNPUBLISHED PROPRIETARY SOURCE CODE of Silicon Graphics, Inc.;
+; the contents of this file may not be disclosed to third parties, copied or
+; duplicated in any form, in whole or in part, without the prior written
+; permission of Silicon Graphics, Inc.
+;
+; RESTRICTED RIGHTS LEGEND:
+; Use, duplication or disclosure by the Government is subject to restrictions
+; as set forth in subdivision (c)(1)(ii) of the Rights in Technical Data
+; and Computer Software clause at DFARS 252.227-7013, and/or in similar or
+; successor clauses in the FAR, DOD or NASA FAR Supplement. Unpublished -
+; rights reserved under the Copyright Laws of the United States.
+;
+; ========================================================================
+
+$Revision: 1.6 $	$Date: 1997/03/17 15:34:00 $
+$Log: rr_src.pc,v $
+Revision 1.6  1997/03/17 15:34:00  jimp
+add copyright notice
+
+# Revision 1.5  1996/12/20  01:02:51  irene
+# No Message Supplied
+#
+# Revision 1.4  1996/12/18  01:46:06  irene
+# Fix for problem with losing DMA Asst completion notifications.
+# Check for producer catching up with Reference rather than with Consumer.
+#
+# Revision 1.3  1996/09/20  03:44:56  irene
+# Increased counter waiting for HEADSTART. Also changed RD-DMA-done handler
+# not to assume that we were successful waiting for HEADSTART & update the TxDataProd
+# register.
+#
+# Revision 1.0  1996/05/03  01:58:47  irene
+# No Message Supplied
+#
+
+====================================================================
+// This is the overview PseudoCode file for rr_src.s. It serves
+// as a high-level description of what rr_src.s does. 
+//
+// The src RR firmware begins by initializing a bunch of variables,
+// then queueing a DMA Lowpri Read Assist to fetch a batch (8) tx
+// descriptors from LINC's SDRAM. It then sits in a loop watching
+// the main event register. The events are ordered in priority and
+// if any event notifications are present, RR jumps to the event handler
+// for each event, in order of priority. See rr_src.s itself for the
+// initialization and mainloop. This file shows the flow of the event
+// handlers.
+
+// Notation:
+// variable names beginning G_ are globals
+// var names beginning L_ are local/temp
+// labels beginning eh_ are the event handlers (jump eh_* from main event loop)
+// The var names in rr_src.s don't have the G_ L_ prefix. Some globals
+// are maintained in CPU registers - see rr_src.h for register names, and
+// the rest are in local memory. Local vars (L_*) are usually in temp
+// (t0-t9) regs in rr_src.s.
+
+// -----------
+// Global vars:
+// -----------
+// (These are CPU registers:)
+// G_localXDp   - pointer to local copy of LINC xmit desc for processing
+// G_lincXDp - pointer (CPCI-bus address) to next xmit desc to be
+//	      processed, in LINC's SDRAM
+// G_txdatap - ptr to location in tx data ring to set up next DMA to.
+// G_rrState  - state of rr command processing:
+//	NORMAL_STATE	- normal command processing
+//	CMD_WAIT_STATE	- ran out of commands to process, waiting for
+//			  another batch of tx descrs to be DMA-ed from
+//			  LINC's SDRAM
+//	DESC_WAIT_STATE - rr h/w's tx desc ring full
+//	DATABUF_WAIT_STATE - rr h/w's tx data buffer full
+//	RDHIDA_WAIT_STATE  - Rd HiPri DMA Assist queue full
+//			     (used for DMAing data from LINC SDRAM into
+//			     h/w's tx data buffer)
+//	FLUSH_STATE - high order bit to be ordered with one of above
+//		      (got a transmit error or timeout and we are looking
+//		       for the end of packet or connection)
+// G_evtMask - Event Mask register for pri/joff
+// (These are in memory:)
+// G_perm_conn	- number of requests we have seen for perm conn
+//		  these are negated by dummy descrs to drop conn.
+// G_stimeo - source timeout (in microseconds)
+// G_evtab_cons, G_evtab_prod - ptrs for local event ring
+// G_linc_evrp - next place to write in LINC's event ring
+
+// Notes on use of DMA assist:
+// --------------------------
+// RR h/w provides 4 DMA assist engines, Rd Hipri, Rd Lopri,
+// Wr Hi and Wr Lopri. Each engine has its own rings of descriptors,
+// managed with the usual Cons/Prod/Ref pointer registers. The D.A.
+// engine always runs Hi Pri requests before low pri. We use Read HiPri for 
+// DMAing data from LINC SDRAM into RR SRAM, (which is also going out the
+// wire in flowthrough mode) and Rd LoPri for fetching tx descrs from
+// LINC. We don't use Write HiPri at all. Wr LoPri is used for returning
+// event msgs (tx done/error acks) to the 4640.
+// The RR  has independent Read and Write channels but we are configuring
+// it so that only one channel is active at a time, so writes of events
+// going back to the host don't interfere with Reads of data flowing
+// out through the wire. In the one-channel-active mode, Rd HiPri
+// always run first. Only when there RD HiPri ring is empty does the
+// D.A. engine alternate Rd and Wr loPri requests.
+
+// Note of behaviour of Transmit Buffer Producer and Consumer 
+// -----------------------------------------------------------
+// These are pointers to long words - last 3 bits are hardcoded
+// zero and not writeable. Consumer reg. behaviour is _very_ quirky
+// and not properly documented in the RR spec, but this is what
+// I've found through trial and error:
+// You can start the I-field on 
+//	1. a odd word, so that the data starts on the next double-word
+//	   e.g. I-field at 0x404, data at 0x408.
+//	2. an even word, so data follows it on the second half of that
+//	  double word e.g. I-field at 0x800, data at 0x804.
+// In mode (1), to indicate that the data is not there yet, you need
+// to point the producer index at 0x408 or a little (less than 1k) 
+// after. If the producer is at 0x400 or less, when the h/w reads the 
+// descriptor, it loads 0x408 into the consumer, and because cons != prod,
+// assumes a non-empty wrapped ring chock full of data, and starts
+// transmission immediately. At the end of transmission, consumer index
+// is left pointing !! *** 2 words past ***!! the end of data - e.g. if
+// the descriptor had said startaddr=0x404, len=0x400, the data starts
+// at 0x408 and ends at 0x808, but the Consumer will read 0x810 at the
+// end of the packet. If length is odd number of words, e.g. len=0x204,
+// Consumer ends 12 bytes after end of data described i.e. data ends
+// at 0x60c but Consumer will be at 0x618.
+//
+// In mode (2), also make sure that the producer points to the next
+// double word (i.e. address 0x808) or after if you don't want 
+// transmission to start immediately. In this mode, Consumer ends in a
+// non-deterministic 4 or 12 bytes after end of data described by the
+// descriptor e.g. if descr.startaddr=0x800,descr.len=0x200, this means
+// that data runs from 0x804 to 0xa04. But at end of transmission, I have
+// seen consumer reg at either 0xa08 or 0xa10 - no discernible other factors
+// for when it does which.
+// 
+// To deal with this behaviour, the firmware will always start an Ifield
+// on an odd word, so that data begins on a double word. In the rd hi
+// dma assist descriptor's fw2 field we store the value to load into
+// the Tx Data producer register to indicate that this data has arrived.
+// We cannot just point the Prod reg to the end of this chunk of data - 
+// we must point it 8 bytes into the _next_ chunk of data after this,
+// otherwise the h/w will start transmission of the next descriptor before
+// its DMA has started.
+//
+// Also, because of the erratic behaviour of the Consumer pointer, we
+// will keep our own Consumer pointer to determine tx buffer space available,
+// and it will be updated in the event handler. This is also a little more
+// efficient since we pad to nKB boundaries for each descriptor and the
+// Consumer doesn't "consume" these pad bytes.
+
+//
+// Statistics
+//	dmardattns  - # of dma read attention notifications
+//	dmawrattns  - # of dma write attn notif
+//	stimeouts   - # of src timeouts
+
+
+// eh_DArldone() 
+//	event handler for rd lo pri DMA assist completion
+//	i.e. we just fetched a chunk of tx descs from LINC's
+//	SDRAM for processing
+
+eh_DArldone:
+    advance RdLo DA reference;
+
+    if (G_rrState & FLUSH_STATE) {
+	G_rrState &= ~FLUSH_STATE;
+	goto flush_queue;
+    }
+
+    // assert G_rrState == CMD_WAIT_STATE
+eh_sw3:
+    G_EventMaskReg &= ~SW3_BIT;
+    if (G_localXDp entry not valid)
+    {
+get_more_cmds:
+	G_localXDp = lxdtab;
+	queue another dma fetch; // 8 descs from G_lincXDp to lxdtab
+	G_rrState = CMD_WAIT_STATE;    // no outstanding LINC xmits
+	return to main event loop;
+    }
+
+    flip next_valid var;
+
+    if (TxDesc Producer == Reference) // gone too long without sending ack
+    && (Ref != Cons)
+    {
+	jalr send_xmitOK_ack;	    // this advances Ref to current Cons
+    }
+
+    if (rr tx desc ring full)
+    {
+	G_rrState = DESC_WAIT_STATE;   // waiting for space in TX desc ring
+	return to main event loop;
+	// tx-done EH will come back to desc_wait_retry if
+	// G_rrState == DESC_WAIT_STATE
+    }
+
+desc_wait_retry;
+
+    L_txdp = txdProdReg;
+
+    fill out rr tx descr;  
+    L_txdp->{si,addr} = G_localXDp->SI | G_txdatap;
+    L_txdp->{flags,len} = G_localXDp->flagsnlen;
+
+    txd_shadow_tab[producer index].lincaddr = G_lincXDp;
+
+    if (flag & DUMMY_DESC)
+    {
+	if (--G_perm_conns <= 0)
+	    turn off perm conn config bit;
+	advance txdProdReg;
+	jump advance_cmdptrs;
+    }
+
+    rdhidap = DARdHIProd;
+    // If prod is one short of ref, we are in danger of losing
+    // event notificatons on DMA asst completion events.
+    if (rdhidap + 1 == DARdHiRef)
+    {
+	G_rrState = RDHIDA_WAIT_STATE;	// waiting for Rd HiPri DMA assist 
+	return to main event loop;
+	// rdhi DMA assist completion EH should come to rdhida_wait_retry
+	// if G_rrState == RDHIDA_WAIT_STATE
+    }
+
+rdhida_wait_retry:
+databuf_wait_retry:
+    L_spaceleft = (txdata_cons - (G_txdatap + 12)) & 0xfffffc00; // to 1KB
+    // adjusted for wrap, of course.
+
+    if (L_spaceleft <= 0)
+    {
+	s_dbuf_full++;
+	G_rrState = DATABUF_WAIT_STATE;	// waiting for space in tx data ring
+	return to main event loop;
+	// tx done EH will come back to databuf_wait_retry
+	// if G_rrState == DATABUF_WAIT_STATE
+    }
+
+    L_dmalen = G_save_dlen;
+
+    if (L_dmalen == 0) // must be start of descriptor processing
+    {
+	L_txdp = txDescProdReg;
+	*G_txdatap = localXDp->ifield;
+	G_txdatap += 4; // data always starts on even word.
+	L_spaceleft -= 4;
+	if (G_txdatap == TX_BUF_END)
+	    G_txdatap = TX_BUF_BEGIN;
+	L_haddr = localXDp->addr;
+	L_dmalen = localXDp->len;
+
+	// txd producer still points to filled descr, not advanced yet.
+	if (localXDp->flag & PERM_CONN)
+	    ++G_perm_conns;
+	HX_StateReg |= PERM_MODE;
+    }
+    else
+    {
+	// continued DMA for same descriptor, came here through 
+	// Txdone or rdhiDAdone event handlers
+	L_txdp = txDescProdReg - 1;
+	L_haddr = G_saved_haddr;
+    }
+
+txd_setup_done:
+    // In setting up DMA we don't have to worrry about Tx buffer ring
+    // wrap as the hardware takes care of that for us. We do however
+    // have to check for space left in the buffer, dma max of < 64K,
+    // and for host buffer crossing a 64K boundary - the rr's dma hw
+    // wraps to top of 64K region instead of crossing the 64K boundary!
+
+do_dma:
+    rdhidap->fw1 = L_txdp;
+    rdhidap->hostaddr = L_haddr;
+    rdhidap->localaddr = G_txdatap;
+    L_dma_max = 0x10000 - (L_haddr & 0xffff);
+    L_thislen = min (L_spaceleft, L_Len, MAX_DMA, L_dma_max);
+    rdhidap->dmalen = L_thislen;
+    RdHiDAprod = rdhidap + 1;		// queue DMA
+    G_txdatap += thislen;
+    L_dmalen -= thislen;
+    if (L_dmalen == 0)
+    {
+	// All done with this descriptor
+	/* pad to 1KB boundary from start of packet data */
+	G_txdatap = L_txdp->address + 4 // for I-field
+		    + ((L_txdp->length + 0x3ff) & 0xfffffc00);
+	L_more = 0;
+	G_saved_dlen = 0;
+    }
+    else
+    {
+	L_spaceleft -= L_thislen;
+	L_haddr += L_thislen;
+	L_more = 1;
+    }
+
+lab1:
+    if (G_txdatap >= TX_BUF_END)
+	G_txdatap -= TX_BUF_SIZE;
+    rdhidap->fw2 = G_txdatap;
+    if (L_more == 0) {
+	txd_shadow_tab[this descr].dataend = G_txdatap;
+	rdhidap->fw2 = G_txdatap + 8;	// where next data will start
+	check fw2 for ring wrap;
+	G_txdatap += 4;	    // where next Ifield starts
+    }
+    txDescProdReg = L_txdp + 1;	// if this was w-i-p, this is unnecessary
+				// but harmless
+
+    if (L_txdp == TxDescRef)
+    {
+	timerRefReg = timerReg + G_stimeo;
+	EventMaskReg |= TimerEvtBit;
+    }
+
+    // If the DMA register we queued is the next one to run,
+    // wait for it to start, and advance the TX Data Producer
+    // else we wait for DMA assist to get around to processing
+    // this one before we advance the producer. This will be handled
+    // in the RdHi DMA assist done event handler
+    if (rdhidap == RdHiDAReference)
+    {
+	L_thislen -= DMA_HEADSTART;
+	i = 0x800000;
+	while (1) {
+	    L_DAstate = AssistStateReg;
+	    L_DACons = DRHi_ConsReg;
+	    if (L_DACons != rdhidap)
+		break;	// all done already
+	    if (L_DAstate & RD_HI_SEL)
+	    {
+		L_len = DR_LengthReg;
+		if (L_len < L_thislen)
+		    break;
+	    }
+	    if (--i <= 0)
+		goto chk_more;	    // DMA hung - deal with this in
+				    // eh_dma_attn
+	}
+	XMT_ProdReg = rdhidap->fw2;
+    }
+
+chk_more:
+    if (L_more)
+    {
+	rdhidap = DRHi_ProdReg;
+	if (rdhidap + 1 == DRHi_ConsReg)
+	    rrState = RDHIDA_WAIT_STATE;
+	else if (L_spaceleft <= 0)
+	    rrState = DATABUF_WAIT_STATE;
+	else
+	    jump do_dma;   // fill out another DMA descr for rest of data
+	G_saved_dlen = L_dmalen;
+	G_saved_haddr = L_haddr;
+	jump main_loop;
+	// don't advance linc tx desc ptrs because we aren't done with
+	// it yet.
+    }
+
+advance_cmdptrs:
+    // All done with this linc tx desc entry, advance both local
+    // mem and sdram pointers to next tx desc
+    if (G_localXDp->flags & WRAP_NEXT)
+	G_lincXDp = top of table in LINC SDRAM;
+	jump get_more_cmds;	// the rest of the stuff we fetched
+				// is useless as it was out of range
+    else
+	++G_lincXDp;
+
+    if (++G_localXDp == end of lxdtab) // end of local table
+	jump get_more_cmds;
+
+    G_rrState = NORMAL_STATE;
+    G_EventMaskReg |= SW3_BIT;
+
+    return to main event loop;
+    // check if any higher pri events need attention before
+    // processing another descriptor.
+
+// Logical end of eh_DArldone and eh_sw3 event handler routines
+
+
+// We're in queue flushing mode. Looking for a desc where neither 
+// MB nor CC are set. Everything before that just gets tossed.
+// The final one gets a DESC_FLUSH ack returned to 4640.
+// On entry,
+//	G_localXDp -> next local txdesc to be processed
+//	G_lincXDp -> LINC's copy of this same descriptor
+flush_queue:
+    if (G_rrState == NORMAL_STATE)
+    {
+	if (G_localXDp entry not valid)
+	{
+flush_more_cmds:
+	    G_localXDp = lxdtab;
+	    queue another dma fetch; // 8 descs from G_lincXDp to lxdtab
+	    G_rrState = FLUSH_STATE | CMD_WAIT_STATE; 
+			    // no outstanding LINC xmits
+	    return to main event loop;
+	}
+	flip next_valid var;
+    }
+    else    // validity bit already checked and flipped
+    {
+	G_rrState = NORMAL;
+    }
+
+    if (G_localXDp->flag & (MB | CC))
+	jump flush_next_cmd;
+
+    if (flag & DUMMY_DESC)
+    {
+	if (--G_perm_conn <= 0)
+	    turn off perm conn config bit;
+    }
+    // Found the end of flush that we are waiting for.
+    queue_evt_msg (G_lincXDp, DESC_FLUSH); // let 4640 know desc avail for reuse
+    jump advance_cmdptrs;   // go to normal desc processing loop
+
+flush_next_cmd:
+    // All done with this linc tx desc entry, advance both local
+    // mem and sdram pointers to next tx desc
+    if (G_localXDp->flags & WRAP_NEXT)
+	G_lincXDp = top of table in LINC SDRAM;
+	jump flush_more_cmds;	// the rest of the stuff we fetched
+				// is useless as it was out of range
+    else
+	++G_lincXDp;
+
+    if (++G_localXDp == end of lxdtab) // end of local table
+	jump flush_more_cmds;
+
+    jump flush_queue;
+
+
+// eh_DArhdone()
+// Event handler for completion of a Rd HiPri DMA Assist
+// This means that a chunk of transmit data has been DMA-ed from
+// the LINC SDRAM into the tx data ring
+//
+// Since we work in flow-through mode, we have already
+// advanced the Tx Producer pointer before this DMA completed,
+// so the thing to do now is to go on to the next Tx desc
+// and lie about _that_ data.
+
+eh_DArhdone:
+    ++rdhidaRefReg;
+
+    // if there is another data dma queued, wait for it
+    // to start and tell RR xmit logic that it's arrived
+    i = 0x800000
+    while (ref != prod) 
+    {
+	if (reference != consumer)
+	{
+	    // descr pointed to by ref is already DMAed, so 
+	    // advance the TxDataProd register to indicate
+	    // that data present
+	    TxDataProdReg = reference->fw2;
+	    ++ref;
+	    continue;
+	}
+	// else h/w should be working on this one.
+
+	target_len = ref->dmalen - HEADSTART;
+	if ((DAstate & RD_HI_SEL) && (DMAreadState & DMA_ACTIVE) {
+		rem_len = DMAreadLenReg;
+		if (rem_len < target_len)
+		{
+		    TxDataProdReg = reference->fw2;
+		    goto end_rdhdaloop
+		}
+	}
+	if (--i <= 0)	// should not happen unless DMA is hung
+	    break;
+    }
+end_rhdaloop:
+    if (G_rrState == RDHIDA_WAIT_STATE)
+	jump rdhida_wait_retry;
+    else
+	jump main_loop;
+
+// end of RdHi DMA Assist done handler
+
+// eh_txdone()
+//
+// Event Handler for a Transmit Complete event.
+// Check Consumer Register, send ack to LINC for that desc 
+// (this implies acks for everything up to here)
+
+eh_txdone:
+    jalr send_xmitOK_ack;
+
+    // if no more transmits queued, cancel timer
+    if (TxDescRefReg == TxDescProdReg)
+	G_EventMask &= ~TIMER_EVT_BIT;
+
+    if (G_rrState == DESC_WAIT_STATE)
+	jump desc_wait_retry;
+
+    if (G_rrState == DATABUF_WAIT_STATE)
+	jump databuf_wait_retry;
+
+    jump main_event_loop;
+
+send_xmitOK_ack:
+    timerRefReg = timerReg + G_stimeo;
+    temp1 = TxDescConsReg;
+    TxDescRefReg = temp1;
+    temp2 = txd_shadow_tab[RefReg index - 1].lincaddr; // last one xmitted
+    txdata_cons = txd_shadow_tab[RefReg index - 1].dataend;
+    queue_evt_msg(temp2, XMIT_OK);
+    jr r31;
+
+// eh_txattn
+//
+// Event handler for a Transmit Attention.
+// The RR tx hw is halted at this point, waiting for us to clean up
+// and restart it. TxD Consumer should be pointing at the problem
+// descriptor. If descr requiring attention does not have MB or
+// CC set, we just send back an error event for this tx desc. Otherwise
+// we need to flush to end of packet or connection.
+// 
+eh_txattn:
+
+    L_tdp = txDescConsReg;   // problem descriptor
+
+    DAStateReg |= PAUSE_BIT;	// pause DMA assist (current DMA completes)
+				// we may need to cancel some DMAs
+    // PAUSE bit allows current dma to complete, and DA Consumer to
+    // be updated, but no further processing of further queued entries.
+
+    if (L_tdp != txDescRefReg)	// we have good xmits not acked,
+	send_xmitOK_ack;	// go ack those first
+
+    L_wip_flushed = 0;	    // If we were midway through processing
+			    // a descriptor and decided to flush it,
+			    // need to advance linc desc tab pointers
+
+    // Scan hw tx queue for End of Packet/Connection desc
+    // We will set TxDescCons past end of packet if we find it.
+scan_loop:
+    if ((L_tdp->flags & (MB | CC)) == 0) // EOP&EOC found
+    {
+	if (L_tdp+1== TxDescProdReg) && (G_saved_dlen != 0))
+	    L_wip_flushed = 1;
+	goto end_scanloop
+    }
+    if (++L_tdp != TxDescProdReg)
+	goto scan_loop
+    // else end of queue reached, no EOC&EOP found
+    G_rrState |= FLUSH_STATE;
+    --L_tdp;
+    // fall through
+end_scanloop:
+
+    // L_tdp points to last desc. to be error-acked.
+
+    // Go through DMA assist Rd Hipri queue - try to cancel
+    // queued DMA assist entries for the flushed Tx Descs,
+    // we may or may not be able to advance the DA RdHiCons reg
+    // depending on whether it is currently active. But at least
+    // we can zero out the DMA lens so that if they are run, they
+    // won't run for long.
+
+    L_dmaflushed = 0;
+    wrap = (L_tdp >= TxDescCons) ? 0 : 1;
+
+    for (temp1 = RdHiDAConsReg; temp1 != RdHiDAProdReg; temp1++)
+    {
+1:
+	// is it for a flushed descr?
+	if (!wrap) {
+	    if ((temp->fw1 < TxDescCons) || (temp->fw1 > L_tdp)))
+		break;
+	}
+2:
+	else {	// wrap
+	    if ((temp->fw1 < TxDescCons) && (temp->fw1 > L_tdp)))
+		break;
+	}
+4:
+	// else it is for a flushed descriptor
+	TxDataProdReg = temp1->fw2;	// advance Tx Data Prod past this.
+	temp1->DMAlen = 0;
+	L_dmaflushed++;
+    }
+5:
+    // if flushed any, we must update DARdHi Cons & Ref regs
+    if (L_dmaflushed)
+    {
+	wait for any RdHi DMA to complete;
+	RdHiDAConsReg = temp1;
+	RdHiDARefReg = temp1;	// we don't want notification
+				// for any of the flushed ones.
+    }
+3:
+    DAStateReg &= ~PAUSE_BIT;	// resume DMA assist
+
+tx_error_ack:
+    // L_tdp points to last desc. to be error-acked.
+    arg1 = Linc_txdaddr_tab[L_tdp index];
+    arg2 = HippiTransmitStateReg.error_event, translated;
+    // error_event of zero should be translated as timeout because
+    // we jumped eh_tx_attn from the timeout handler.
+    queue_evt_msg(arg1, arg2);
+
+    TxDescConsReg =
+    TxDescRefReg = ++L_tdp;
+
+    if (TxDescProdReg != L_tdp)
+    {
+	txdata_cons = txd_shadow_tab[(L_tdp-1) & TXDESC_INDEX].dataend;
+	timerReFReg = timerReg + G_stimeo;
+	G_EventMaskReg |= TimerEvtBit;
+	TxDataConsReg = L_tdp->start_addr;
+    }
+    else // empty tx desc ring
+    {
+	TxDataProdReg = top of databuf + 8;
+	txdata_cons = TxDataConsReg = G_txdatap = top of databuf;
+	G_txdatap += 4;
+	G_saved_dlen = 0;
+	G_EventMaskReg &= ~TimerEvtBit;
+    }
+
+restart_interface:
+    // reset transmit interface
+    HippiTransmitStateReg &= ~ENABLE_TRANSMIT_BIT;
+    HippiTransmitStateReg |= ENABLE_TRANSMIT_BIT;
+
+    if (L_dmaflushed)
+    {
+	// if there is another data dma queued, wait for it
+	// to start and tell RR xmit logic that it's arrived
+	if (reference != producer)
+	{
+	    // firmware1 field in rdhida entry points to filled-out 
+	    // tx desc waiting for data to arrive from LINC SDRAM
+	    while (1)
+	    {
+	    	if (ref != cons)
+		   break;  // done!
+		if (DMA Assist State does not indicate RDHI selected and active)
+		   continue;
+		if (DMA not begun)
+		   continue;
+		if headstart reached break;
+	    }
+	    TxDataProdReg = reference->fw2;
+	}
+	if ((G_rrState == RDHIDA_WAIT_STATE) && !L_wip_flushed) // no flush bit
+	    jump rdhida_wait_retry;
+    }
+
+    if (G_rrState & FLUSH_STATE) 
+    {
+	// waiting for more descriptors from LINC
+	if (G_rrState == (FLUSH_STATE | CMD_WAIT_STATE))
+	    jump main_event_loop;
+
+	G_rrState &= ~FLUSH_STATE;
+
+	if (G_rrState == NORMAL_STATE)
+	    G_evtMask &= ~SW3BIT;
+
+	jump flush_queue;
+    }
+
+    if (L_wip_flushed)
+	jump advance_ptrs;
+
+    if (G_rrState == DESC_WAIT_STATE)
+	jump desc_wait_retry;
+
+    if (G_rrState == DATABUF_WAIT_STATE)
+	jump databuf_wait_retry;
+
+    jump main_event_loop;
+
+
+// eh_rxattn
+// 
+// 1. Clear error bits in HIPPI Receive State Reg
+// 2. Update mbox31 and send interrupt to 4640.
+eh_rxattn
+    tmp_state = HR_StateReg;
+    HR_StateReg = tmp_state;	// write same thing back to clear
+
+    if ((tmp_state & RX_STATE_LNKRDY|RX_STATE_FLGSYNCD) ==
+	    RX_STATE_LNKRDY|RX_STATE_FLGSYNCD)
+	mbox31 = INIT_STATUS;
+    else
+	mbox31 = GLINK_NOT_READY;
+    
+    MiscLocalReg |= 4;	// send PCI Interrupt on Pin A
+    TRACE (TOC_RXATTN, tmp_state);
+
+    jump main_event_loop;
+
+//
+// LINC EventRing stuff
+//
+// evt msgs go back to LINC through Write LoPri DMA Assist.
+// We only queue one DA at a time.
+//
+// There is a G_evtab (local Event Ring) where we stash events
+// going back to the LINC, valid entries are demarcated by the
+// usual Prod/Cons ptrs.
+//
+// G_evtab is big enough to where we should never have to
+// check for ring full. The ring has an even number of entries,
+// so that the event bit is dependent on the entry's oddness
+// (ent[0],ent[2],ent[4],...,have VB=1, ents[1],[3].... have VB=0
+// Since each entry is 4 bytes, ring is ".align 8"
+initER()    // called from general init
+{
+    G_evtab_cons = G_evtab_prod = G_evtab;
+}
+
+queue_evt_msg (lincaddr, result)
+{
+    // Can we piggyback?
+    if ((G_evtab_prod != G_evtab_cons)	// ring not empty
+    &&  ((G_evtab_prod-1)->result == result))	// result is same
+    {
+	// piggyback by changing address of last descr with this result
+	(G_evtab_prod-1)->lincaddr = lincaddr;
+	return;
+    }
+
+no_piggy_back:
+
+    if (G_evtab_prod & 4)
+	*G_evtab_prod = result | (lincaddr & 0xFFFFFF);
+    else
+	*G_evtab_prod = 0x80000000 | result | (lincaddr & 0xFFFFFF);
+
+    ++G_evtab_prod;	// adjusting for wrap
+
+    if (WrLoDAProdReg == WrLoDARefReg)	// nothing queued, send some
+    {
+	WrLoDAProdReg->hostaddr = G_linc_evrp;
+	WrLoDAProdReg->localaddr = G_evtab_cons;
+	// Check for ring wraps in determining how much to send.
+	if (G_evtab_prod < G_evtab_cons) // local ring wrap, send to ring end
+	    L_len = G_evtab_end - G_evtab_cons;
+	else
+	    L_len = G_evtab_prod - G_evtab_cons;
+
+	if ((G_linc_evrp + L_len) >= G_linc_evring_end) // LINC ring wrap
+	{
+	    L_len = G_linc_evring_end - G_linc_evrp;
+	    G_linc_evrp = G_linc_evring;	// reset to top
+	}
+	else
+	    G_linc_evrp += L_len;
+
+	WrLoDAProdReg->dmalen = L_len;
+	G_evtab_cons += L_Len; // adjusting for wrap
+
+	++WrLoDAProdReg;    // despatch DMA;
+    }
+}
+
+// eh_DAwldone
+// Event handler for Write LoPri DMA completion.
+//
+// Event msgs for LINC are sent through WrLo DA
+// See if we have more to go.
+
+eh_DAwldone:
+    WrLoDARefReg = WrLoDAConsReg;
+    assert (WrLoDARefReg == WrLoDAProdReg);
+
+    if (G_evtab_prod != G_evtab_cons) 
+    {
+	WrLoDAProdReg->hostaddr = G_linc_evrp;
+	WrLoDAProdReg->localaddr = G_evtab_cons;
+
+	// Check for ring wraps in determining how much to send.
+	if (G_evtab_prod < G_evtab_cons) // local ring wrap, send to ring end
+	    L_len = G_evtab_end - G_evtab_cons;
+	else
+	    L_len = G_evtab_prod - G_evtab_cons;
+
+	if ((G_linc_evrp + L_len) >= G_linc_evring_end) // LINC ring wrap
+	{
+	    L_len = G_linc_evring_end - G_linc_evrp;
+	    G_linc_evrp = G_linc_evring;	// reset to top
+	}
+	else
+	    G_linc_evrp += L_len;
+
+	WrLoDAProdReg->dmalen = L_len;
+	G_evtab_cons += L_Len; // adjusting for wrap
+
+	++WrLoDAProdReg;    // despatch DMA;
+    }
+    jump main event loop;
+
+
+// eh_dma_rd_attn
+//
+// Event handler for DMA Read attention
+//
+// TBD - not clear from documentation what state DMA Assist engine
+// is in, where does Consumer Reg point (problem desc or one after)
+// when restarted, where does it resume. Need to investigate with
+// real hardware.
+eh_dma_rd_attn:
+    ++dmardattn;
+
+eh_dma_wr_attn:
+    ++dmawrattn;
+
+
+// Event handler for timeout
+//
+// The only timeouts we set is transmit timeout (for dest hang
+// or switch retrying with CAMP-ON bit)
+eh_timer:
+:    ++s_timeout;
+    // make sure it isn't because we've just been too busy to
+    // deal tx done events
+    if (MainEventReg & txDoneEvtBit)
+    {
+	timerRefReg = timerReg + G_stimeo;
+	if (txDescProdReg == txDescConsReg)
+	    EventMaskReg &= ~TimerEvtBit;
+	jump main_event_loop; // go deal with the tx done from regular EH
+    }
+
+    // assert (txDescProdReg != txDescConsReg)
+    HippiTransmitStateReg &= ~ENABLE_TRANSMIT_BIT;
+    jump eh_tx_attn;
+
+
+// Event mailbox
+//
+// We use mboxes for configurables which can be changed at runtime
+// Configurables defined:
+//	mbox1 - source timeout value in microseconds
+eh_mbox:
+    G_stimeo = *mbox1;
+    MboxEvtReg = 0xffffffff;
+
+    if (HR_StateReg & (LINKREADY | FLAGSYNCED) )
+       status_mbox = INIT_SUCCESS;
+    else
+       status_mbox = GLINK_NOT_RDY;
+    return to main event loop;

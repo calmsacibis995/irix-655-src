@@ -1,0 +1,68 @@
+#ident  "$Revision: 1.1 $"
+#       Copyright (c) 1990, 1991 UNIX System Laboratories, Inc.
+#       Copyright (c) 1984, 1986, 1987, 1988, 1989, 1990 AT&T
+#        All Rights Reserved
+#
+#       THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF
+#       UNIX System Laboratories, Inc.
+#       The copyright notice above does not evidence any
+#       actual or intended publication of such source code.
+#BEGIN
+INCORRECT_USAGE:Incorrect usage\n
+UXUE_2:Usage: banner \"up to 10 char arg string\" . . .\n
+CANNOT_OPEN_FORMAT:Cannot open %s: %s\n
+NOHUP_USAGE:Usage: nohup command arg ...\n
+SENDING_OUTPUT_TO_NOUT_FILE:Sending output to %s\n
+ERR_MSG_FOR_EXECVP:%s: %s\n
+UXUE_7:Switch failed: %s\n
+UXUE_8:Resuming %s\n
+UXUE_9:chown() on %s failed: %s\n
+UXUE_10:Virtual tty ioctl failed: %s\n
+UXUE_11:Trying to save bad tty %d\n
+UXUE_12:Savetty ioctl fails %d\n
+UXUE_13:Trying to reset bad tty %d\n
+UXUE_14:Resettty ioctl fails %d\n
+UXUE_15:Layer %s already exists\n
+UXUE_16:Only %d layers allowed\n
+UXUE_17:Layer %s not found\n
+UXUE_18:Cannot open pipe for synchronization: %s\n
+UXUE_19:Cannot set group or user id: %s\n
+UXUE_20:Virtual tty open failed: %s\n
+UXUE_21:Error on virtual tty open\n
+UXUE_22:Synchronization problem: %s\n
+UXUE_23:Cannot execute %s: %s\n
+UXUE_24:fork() failed: %s\n
+UXUE_25:block name [name ...]\n
+UXUE_26:create [name]\n
+UXUE_27:delete name [name ...]\n
+UXUE_28:help or ?\n
+UXUE_29:layers [-l] [name ...]\n
+UXUE_30:quit\n
+UXUE_31:toggle\n
+UXUE_32:resume [name]\n
+UXUE_33:unblock name [name ...]\n
+UXUE_34:No control channels available: %s\n
+UXUE_35:SXT driver not configured: %s\n
+UXUE_36:No memory for kernel configuration: %s\n
+UXUE_37:Not using a tty device: %s\n
+UXUE_38:Out of streams buffers: %s\n
+UXUE_39:Multiplex failed: %s\n
+UXUE_40:Real tty open failed: %s\n
+UXUE_41:Could not reset permissions on sxt devices\n
+UXUE_42:ioctl() I_UNLINK failed: %s\n
+UXUE_43:Cannot invoke shl from within layers\n
+UXUE_44:Cannot find your utmp entry\n
+UXUE_45:Cannot determine your login terminal\n
+UXUE_46:Switch to channel 0 failed: %s\n
+UXUE_47:There may still be shl layers running\n
+UXUE_48:ioctl() SXTIOCSTAT failed: %s\n
+UXUE_49: blocked on input\n
+UXUE_50: blocked on output\n
+UXUE_51: executing or awaiting input\n
+UXUE_52:Syntax error\n
+UXUE_53:Illegal tabs\n
+UXUE_54:Unknown tab code\n
+UXUE_55:Illegal increment\n
+UXUE_56:File indirection\n
+UXUE_57:ioctl() failed: %s\n
+#END

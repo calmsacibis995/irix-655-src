@@ -1,0 +1,110 @@
+#ident $Revision: 1.133 $
+#
+# Common definitions for man page Makefiles
+#
+
+include $(ROOT)/usr/include/make/commondefs
+include $(RELEASEDEFS)
+
+MMDOC	    = $(TOOLROOT)/usr/lib/doc/tools/mmdoc
+GETNAMES    = $(TOOLROOT)/usr/lib/doc/tools/getnames
+ADDINST	    = $(TOOLROOT)/usr/lib/doc/tools/addinst
+MPATH	    = $(ROOT)/usr/lib/doc/macros
+MAN2HTML    = $(TOOLROOT)/usr/lib/infosearch/bin/man2html
+WEBLINTARGS = -x Netscape
+WEBLINT     = $(TOOLROOT)/usr/lib/infosearch/bin/weblint $(WEBLINTARGS)
+HTML2TERM   = $(TOOLROOT)/usr/sbin/html2term
+PERL5	    = /usr/bin/perl5
+
+# For OpenGL man page processing
+GLTOOLDIR   =
+PREFIX	    =
+APIFILE	    =
+GLMACHDEPS  =
+#	POSTNROFF is a postprocessor for OpenGL man pages to filter
+#	nroff output from mmdoc
+POSTNROFF    = cat
+
+# The values of these variables may be overridden by setting them in the
+# Makefile that is in the same directory as the page you are building.  They
+# must be set after mandefs (this file) is included.
+
+#	LANGOPT must be one of "null", "C", "a", "c", "f, "p", or "atria"
+LANGOPT	    = null
+#	Optional header string
+OPTHEADER   =
+#	Optional footer string
+OPTFOOTER   =
+#	-rt1 for generic header/footers, -rt2 for odd/even headers/footers
+ODDEVEN     = -rt1
+#	-n1 to start each page at 1, -nN to start each page at N
+PAGENUM     = -n1
+
+# MMFLAGS contains flags that are included in the nroff/troff command line
+MMFLAGS     = $(ODDEVEN) $(PAGENUM)
+
+# Replace multiple blank lines with a single blank line
+SQUEEZE     = nawk '{if(NF){print$0;bc=0;}if(!NF&&!bc){print$0;bc++;}}'
+
+# Add string definitions for the extra footer that goes on .p pages
+# and for the optional header and footer fields.
+ADDSTRINGS  = awk  'BEGIN { first = 1; } \
+		    first == 1 && $$0 !~ /^'"'"'\\"/ { \
+			print ".ds Dp '"`date '+%b %d %H:%M'`"'"; \
+			print ".ds Dm '"`ls -l $< | cut -c42-53`"'"; \
+			print ".ds Ys '"`sum $<`"'"; \
+			print ".ds Oh $(OPTHEADER)"; \
+			print ".ds Of $(OPTFOOTER)"; \
+			first = 0; \
+		    } \
+		    { print }'
+
+# If page doesn't start with a magic '\", add a default one.
+ADDMAGIC    = ( case `head -1 $<` in \
+		    "'\\\""*)	cat $< ;; \
+		    _*) $(GLTOOLDIR)/glman $(PREFIX) $(GLTOOLDIR) $< $(APIFILE) $(GLMACHDEPS) ;; \
+		    *)	echo "'\\\"macro stdmacro" ; cat $< ;; \
+		esac ) | $(ADDSTRINGS)
+
+RUNMMDOC    = TMMACRO=$(MPATH) \
+		OTHERFILES="$(MPATH)/Op $(MPATH)/$(LANGOPT) $(MPATH)/localmacs" \
+		$(MMDOC) $(MMFLAGS)
+
+LEGALBASE = [0-z+,%-]*#
+LEGALSUF0 = html#
+LEGALSUF1 = [1-8]#
+LEGALSUF2 = [1-8][a-z]#
+LEGALSUF3 = [1-8]X11#
+LEGALSUF4 = [1-8]Xt#
+LEGALSUF5 = [1-8]il#
+LEGALSUF6 = [1-8]mv#
+LEGALSUF7 = [1-8]dm#
+LEGALSUF8 = d[1-5]#
+LEGALSUF9 = d[2-4]x#
+LEGALNAME0= $(LEGALBASE).$(LEGALSUF0)#
+LEGALNAME1= $(LEGALBASE).$(LEGALSUF1)#
+LEGALNAME2= $(LEGALBASE).$(LEGALSUF2)#
+LEGALNAME3= $(LEGALBASE).$(LEGALSUF3)#
+LEGALNAME4= $(LEGALBASE).$(LEGALSUF4)#
+LEGALNAME5= $(LEGALBASE).$(LEGALSUF5)#
+LEGALNAME6= $(LEGALBASE).$(LEGALSUF6)#
+LEGALNAME7= $(LEGALBASE).$(LEGALSUF7)#
+LEGALNAME8= $(LEGALBASE).$(LEGALSUF8)#
+LEGALNAME9= $(LEGALBASE).$(LEGALSUF9)#
+LISTLEGAL = find . \( -name '$(LEGALNAME1)' -o -name '$(LEGALNAME2)' \
+		-o -name '$(LEGALNAME3)' -o -name '$(LEGALNAME4)' \
+		-o -name '$(LEGALNAME5)' \
+		-o -name '$(LEGALNAME6)' \
+		-o -name '$(LEGALNAME7)' -o -name '$(LEGALNAME8)' \
+		-o -name '$(LEGALNAME9)' -o -name '$(LEGALNAME0)' \) -print \
+		| sed -e 's/^..//' -e '/\//d' | sort -t. +2 +1
+
+XPSVIEW = xpsview
+# this scale (1.0) and geom avoids getting annoying error message
+# boxes about not enough memory
+XPSVIEWOPTS = -wp -skipc -geom 649x768 -
+
+# Ghostview viewing
+GHOSTVIEWOPTS = -
+GHOSTVIEW = ghostview
+

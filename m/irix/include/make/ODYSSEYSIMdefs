@@ -1,0 +1,41 @@
+#
+# Product defs for 64-bit IP30 kernel using a R10000 CPU (MP).
+# 
+# 
+SYSTEM	= SVR4
+GRAPHICS= GL4D3
+CPUBOARD= IP30
+COMPLEX = MP
+ENDIAN=
+GFXBOARD= ODYSSEY
+SUBGR= KSIM
+CPUARCH= R10000
+CPUARCH_PRODDEFS=
+KMODEOPT= -DFTEXTADDR=0x$(FTEXTADDR) \
+	  -DHEART_INVALIDATE_WAR 
+KMODEOPT+= -DUSE_ODYSSEY_GRAPHICS -DODSY_SIM_KERN
+
+SUBPRODUCT=
+COMPILATION_MODEL=64
+IOC3_PIO_MODE=0
+include $(RELEASEDEFS)
+
+# Remember to clobber at stand/arcs if FTEXTADDR is changed
+# 
+# Fprom address to determine 3/2 segment RPROM
+#	2 segement (2 * 64KB) = ffffffff9fc20100
+#	3 segement (3 * 64KB) = ffffffff9fc30100
+# 
+FTEXTADDR=ffffffff9fc30100
+
+
+
+
+
+
+
+
+
+
+
+

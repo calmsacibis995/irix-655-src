@@ -1,0 +1,593 @@
+; =======================================================================
+; 
+; Copyright 1996 Silicon Graphics, Inc.
+; All Rights Reserved.
+;
+; This is UNPUBLISHED PROPRIETARY SOURCE CODE of Silicon Graphics, Inc.;
+; the contents of this file may not be disclosed to third parties, copied or
+; duplicated in any form, in whole or in part, without the prior written
+; permission of Silicon Graphics, Inc.
+;
+; RESTRICTED RIGHTS LEGEND:
+; Use, duplication or disclosure by the Government is subject to restrictions
+; as set forth in subdivision (c)(1)(ii) of the Rights in Technical Data
+; and Computer Software clause at DFARS 252.227-7013, and/or in similar or
+; successor clauses in the FAR, DOD or NASA FAR Supplement. Unpublished -
+; rights reserved under the Copyright Laws of the United States.
+;
+; ========================================================================
+
+$Revision: 1.7 $	$Date: 1997/03/17 15:33:59 $
+$Log: rr_dst.pc,v $
+Revision 1.7  1997/03/17 15:33:59  jimp
+add copyright notice
+
+# Revision 1.6  1997/01/22  07:03:58  jimp
+# fixed bug for exactly 64KB DMA's
+#
+# Revision 1.5  1996/12/18  01:45:54  irene
+# Fix for problem with losing DMA Asst completion notifications.
+# Check for producer catching up with Reference rather than with Consumer.
+#
+# Revision 1.4  1996/09/25  00:39:25  irene
+# Padded dst SDRAM buffer so that packet data always starts on a
+# long word.
+#
+# Revision 1.3  1996/09/20  04:37:54  irene
+# Fixed bug - re-calculate lento64kb when wrapping data ring.
+#
+# Revision 1.2  1996/05/14  00:07:45  irene
+# Changed to use DMA assist engine. This is controlled by turning on USE_DA compilation flag.
+#
+# Revision 1.0  1996/05/03  01:58:45  irene
+# No Message Supplied
+#
+
+===================================================================
+// This is the overview PseudoCode file for rr_dst.s. It serves
+// as a high-level description of what rr_dst.s does. 
+
+// The dst RR firmware begins by initializing a bunch of variables,
+// It then sits in a loop watching the main event register. The events
+// are ordered in priority and if any event notifications are present, 
+// RR jumps to the event handler for each event, in order of priority.
+// See rr_dst.s itself for the initialization and mainloop. This file 
+// shows the flow of the event handlers.
+
+#define MAXDLEN	128*1024    // Max len of data to be described by single desc
+#define WDMASTATE	0x20016	    // disable producer compare
+#define DTIMEO		60*1000000	// 1 minute
+
+Global Variables
+----------------
+Those marked (*) are in registers:
+
+(*)evtMask - events we are interested in.
+
+(*)dataRef - set to "endAddress" of last completed rcv descr that we 
+	     processed.
+
+(*)r2ldata_p - next DMA into LINC's receive DATA ring starts here
+
+   r2ldata_c - where 4640 is in consuming data
+
+   r2ldesc_p - next DMA into LINC's receive DESC ring starts here
+
+   r2ldesc_c - where 4640 is in consuming descriptors
+
+(*)ldtab_p   - pointer to next entry to use in the local ring of 
+	       linc decriptors. Staging area of descrs DMA-ed into
+	       LINC's descriptor ring.
+
+(*)rrState - state we are in, one of following:
+    NORMAL_STATE     - normal processing, not held up for any resources
+    LDESC_WAIT_STATE - Descriptor pointed to by ldtab_p is all filled out and
+		    ready to go, but we are waiting for space in the descr
+		    ring in LINC bufmem.
+    LDATA_WAIT_STATE - waiting for space in the receive data ring LINC's
+		    BUFMEM.
+(*)spaceleft - how much space is available for writing in LINC's data ring.
+	       This is the difference between r2ldata_c and r2ldata_p
+	       adjusted for wrap. We always leave a 1KB buffer unused, so
+	       that the producer pointer doesn't catch up with the consumer.
+	       (prod == cons => empty ring)
+(*)lento64kb - how far we can go in a single DMA. The RR h/w cannot cross
+	       64kb boundaries in a single transfer.
+
+  nextDMA - DATA or DESC
+
+  nextvb - toggles between 0x80000000 and 0. Next Validity Bit to use.
+
+  begPkt - denotes whether next data we process will be the beginning
+	   of a packet.
+
+Data structures
+---------------
+1.General Communications Area
+    Contains info initialized by 4640 before it starts us off.
+    Starting at address 128 are the following 4-byte words. 
+    Each is a ChildPCI bus address pointing to a data structure
+    in the LINC SDRAM.
+	l2rtabp   - unused by DST side
+	r2ldesc_s - start of Receive Descriptor Ring
+	r2ldesc_e -   end of Receive Descriptor Ring
+	r2ldata_s - start of Receive Data Ring
+	r2ldata_e - end   of Receive Data Ring
+	lcons_p   - address of 2 words containing the LINC's 
+		    consumer pointers
+2. {lcons_desc, lcons_data} - 2 word structure, local copy of the
+   4640's consumers.
+3. ldesctab - local ring of descriptors we send back to the LINC.
+    Each entry consists of 3 words:
+	word0 - SDRAM addr where data starts (bits 31-26 are clear
+		of CPCI bus attributes)
+	word1 - length of data
+	word2 - flag and status bits
+		bit 31 - VB  (toggling validity bit)
+		bit 30 - IFP (Ifield Present - data is preceded by Ifield)
+		bit 29 - EOP (if 0, packet is continued in next descriptor)
+		bits 28-22 - unused
+		bits 21-0 - rcv desc status from the RR.
+    ldtab_p   - ptr to next entry in ldesctab to write and
+		give to the DMA assist engine
+
+// Bits that are always on:
+#define DEFAULT_EVT_MASK 0x040c0060
+// bit 26 - HIPPI Rx Attn
+// bit 19 - Rd DMA Attn
+// bit 18 - Wr DMA Attn
+// bit  6 - Rcv started
+// bit  5 - Rcv completed
+
+init()
+{
+    evtMask = DEFAULT_EVT_MASK;
+
+    dataRef = RCV_ProdReg = RCV_ConsReg = RCV_BaseReg = RX_BUF_BEGIN;
+
+    RCV_DescRefReg = RCV_DescConsReg = RCV_DescProdReg = RX_DESC_BEGIN;
+
+    r2ldata_c = r2ldata_p = r2ldata_s;
+    r2ldata_size = r2ldata_e - r2ldata_s;
+    spaceleft = r2ldata_e - r2ldata_p - 1024;
+
+    lento64kb = 0x10000 - (r2ldata_p & 0xffff);
+
+    r2ldesc_c = r2ldesc_p = r2ldesc_s;
+    r2ldesc_size = r2ldesc_e - r2ldesc_s;
+
+    ldtab_p = ldtab_s;
+    ldtab_p->haddr = r2ldata_p & 0x03ffffff;
+    ldtab_p->dlen = 0;
+
+    nextvb = 0x80000000;
+    ldtab_p->flags = nextvb;
+    nextvb = 0;
+
+    nextDMA = DATA;
+    begPkt = 1;
+}
+
+/* 
+ * Program Read DMA channel to get the LINC consumer pointers
+ */
+
+#ifdef USE_DA
+update_linc_cons()  // DMA-Assist version
+{
+    DMA_Assist_Desc * dap;
+
+    if ((dap = DRHi_ProdReg) != DRHi_RefReg) // already in progress
+	return;
+
+    dap->haddr = lcons_p;
+    dap->laddr = &lcons_desc;
+    dap->length = 8;
+
+    DRHi_ProdReg = ++dap;
+}
+#else
+update_linc_cons()  // Direct-programmed DMA version
+{
+    if (DR_StateReg & 4)    // DMA active
+	return;
+
+    DR_HAddrLowReg = lcons_p;
+    DR_LAddrReg = &lcons_desc;
+    DR_LengthReg = 8
+    DR_StateReg = 0x16;
+
+    evtMask |= EVT_RDMADONE;
+}
+#endif
+/*
+ * eh_rdDMAdone()
+ *
+ * Cancel event notification and update registers from the DMA 
+ * destination buffer. If we were blocked for resources and resources
+ * have freed up, go take action.
+ */
+#ifdef USE_DA
+eh_DArhdone()
+#else
+eh_rdDMAdone()
+#endif
+{
+#ifdef USE_DA
+    ++DRHi_RefReg;
+#else
+    evtMask &= ~EVT_RDMADONE;
+#endif
+
+    trace (TOC_RDMADONE, lcons_desc, lcons_data);
+#ifdef use_DA
+    if ((rrState == NORMAL_STATE) || (rrState == DADESC_WAIT_STATE)) {
+#else
+    if (rrState == NORMAL_STATE) {
+#endif
+	r2ldata_c = lcons_data;		// update data consumer pointer
+	r2ldesc_c = lcons_desc;		// update desc consumer pointer
+	if ((spaceleft = r2ldata_c - r2ldata_p) <= 0)
+	    spaceleft += r2ldata_size;
+	spaceleft -= 1024;
+	return;
+    }
+
+    if (rrState == LDESC_WAIT_STATE) // waiting for space in LINC's descr ring
+    {
+	r2ldata_c = lcons_data;		// update data consumer pointer
+	if ((spaceleft = r2ldata_c - r2ldata_p) <= 0)
+	    spaceleft += r2ldata_size;
+	spaceleft -= 1024;
+	if (r2ldesc_c != lcons_desc)	// resources freed up
+	{
+	    r2ldesc_c = lcons_desc;
+	    rrState = NORMAL_STATE;
+#ifdef USE_DA
+	    evtMask |= (EVT_RXSTARTED | EVT_RXDONE);
+#endif
+	    send_desc();
+	    return;
+	}
+	else				// go check again.
+	{
+	    update_linc_cons();
+	    return;
+	}
+    }
+
+    // else (rrState == LDATA_WAIT_STATE), waiting for space in LINC's dataring
+	r2ldesc_c = lcons_desc;		// update desc consumer pointer
+	if (r2ldata_c != lcons_data)	// resources freed up
+	{
+	    r2ldata_c = lcons_data;
+	    if ((spaceleft = r2ldata_c - r2ldata_p) <= 0)
+		spaceleft += r2ldata_size;
+	    spaceleft -= 1024;
+	    evtMask |= (EVT_RXSTARTED | EVT_RXDONE);
+	    rrState = NORMAL_STATE;
+	    return;
+	}
+	else				// go check again.
+	{
+	    update_linc_cons();
+	    return;
+	}
+}
+
+eh_rxattn()
+{
+    ++s_rxattns;		// incr stats
+    trace (TOC_RXATTN, HR_StateReg, RCV_DescProdReg);
+    HR_StateReg = 0xff800011;	// clear error bits
+
+    // Then what?? Interrupt dst 4640?
+}
+
+#ifdef USE_DA
+eh_DAwrhidone()
+{
+    DMA_Assist_Desc * dap;
+
+    dap = DWHi_RefReg;
+    while (dap != DWHi_ConsReg) {
+	trace (TOC_WDMADONE,dap->haddr,dap->laddr,dap->dmalen)
+	RCV_ConsReg = dap->fw1;
+	++dap;
+    }
+    DWHi_RefReg = dap;
+
+    if (rrState != DADESC_WAIT_STATE)
+	return;
+
+    rrState = NORMAL_STATE;
+    evtMask |= (EVT_RXSTARTED | EVT_RXDONE);
+    if (nextDMA == DESC)
+	send_desc();
+}
+#else
+eh_wrDMAdone()
+{
+    trace (TOC_WDMADONE,haddr,laddr)
+
+    evtMask &= ~(EVT_WDMADONE);
+    RCV_ConsReg = dataRef;
+
+    if (nextDMA == DESC)
+	send_desc();
+    else
+   	evtMask |= (EVT_RXSTARTED | EVT_RXDONE);
+}
+#endif
+
+
+/* 
+ * This routine is called to send the (filled-out) descriptor 
+ * addressed by ldtab_p to the host. If unsuccessful, rrState
+ * will be set to some non-null (non-normal) state.
+ */
+
+send_desc()
+{
+    // Is there room in the LINC descriptor ring?
+    if ((r2ldesc_c + 12) == r2ldesc_p)	// modulo ringsize
+    {
+	s_lincdesc_waits++;
+	rrState = LDESC_WAIT_STATE;
+#ifdef USE_DA
+	evtMask &= ~(EVT_RXSTARTED | EVT_RXDONE);
+#endif
+#ifdef DTIMEOUT
+	evtMask &= ~EVT_TIMER;
+#endif
+	update_linc_cons();
+	return;
+    }
+
+#ifdef USE_DA
+    DMA_Assist_Desc * dap;
+    dap = DWHi_ProdReg;
+    // Note that ring full is defined by Producer is one short of Consumer
+    // so theoretically the check should be against the consumer, not the
+    // reference. However, if the Producer catches up the the Reference
+    // the hw will still process the rest of the ring, but it no longer
+    // gives us any further notification of DMA-done events.
+    if (dap + 1 == DWHi_RefReg) { // ring full
+	s_dadesc_waits++;
+	rrState = DADESC_WAIT_STATE;
+	evtMask &= ~(EVT_RXSTARTED | EVT_RXDONE);
+#ifdef DTIMEOUT
+	evtMask &= ~EVT_TIMER;
+#endif
+	return;
+    }
+    dap->haddr = r2ldesc_p;
+    dap->laddr = ldtab_p;
+    dap->dmalen = LDESC_ENTRY_SIZE;
+    dap->fw1 = dataRef;
+    DWHi_ProdReg = ++dap;
+#else
+    // Kick off DMA
+    DW_HAddrLowReg = r2ldesc_p;
+    DW_LAddrReg = ldtab_p;
+    DW_LengthReg = LDESC_ENTRY_SIZE;
+    DW_StateReg = 0x20016;   // disable producer compare
+    evtMask |= EVT_WDMADONE;
+#endif
+
+    trace (TOC_LDESC, ldtab_p->haddr, ldtab_p->dlen, ldtab_p->flags);
+    // Set state variables
+    nextDMA = DATA;
+
+    // Update pointers
+    if (++r2ldesc_p == r2ldesc_e)
+	r2ldesc_p = r2ldesc_s;
+    if (++ldtab_p == ldtab_e)
+	ldtab_p = ldtab_s;
+
+    // Init next descriptor
+    ldtab_p->haddr = r2ldata_p & 0x03ffffff;
+    ldtab_p->dlen = 0;
+    ldtab_p->flags = nextvb;
+    nextvb ^= 0x80000000;
+    return;
+}
+
+/*
+ * eh_receive() - event handler for Rcv Started and Rcv Completed events
+ *
+ * Sends data out of h/w Rx data ring into LINCs receive ring.
+ *	rrdp	    - to h/w RX descriptor for this 
+ *			  chunk of data
+ *	dataRef	    - read data starting here in h/w RX data ring
+ *	r2ldata_p   - write data starting here in LINC bufmem
+ *	ldtab_p	    - to current entry in local LINC rcv desc table.
+ *		      With each DMA queued, update ldtab_p->haddr.
+ */
+eh_receive()
+{
+    int rxdone;
+    int validlen;
+    int dmalen;
+
+    RR_RcvDesc * rrdp;
+#ifdef USE_DA
+    DMA_Assist_Desc * dap;
+#endif
+
+    rrdp = RCV_DescConsReg;
+
+    if (spaceleft <= 0) {
+	s_lincdata_waits++;
+	rrState = LDATA_WAIT_STATE;
+#ifdef DTIMEOUT
+	evtMask &= ~(EVT_TIMER|EVT_RXDONE|EVT_RXSTARTED);
+#else
+	evtMask &= ~(EVT_RXDONE|EVT_RXSTARTED);
+#endif
+	update_linc_cons();
+	return;
+    }
+
+#ifdef USE_DA
+    // if DMA assist ring full, go into wait state
+    // Note that ring full is defined by Producer is one short of Consumer
+    // so theoretically the check should be against the consumer, not the
+    // reference. However, if the Producer catches up the the Reference
+    // the hw will still process the rest of the ring, but it no longer
+    // gives us any further notification of DMA-done events.
+    dap = DWHi_ProdReg;
+    if ((dap - DWHi_RefReg) & 0x1ff == 0x1e0)	{ // ring full
+	s_dadesc_waits++;
+	rrState = DADESC_WAIT_STATE;
+#ifdef DTIMEOUT
+	evtMask &= ~(EVT_TIMER|EVT_RXDONE|EVT_RXSTARTED);
+#else
+	evtMask &= ~(EVT_RXDONE|EVT_RXSTARTED);
+#endif
+	return;
+    }
+#endif	// USE_DA
+
+    if (begPkt) {	     // beginning of packet
+	begPkt = 0;
+	if (rrdp->SI) {	    //"Same-Ifield" as prev pkt.
+	    dataRef += 8;
+	    if (dataRef == RX_BUF_END)
+		dataRef = RX_BUF_BEGIN;
+	}
+	else {
+	    dataRef += 4;
+	    ldtab_p->flags |= IFP;
+	    r2ldata_p += 4;	    
+	}
+    }
+
+    // !!! Read Data Producer _before_ Descriptor Producer, otherwise
+    // we could just miss the completion and end up with a data pointer
+    // into the next packet.
+
+    end_data = RCV_ProdReg;
+
+    if (RCV_DescProdReg == rrdp+4)	// rcv not complete
+    {
+	rxdone = 0;
+	if (end_data == dataRef) {
+	    // no new data received, is it hung?
+#ifdef DTIMEOUT
+	    if !(evtMask & EVT_TIMER) {
+		timerRefReg = timerLowReg + DTIMEO;
+		evtMask |= EVT_TIMER;
+	    }
+#endif
+	    return;
+	}
+    }
+    else
+    {
+	rxdone = 1;
+	end_data = rrdp->end_address;
+	if (rrdp->status & LAST_WORD_ODD) {
+	    end_data -= 4;  // adjust for wrap
+	    if (end_data < RX_BUF_BEGIN)
+		end_data += RX_BUF_SIZE;
+	}
+    }
+
+#ifdef DTIMEOUT
+    evtMask &= ~EVT_TIMER;
+#endif
+    if ((validlen = end_data - dataRef) == 0)
+	goto fill_desc;
+    if (validlen < 0)
+	validlen += RX_BUF_SIZE;
+
+#ifdef USE_DA
+    dap->haddr = r2ldata_p;
+    dap->laddr = dataRef;
+#else
+    DW_HAddrLowReg = r2ldata_p;
+    DW_LAddrReg = dataRef;
+#endif
+    dmalen = validlen;
+    if (spaceleft < dmalen)
+	dmalen = spaceleft;
+    if (dmalen >= 0x10000)
+	dmalen = 0xfffc;
+    if (lento64kb <= dmalen) {
+	dmalen = lento64kb;
+	lento64kb = 0x10000;
+	nextDMA = DESC;
+    } else {
+	lento64kb -= dmalen; 
+    }
+    spaceleft -= dmalen;
+
+    // Note that the LINC's data ring is constrained to end at a
+    // 64kb boundary, so the 64kb check catches the ring end case.
+
+    a1 = r2ldata_p;
+    if ((r2ldata_p += dmalen) == rl2data_e) {
+	r2ldata_p = r2ldata_s;
+	lento64kb = 0x10000 - (r2ldata_p & 0xffff);
+    }
+#ifdef USE_DA
+    dap->dmalen = dmalen;
+    DWHi_ProdReg = (dap + 1);
+#else
+    DW_LengthReg = dmalen;
+    DW_StateReg = 0x20016;	// this starts the DMA
+#endif
+    trace (TOC_DATA, a1, dataRef, dmalen);
+
+    ldtab_p->dlen += dmalen;
+    dataRef += dmalen;
+
+    if ((rxdone != 0) && (dmalen == validlen)) {
+fill_desc:
+	nextDMA = DESC;
+	ldtab_p->flags |= (EOP | (rrdp->status & 0xffff));
+	begPkt = 1;    // next data will be beginning of packet
+	if (dataRef & 4) {	// last word odd, adjust to longword bdry
+	    dataRef += 4;
+	    if ((r2ldata_p += 4) == rl2data_e) {
+	        r2ldata_p = r2ldata_s;
+	        lento64kb = 0x10000 - (r2ldata_p & 0xffff);
+	    }
+	}
+	RCV_DescConsReg += 8;
+	RCV_DescRefReg += 8;
+    }
+
+    if (dataRef >= RX_BUF_END)
+	dataRef -= RX_BUF_SIZE;
+#ifdef USE_DA
+    dap->fw1 = dataRef
+    if (nextDMA == DESC)
+	send_desc();
+#endif
+
+#ifndef USE_DA
+    evtMask |= EVT_WDMADONE;
+    evtMask &= ~(EVT_RXDONE | EVT_RXSTARTED);
+#endif
+
+    if (spaceleft < 0x20000)
+	update_linc_cons();
+
+} // send_data()
+
+// Event handler for receive timeout (no new data received within
+// "DTIMEO" usecs, while buffer available, and in packet started
+// state.
+eh_timeout()
+{
+    s_dtimeouts++;
+    trace (TOC_DTIMEO1, RCV_DescProdReg, RCV_DescConsReg, RCV_DescRefReg);
+    trace (TOC_DTIMEO2, RCV_ProdReg, RCV_ConsReg, dataRef);
+
+    HR_StateReg = 2;	// Reset
+    HR_StateReg = 0xff800011;
+
+    XXX - where is Receive Consumer at this point? Cleanup!
+}

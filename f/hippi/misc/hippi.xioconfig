@@ -1,0 +1,11 @@
+#
+#  Serial Hippi ioconfig
+#
+#****************************************************************************
+#   INV_CLASS   INV_TYPE        INV_STATE SUFFIX PATTERN START_NUM IOCTL_NUM
+#****************************************************************************
+#   INV_NETWORK INV_HIPPIS_XTK  IGNORE    IGNORE "hippi"     0     SIOC_MKHWG
+#****************************************************************************
+#
+    8           22              -1        -1      hippi      0     0x7a05
+

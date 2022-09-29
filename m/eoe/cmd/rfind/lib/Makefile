@@ -1,0 +1,21 @@
+#!smake
+#
+include ../commondefs
+
+CFILES=fchanged.c fdup.c fenv.c getwd.c hash.c heap.c inumloop.c\
+	macros.c namiloop.c path.c pathcomp.c pwd.c quicksum.c\
+	readrcs.c realpath.c str5pack.c strndup.c xdr_argv.c xdr_rfind.c
+
+TARGETS=librfind.a
+
+default: $(TARGETS)
+
+include ../commonrules
+
+librfind.a: ${OBJECTS}
+	${AR} crl $@ ${OBJECTS}
+
+install: default
+	${INSTALL} -u bin -g bin -F /usr/lib librfind.a
+
+.PRECIOUS: libdisk.a

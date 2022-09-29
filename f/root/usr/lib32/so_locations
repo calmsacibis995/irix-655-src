@@ -1,0 +1,1619 @@
+# Rationales for an official so_locations file:
+# 1) to save kernel space reserved for page table -- each active
+# 4Meg of user virtual space requires 4K of kernel page table space;
+# 2) to save kernel virtual space (tlb) required to map each page of
+# page tables.
+# 3) to give rqsall information to help it place all the libraries so
+#	that they quickstart.
+# 
+# 1) Put all libraries that you think are likely to be linked by the same
+# program in the same 4Meg segment. This saves kernel page table space
+# and can potentially speed up the program.
+#
+# 2) Allow adequate space between 4Meg segments of non-related libraries
+# so that redistribution of one ISM type does not mess up other ISMs.
+#
+# 3) All libraries should be listed. If packing isn't an issue
+#	then use the 'catch-all' range at the end.
+# 4) There are 2 ways to pack - take a 4Mb chunk and have each .so
+#	specify the entire 4Mb range. ld(1) will do the packing.
+#	This has the advantage of dealing well with one or more
+#	libraries changing size - each build will straighten things out
+#	unless the total size gets too large. It has a few disadvantages:
+#	a) if you have more than one version of the library with the same
+#		soname (this file matches on soname), and one is alot
+#		large than the other, you can run into trouble if
+#		the smaller one is built first, then another library in the
+#		range is built, followed by the larger version. The larger
+#		version won't fit.
+#	b) if the libraries come from different isms and something goes
+#		wrong with the build, its more likely that libraries
+#		will collide.
+#	The second way is to create a separate range for each .so. This
+#	will guarentee no overlaps, but of course if the library grows
+#	too large ...
+# 5) Don't put libs in here that aren't shipped - we'll run out of space!
+#
+# This file is used for both o32 and n32
+#
+# The range 0x0f800000-0x0fc00000 is reserved for system related libraries.
+# rld heap (128K max) at 0x0fbe0000 (rld heap can grow beyond 0x0fc00000).
+rld.heap \
+		:st = $range 0x0fbe0000, 0x00020000:\
+		:st = .data 0x0fbe0000, 0x00020000:\
+
+# rld text (384 K max) at 0x0fb60000, data (128 K max) at 0x0fbc0000
+# this is so that we can reserve this slot for rld.
+rld \
+		:st = $range 0x0fb60000, 0x000080000:\
+		:st = .text 0x0fb60000, 0x00060000:\
+		:st = .data 0x0fbc0000, 0x00020000:\
+
+#
+# we explicitly set the text and data since all h*ll breaks out if
+# we ever have data below text
+#
+libc.so.1 \
+		:st = $range 0x0fa00000, 0x00160000:\
+		:st = .text 0x0fa00000, 0x00140000:\
+		:st = .data 0x0fb40000, 0x00020000:
+libcurses.so \
+		:st = $range 0x0f9b0000, 0x00050000:\
+		:st = .text 0x0f9b0000, 0x00030000:\
+		:st = .data 0x0f9e0000, 0x00020000:
+libadm.so \
+		:st = $range 0x0f980000, 0x00030000:\
+		:st = .text 0x0f980000, 0x00020000:\
+		:st = .data 0x0f9a0000, 0x00010000:
+libcrypt.so \
+		:st = $range 0x0f960000, 0x00020000:\
+		:st = .text 0x0f960000, 0x00010000:\
+		:st = .data 0x0f970000, 0x00010000:
+libdl.so \
+		:st = $range 0x0f940000, 0x00020000:\
+		:st = .text 0x0f940000, 0x00010000:\
+		:st = .data 0x0f950000, 0x00010000:
+libgen.so \
+		:st = $range 0x0f920000, 0x00020000:\
+		:st = .text 0x0f920000, 0x00010000:\
+		:st = .data 0x0f930000, 0x00010000:
+libmalloc.so \
+		:st = $range 0x0f900000, 0x00020000:\
+		:st = .text 0x0f900000, 0x00010000:\
+		:st = .data 0x0f910000, 0x00010000:
+librpcsvc.so \
+		:st = $range 0x0f8e0000, 0x00020000:\
+		:st = .text 0x0f8e0000, 0x00010000:\
+		:st = .data 0x0f8f0000, 0x00010000:
+libw.so \
+		:st = $range 0x0f8c0000, 0x00020000:\
+		:st = .text 0x0f8c0000, 0x00010000:\
+		:st = .data 0x0f8d0000, 0x00010000:
+libC.so \
+		:st = $range 0x0f890000, 0x000030000:
+libC.so.2 \
+		:st = $range 0x0ac00000, 0x00400000:\
+libm.so \
+		:st = $range 0x0f830000, 0x000060000:
+libmutex.so \
+		:st = $range 0x0f810000, 0x00020000:\
+		:st = .text 0x0f810000, 0x00010000:\
+		:st = .data 0x0f820000, 0x00010000:
+
+# The range 0x0f400000-0x0f800000 is reserved for X libraries
+libX11.so.1 \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f6d0000, 0x00110000:\
+		:st = .data 0x0f7e0000, 0x00020000:
+libXt.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f600000, 0x00090000:\
+		:st = .data 0x0f690000, 0x00010000:
+libXaw.so.2 \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f570000, 0x00040000:\
+		:st = .data 0x0f5b0000, 0x00020000:
+libXmu.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f5d0000, 0x00020000:\
+		:st = .data 0x0f5f0000, 0x00010000:
+libXext.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f6a0000, 0x00020000:\
+		:st = .data 0x0f6c0000, 0x00010000:
+libXi.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f550000, 0x00010000:\
+		:st = .data 0x0f560000, 0x00010000:
+libXpm.so.1 \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f530000, 0x00010000:\
+		:st = .data 0x0f540000, 0x00010000:
+
+# The range 0x0e800000-0x0ec00000 is currently reserved for future expansion
+# of the above X libraries.
+reserv1 \
+		:st = $range 0x0e800000, 0x400000:
+
+# The range 0x0f000000-0x0f400000 is reserved for libgl,libfm,libgltrace
+# we give libgl its own space since it generates potentially lots of versions
+libfm.so \
+		:st = $range 0x0f200000, 0x00200000:\
+		:st = .text 0x0f360000, 0x00060000:\
+		:st = .data 0x0f3c0000, 0x00040000:
+libgltrace.so \
+		:st = $range 0x0f160000, 0x0a0000:
+libgl.so \
+		:st = $range 0x0f000000, 0x00160000:\
+		:st = .text 0x0f060000, 0x000e0000:\
+		:st = .data 0x0f020000, 0x00020000:
+
+
+# The range 0x0ec00000-0x0f000000 is currently reserved for future expansion
+# of the above gl and font manager libraries.
+reserve2 \
+		:st = $range 0x0ec00000, 0x400000:
+
+# The range 0x0e400000 - 0x0e800000 is reserved for libraires used by toto
+libCadmin.so \
+		:st = $range 0x0e400000, 0x400000:
+
+# The range 0x0dc00000 - 0x0e400000 is reserved for image libraries (IFL/IL)
+libifl.so \
+		:st = $range 0x0dc00000, 0x800000:
+libil.so \
+		:st = $range 0x0dc00000, 0x800000:
+libilVk.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflJFIF.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflTIFF.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflFIT.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflGIF.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflPNG.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflSGI.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflPPM.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflPhotoCD.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflRaw.so \
+		:st = $range 0x0dc00000, 0x800000:
+libcifl.so \
+		:st = $range 0x0dc00000, 0x800000:
+libcil.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflAlias.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflSOFTIMAGE.so \
+		:st = $range 0x0dc00000, 0x800000:
+libilTCL.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflYUV.so \
+		:st = $range 0x0dc00000, 0x800000:
+libilMon.so \
+		:st = $range 0x0dc00000, 0x800000:
+
+# The range 0x0d800000 - 0x0dc00000 is reserved for opengl/gl libraires
+# see also 0x0a800000
+# In order to prevent libGLcore from getting crowded out, we break the
+# bottom 4MB into two 2MB pieces and give one to libGLcore.
+libGL.so \
+		:st = $range 0x0d800000, 0x00200000:\
+		:st = .text 0x0d9b0000, 0x00040000:\
+		:st = .data 0x0d9f0000, 0x00010000:
+libGLcore.so \
+		:st = $range 0x0da00000, 0x00200000:\
+		:st = .text 0x0da10000, 0x00140000:\
+		:st = .data 0x0dbe0000, 0x00020000:
+
+# The range 0x0d400000 - 0x0d800000 is reserved for libraries used by toto
+
+libvkSGI.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d660000, 0x00010000:\
+		:st = .data 0x0d670000, 0x00010000:
+libvkhelp.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d700000, 0x00010000:\
+		:st = .data 0x0d710000, 0x00010000:
+libvk.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d720000, 0x000b0000:\
+		:st = .data 0x0d7d0000, 0x00030000:
+libvkmsg.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d6b0000, 0x00020000:\
+		:st = .data 0x0d6d0000, 0x00010000:
+libdesktopUtil.so \
+		:st = $range 0x0d400000, 0x400000:
+libdesktopIcon.so \
+		:st = $range 0x0d400000, 0x400000:
+libdesktopFileicon.so \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d680000, 0x00020000:\
+		:st = .data 0x0d6a0000, 0x00010000:
+libvkwebhelp.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d6e0000, 0x00010000:\
+		:st = .data 0x0d6f0000, 0x00010000:
+libhelpmsg.so \
+		:st = $range 0x0d400000, 0x400000:
+libdesktopGallery.so \
+		:st = $range 0x0d400000, 0x400000:
+# tooltalk
+libtt.so \
+		:st = $range 0x0d400000, 0x400000:
+
+
+# The range 0x0d000000 - 0x0d400000 is reserved for dmedia libraries
+libaudiofile.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d260000, 0x00070000:\
+		:st = .data 0x0d2d0000, 0x00020000:
+libaudioutil.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d240000, 0x00010000:\
+		:st = .data 0x0d250000, 0x00010000:
+libmidi.so \
+		:st = $range 0x0d000000, 0x400000:
+libawareaudio.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d330000, 0x00010000:\
+		:st = .data 0x0d310000, 0x00020000:
+libdmedia.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d350000, 0x00080000:\
+		:st = .data 0x0d3d0000, 0x00010000:
+libmediaclient.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d3e0000, 0x00010000:\
+		:st = .data 0x0d3f0000, 0x00010000:
+libaudio.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d2f0000, 0x00020000:\
+		:st = .data 0x0d340000, 0x00010000:
+libvice.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d220000, 0x00010000:\
+		:st = .data 0x0d230000, 0x00010000:
+libVkCapture.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d190000, 0x00070000:\
+		:st = .data 0x0d200000, 0x00020000:
+
+# The range 0x0cc00000 - 0x0d000000 is reserved for il8n libraries
+libwnn.so \
+		:st = $range 0x0cc00000, 0x400000:
+libjgl.so \
+		:st = $range 0x0cc00000, 0x400000:
+libXawI18n.so \
+		:st = $range 0x0cc00000, 0x400000:
+
+# The double range 0x0c400000-0x0cc00000 is reserved for Inventor libraries.
+#  Note: n32 inventor is bigger than 1 block, but o32 fits.
+
+libInventor.so.3 \
+                :st = $range 0x0c670000, 0x00590000:
+libInventorXt.so.3 \
+                :st = $range 0x0c400000, 0x00270000:
+
+
+# The range 0x0c000000 - 0x0c400000 is reserved for lesser used system libs
+libpthread.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c220000, 0x00020000:\
+		:st = .data 0x0c240000, 0x00010000:
+libudma.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c180000, 0x00010000:\
+		:st = .data 0x0c190000, 0x00010000:
+libl.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c2a0000, 0x00010000:\
+		:st = .data 0x0c2b0000, 0x00010000:
+libmediad.so \
+		:st = $range 0x0c000000, 0x400000:
+libpkg.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c250000, 0x00020000:\
+		:st = .data 0x0c270000, 0x00010000:
+libnls.so \
+		:st = $range 0x0c000000, 0x400000:
+libmx.so \
+		:st = $range 0x0c000000, 0x400000:
+libgrio.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c320000, 0x00010000:\
+		:st = .data 0x0c330000, 0x000b0000:
+libdm.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c2c0000, 0x00010000:\
+		:st = .data 0x0c2d0000, 0x00010000:
+libirixpmda.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c1c0000, 0x00040000:\
+		:st = .data 0x0c200000, 0x00020000:
+libabi.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c160000, 0x00010000:\
+		:st = .data 0x0c170000, 0x00010000:
+libarray.so \
+		:st = $range 0x0c000000, 0x400000:
+libdisk.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c2e0000, 0x00010000:\
+		:st = .data 0x0c2f0000, 0x00010000:
+libdpipe.so \
+		:st = $range 0x0c000000, 0x400000:
+libnanothread.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c280000, 0x00010000:\
+		:st = .data 0x0c290000, 0x00010000:
+librsvp.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c300000, 0x00010000:\
+		:st = .data 0x0c310000, 0x00010000:
+libAS.so \
+		:st = $range 0x0c000000, 0x400000:
+libprio.so \
+		:st = $range 0x0c000000, 0x400000:
+libperfex.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c1a0000, 0x00010000:\
+		:st = .data 0x0c1b0000, 0x00010000:
+libdprof.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c110000, 0x00010000:\
+		:st = .data 0x0c120000, 0x00010000:
+libdplace.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c130000, 0x00010000:\
+		:st = .data 0x0c140000, 0x00020000:
+libfetchop.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c3e0000, 0x00010000:\
+		:st = .data 0x0c3f0000, 0x00010000:
+
+# The range 0x0bc00000 - 0x0c000000 is reserved for video libraries
+libvl.so \
+		:st = $range 0x0bc00000, 0x00400000:\
+		:st = .text 0x0bfd0000, 0x00020000:\
+		:st = .data 0x0bff0000, 0x00010000:
+Sirius.so \
+		:st = $range 0x0bc00000, 0x00400000:\
+		:st = .text 0x0bf90000, 0x00030000:\
+		:st = .data 0x0bfc0000, 0x00010000:
+SiriusVL.so \
+		:st = $range 0x0bc00000, 0x400000:
+vino.so \
+		:st = $range 0x0bc00000, 0x00400000:\
+		:st = .text 0x0bf00000, 0x00010000:\
+		:st = .data 0x0bf10000, 0x00020000:
+ev1.so \
+		:st = $range 0x0bc00000, 0x00400000:\
+		:st = .text 0x0bf30000, 0x00040000:\
+		:st = .data 0x0bf70000, 0x00020000:
+sv1.so \
+		:st = $range 0x0bc00000, 0x400000:
+cl_cosmo.so \
+		:st = $range 0x0bc00000, 0x400000:
+cosmo.so \
+		:st = $range 0x0bc00000, 0x400000:
+
+
+# The range 0x0b800000 - 0x0bc00000 is reserved for less-used Motif librairies
+libMrm.so.1 \
+		:st = $range 0x0b800000, 0x00400000:\
+		:st = .text 0x0bbd0000, 0x00020000:\
+		:st = .data 0x0bbf0000, 0x00010000:
+libUil.so.1 \
+		:st = $range 0x0b800000, 0x00400000:\
+		:st = .text 0x0bb60000, 0x00040000:\
+		:st = .data 0x0bba0000, 0x00030000:
+
+# The range 0x0b400000 - 0x0b800000 is reserved for SVR4 net libraries
+libnsl.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b7c0000, 0x00030000:\
+		:st = .data 0x0b7f0000, 0x00010000:
+libsocket.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b7a0000, 0x00010000:\
+		:st = .data 0x0b7b0000, 0x00010000:
+nis.so \
+		:st = $range 0x0b400000, 0x400000:
+resolv.so \
+		:st = $range 0x0b400000, 0x400000:
+straddr.so \
+		:st = $range 0x0b400000, 0x400000:
+tcpip.so \
+		:st = $range 0x0b400000, 0x400000:
+
+# The range 0x0b000000 - 0x0b400000 is reserved for motif libraries
+libXm.so.1 \
+		:st = $range 0x0b000000, 0x00400000:\
+		:st = .text 0x0b260000, 0x00170000:\
+		:st = .data 0x0b3d0000, 0x00030000:
+libSgm.so.1 \
+		:st = $range 0x0b000000, 0x00400000:\
+		:st = .text 0x0b1b0000, 0x00090000:\
+		:st = .data 0x0b240000, 0x00020000:
+
+# The range 0x0ac00000 - 0x0b000000 is reserved for other compiler libs
+libexc.so \
+		:st = $range 0x0ac00000, 0x400000:
+libftn.so \
+		:st = $range 0x0ac00000, 0x400000:
+libfpe.so \
+		:st = $range 0x0ac00000, 0x400000:
+libfastm.so \
+		:st = $range 0x0ac00000, 0x400000:
+libmp.so \
+		:st = $range 0x0ac00000, 0x400000:
+libcomplex.so \
+		:st = $range 0x0ac00000, 0x400000:
+libm43.so \
+		:st = $range 0x0ac00000, 0x400000:
+libCsup.so \
+                :st = $range 0x0ac00000, 0x400000:
+
+# The range 0x0a800000 - 0x0ac00000 is reserved for other OpenGL libraries
+libGLS.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0aa60000, 0x000e0000:\
+		:st = .data 0x0ab40000, 0x00020000:
+libGLC.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0a980000, 0x00010000:\
+		:st = .data 0x0a990000, 0x00030000:
+libGLU.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0ab60000, 0x00090000:\
+		:st = .data 0x0abf0000, 0x00010000:
+libFL.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0a9c0000, 0x00060000:\
+		:st = .data 0x0aa20000, 0x00040000:
+
+# The range 0x0a000000 - 0x0a800000 is reserved for cmplrs
+libftn90.so \
+		:st = $range 0x0a000000, 0x800000:
+libfortran.so \
+		:st = $range 0x0a000000, 0x800000:
+libffio.so \
+		:st = $range 0x0a000000, 0x800000:
+
+
+# Catch-all range
+# If a .so is shipped, and its not in one of the above ranges - place it
+# here. This is also where we place $start_address (for SGI build)
+# so that any non-spec'd .so's will be placed somewhere in here.
+# This range is from 0x02000000 -> 0x0a000000 - 128Mb.
+libmd.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x07d80000, 0x00010000:\
+		:st = .data 0x07dc0000, 0x00010000:
+libmalloc_cv.so \
+		:st = $range 0x02000000, 0x08000000:
+libMMmalloc.so \
+		:st = $range 0x02000000, 0x08000000:
+libogldebug.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x06360000, 0x00080000:\
+		:st = .data 0x063e0000, 0x00010000:
+liblim.so \
+		:st = $range 0x02000000, 0x08000000:
+libgd.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x063f0000, 0x000b0000:\
+		:st = .data 0x064a0000, 0x00020000:
+libwebviewer.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libwio.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libwioutil.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libcwio.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libwwwhelp.so \
+		:st = $range 0x02000000, 0x08000000:
+libsgihelp.so \
+		:st = $range 0x02000000, 0x08000000:
+libshowcaseui.so \
+		:st = $range 0x02000000, 0x08000000:
+libshowcase_shareext.so \
+		:st = $range 0x02000000, 0x08000000:
+libshowcase3d.so \
+		:st = $range 0x02000000, 0x08000000:
+libcl.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x084c0000, 0x00030000:\
+		:st = .data 0x084f0000, 0x00020000:
+libdmc.so \
+		:st = $range 0x02000000, 0x08000000:
+libdn.so \
+		:st = $range 0x02000000, 0x08000000:
+libsnmp.so \
+		:st = $range 0x02000000, 0x08000000:
+libX11.so.2 \
+		:st = $range 0x02000000, 0x08000000:
+libblas.so \
+		:st = $range 0x02000000, 0x08000000:
+libblas_mp.so \
+		:st = $range 0x02000000, 0x08000000:
+libufm.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09bc0000, 0x00070000:\
+		:st = .data 0x09c30000, 0x00030000:
+libMediaViewer.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09680000, 0x00010000:\
+		:st = .data 0x09690000, 0x00010000:
+libfxplugmgr.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x07ae0000, 0x00020000:\
+		:st = .data 0x07b50000, 0x00010000:
+libfxplugutils.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x07b20000, 0x00030000:\
+		:st = .data 0x07b00000, 0x00020000:
+libmpi.so \
+		:st = $range 0x02000000, 0x08000000:
+libsma.so \
+		:st = $range 0x02000000, 0x08000000:
+libpvm3.so \
+		:st = $range 0x02000000, 0x08000000:
+libpvm3-i8.so \
+		:st = $range 0x02000000, 0x08000000:
+libst.so \
+		:st = $range 0x02000000, 0x08000000:
+
+# tcl libs
+libOratcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libSybtcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libitcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libtclObjSrv.so \
+		:st = $range 0x02000000, 0x08000000:
+libtkGLXAux.so \
+		:st = $range 0x02000000, 0x08000000:
+libtkGLX.so \
+		:st = $range 0x02000000, 0x08000000:
+libexpectk.so \
+		:st = $range 0x02000000, 0x08000000:
+libtclMotif.so \
+		:st = $range 0x02000000, 0x08000000:
+libexpect.so \
+		:st = $range 0x02000000, 0x08000000:
+libtkX.so \
+		:st = $range 0x02000000, 0x08000000:
+libtclX.so \
+		:st = $range 0x02000000, 0x08000000:
+libtcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libpvtcl.so \
+		:st = $range 0x02000000, 0x08000000:
+
+# Performance Co-Pilot libraries and PMDAs
+libpcp.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_lite.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_pmda.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09ef0000, 0x00010000:\
+		:st = .data 0x09f00000, 0x00010000:
+libpcp_wio.so \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_wioutil.so \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_socks.so \
+		:st = $range 0x02000000, 0x08000000:
+pmda_pmcd.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x06860000, 0x00010000:\
+		:st = .data 0x06870000, 0x00010000:
+pmda_proc.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x06840000, 0x00010000:\
+		:st = .data 0x06850000, 0x00010000:
+pmda_environ.so \
+		:st = $range 0x02000000, 0x08000000:
+libvkpcp.so \
+		:st = $range 0x02000000, 0x08000000:
+
+# All DSO's need to be below 0x10000000 (start of data/heap). This is so
+# that we don't use up valuable heap/stack space by fragmenting
+# the address space. So we pile them all in below 0x0a000000.
+$start_address=0x0a000000
+libcpr.so \
+		:st = .text 0x09fc0000, 0x00030000:\
+		:st = .data 0x09ff0000, 0x00010000:
+libtoolroot.so \
+		:st = .text 0x09fa0000, 0x00010000:\
+		:st = .data 0x09fb0000, 0x00010000:
+libmdbm.so \
+		:st = .text 0x09f80000, 0x00010000:\
+		:st = .data 0x09f90000, 0x00010000:
+libmediad_n32_M3.so \
+		:st = .text 0x09f60000, 0x00010000:\
+		:st = .data 0x09f70000, 0x00010000:
+libpcp.so \
+		:st = .text 0x09f10000, 0x00040000:\
+		:st = .data 0x09f50000, 0x00010000:
+librt.so \
+		:st = .text 0x09ed0000, 0x00010000:\
+		:st = .data 0x09ee0000, 0x00010000:
+libsatmp.so \
+		:st = .text 0x09eb0000, 0x00010000:\
+		:st = .data 0x09ec0000, 0x00010000:
+libspypt.so \
+		:st = .text 0x09e90000, 0x00010000:\
+		:st = .data 0x09ea0000, 0x00010000:
+libtserialio.so \
+		:st = .text 0x09e70000, 0x00010000:\
+		:st = .data 0x09e80000, 0x00010000:
+libxnet.so \
+		:st = .text 0x09e30000, 0x00030000:\
+		:st = .data 0x09e60000, 0x00010000:
+libns_ldap_n32.so \
+		:st = .text 0x09e10000, 0x00010000:\
+		:st = .data 0x09e20000, 0x00010000:
+libeventmon.so \
+		:st = .text 0x09df0000, 0x00010000:\
+		:st = .data 0x09e00000, 0x00010000:
+libSSC.so \
+		:st = .text 0x09dd0000, 0x00010000:\
+		:st = .data 0x09de0000, 0x00010000:
+libssrvswitch.so \
+		:st = .text 0x09db0000, 0x00010000:\
+		:st = .data 0x09dc0000, 0x00010000:
+libssdb.so \
+		:st = .text 0x09d70000, 0x00030000:\
+		:st = .data 0x09da0000, 0x00010000:
+libsgmtask.so \
+		:st = .text 0x09d50000, 0x00010000:\
+		:st = .data 0x09d60000, 0x00010000:
+liblp.so \
+		:st = .text 0x09d30000, 0x00010000:\
+		:st = .data 0x09d40000, 0x00010000:
+libimdFtrDB.so \
+		:st = .text 0x09d00000, 0x00020000:\
+		:st = .data 0x09d20000, 0x00010000:
+libXsgivc.so \
+		:st = .text 0x09ce0000, 0x00010000:\
+		:st = .data 0x09cf0000, 0x00010000:
+libnurbs.so \
+		:st = .text 0x09c60000, 0x00060000:\
+		:st = .data 0x09cc0000, 0x00020000:
+libXpm.so.2 \
+		:st = .text 0x09b90000, 0x00020000:\
+		:st = .data 0x09bb0000, 0x00010000:
+libXm.so.2 \
+		:st = .text 0x09970000, 0x001e0000:\
+		:st = .data 0x09b50000, 0x00040000:
+libSgm.so.2 \
+		:st = .text 0x098c0000, 0x00090000:\
+		:st = .data 0x09950000, 0x00020000:
+libMrm.so.2 \
+		:st = .text 0x09870000, 0x00030000:\
+		:st = .data 0x098b0000, 0x00010000:
+libUil.so.2 \
+		:st = .text 0x097e0000, 0x00050000:\
+		:st = .data 0x09830000, 0x00040000:
+libvk.so.2 \
+		:st = .text 0x096f0000, 0x000c0000:\
+		:st = .data 0x097b0000, 0x00030000:
+libvkwebhelp.so.2 \
+		:st = .text 0x096d0000, 0x00010000:\
+		:st = .data 0x096e0000, 0x00010000:
+libvkmsg.so.2 \
+		:st = .text 0x096a0000, 0x00020000:\
+		:st = .data 0x096c0000, 0x00010000:
+libMediaViewer.so.2 \
+		:st = .text 0x09660000, 0x00010000:\
+		:st = .data 0x09670000, 0x00010000:
+libimdUtil.so \
+		:st = .text 0x09630000, 0x00020000:\
+		:st = .data 0x09650000, 0x00010000:
+libimdFtrIcon.so \
+		:st = .text 0x09600000, 0x00020000:\
+		:st = .data 0x09620000, 0x00010000:
+libimdFtrGallery.so \
+		:st = .text 0x095e0000, 0x00010000:\
+		:st = .data 0x095f0000, 0x00010000:
+libimdXutil.so \
+		:st = .text 0x09590000, 0x00040000:\
+		:st = .data 0x095d0000, 0x00010000:
+libimdModel.so \
+		:st = .text 0x09530000, 0x00040000:\
+		:st = .data 0x09570000, 0x00020000:
+libImdURLModel.so \
+		:st = .text 0x09500000, 0x00020000:\
+		:st = .data 0x09520000, 0x00010000:
+libImdHostModel.so \
+		:st = .text 0x094e0000, 0x00010000:\
+		:st = .data 0x094f0000, 0x00010000:
+libimdIconPanel.so \
+		:st = .text 0x09460000, 0x00060000:\
+		:st = .data 0x094c0000, 0x00020000:
+libimdApp.so \
+		:st = .text 0x09430000, 0x00020000:\
+		:st = .data 0x09450000, 0x00010000:
+libsaauth.so \
+		:st = .text 0x09410000, 0x00010000:\
+		:st = .data 0x09420000, 0x00010000:
+libsaPrivilege.so \
+		:st = .text 0x093f0000, 0x00010000:\
+		:st = .data 0x09400000, 0x00010000:
+libsaUtil.so \
+		:st = .text 0x093d0000, 0x00010000:\
+		:st = .data 0x093e0000, 0x00010000:
+libsalog.so \
+		:st = .text 0x093b0000, 0x00010000:\
+		:st = .data 0x093c0000, 0x00010000:
+libsaNetwork.so \
+		:st = .text 0x09370000, 0x00020000:\
+		:st = .data 0x09390000, 0x00020000:
+libsaUserAcct.so \
+		:st = .text 0x09350000, 0x00010000:\
+		:st = .data 0x09360000, 0x00010000:
+libsaComm.so \
+		:st = .text 0x09310000, 0x00020000:\
+		:st = .data 0x09330000, 0x00020000:
+libsaAdminObj.so \
+		:st = .text 0x092f0000, 0x00010000:\
+		:st = .data 0x09300000, 0x00010000:
+libsaAdminUI.so \
+		:st = .text 0x09270000, 0x00060000:\
+		:st = .data 0x092d0000, 0x00020000:
+libSaModel.so \
+		:st = .text 0x09250000, 0x00010000:\
+		:st = .data 0x09260000, 0x00010000:
+libsaremote.so \
+		:st = .text 0x09230000, 0x00010000:\
+		:st = .data 0x09240000, 0x00010000:
+libsaBackupRestore.so \
+		:st = .text 0x09210000, 0x00010000:\
+		:st = .data 0x09220000, 0x00010000:
+libsarmedia.so \
+		:st = .text 0x091f0000, 0x00010000:\
+		:st = .data 0x09200000, 0x00010000:
+libsaprivui.so \
+		:st = .text 0x091d0000, 0x00010000:\
+		:st = .data 0x091e0000, 0x00010000:
+SaExampleClass.so \
+		:st = .text 0x091b0000, 0x00010000:\
+		:st = .data 0x091c0000, 0x00010000:
+SaIsdnClass.so \
+		:st = .text 0x09190000, 0x00010000:\
+		:st = .data 0x091a0000, 0x00010000:
+SaPppClass.so \
+		:st = .text 0x09170000, 0x00010000:\
+		:st = .data 0x09180000, 0x00010000:
+SaUserAccountClass.so \
+		:st = .text 0x09140000, 0x00010000:\
+		:st = .data 0x09150000, 0x00020000:
+SaModemClass.so \
+		:st = .text 0x09120000, 0x00010000:\
+		:st = .data 0x09130000, 0x00010000:
+SaNetIfClass.so \
+		:st = .text 0x09100000, 0x00010000:\
+		:st = .data 0x09110000, 0x00010000:
+SaFilesystemClass.so \
+		:st = .text 0x090e0000, 0x00010000:\
+		:st = .data 0x090f0000, 0x00010000:
+SaDiskClass.so \
+		:st = .text 0x090c0000, 0x00010000:\
+		:st = .data 0x090d0000, 0x00010000:
+SaUnixGroupClass.so \
+		:st = .text 0x090a0000, 0x00010000:\
+		:st = .data 0x090b0000, 0x00010000:
+SaRemoteDirectoryClass.so \
+		:st = .text 0x09080000, 0x00010000:\
+		:st = .data 0x09090000, 0x00010000:
+SaRemotePrinterClass.so \
+		:st = .text 0x09060000, 0x00010000:\
+		:st = .data 0x09070000, 0x00010000:
+SaShareDirClass.so \
+		:st = .text 0x09040000, 0x00010000:\
+		:st = .data 0x09050000, 0x00010000:
+SaPrinterClass.so \
+		:st = .text 0x09020000, 0x00010000:\
+		:st = .data 0x09030000, 0x00010000:
+SaSysNetClass.so \
+		:st = .text 0x09000000, 0x00010000:\
+		:st = .data 0x09010000, 0x00010000:
+SaSwapClass.so \
+		:st = .text 0x08fe0000, 0x00010000:\
+		:st = .data 0x08ff0000, 0x00010000:
+SaFileOpClass.so \
+		:st = .text 0x08fc0000, 0x00010000:\
+		:st = .data 0x08fd0000, 0x00010000:
+SaSerialDeviceClass.so \
+		:st = .text 0x08fa0000, 0x00010000:\
+		:st = .data 0x08fb0000, 0x00010000:
+SaRemovableMediaClass.so \
+		:st = .text 0x08f80000, 0x00010000:\
+		:st = .data 0x08f90000, 0x00010000:
+SaSecureSystemClass.so \
+		:st = .text 0x08f60000, 0x00010000:\
+		:st = .data 0x08f70000, 0x00010000:
+SaSchedBackupClass.so \
+		:st = .text 0x08f40000, 0x00010000:\
+		:st = .data 0x08f50000, 0x00010000:
+SaAutoLoginClass.so \
+		:st = .text 0x08f20000, 0x00010000:\
+		:st = .data 0x08f30000, 0x00010000:
+SaProcessClass.so \
+		:st = .text 0x08f00000, 0x00010000:\
+		:st = .data 0x08f10000, 0x00010000:
+SaHostClass.so \
+		:st = .text 0x08ee0000, 0x00010000:\
+		:st = .data 0x08ef0000, 0x00010000:
+SaNisUserAccountClass.so \
+		:st = .text 0x08ec0000, 0x00010000:\
+		:st = .data 0x08ed0000, 0x00010000:
+libsaGuidePages.so \
+		:st = .text 0x08e90000, 0x00020000:\
+		:st = .data 0x08eb0000, 0x00010000:
+SaAddExampleTask.so \
+		:st = .text 0x08e70000, 0x00010000:\
+		:st = .data 0x08e80000, 0x00010000:
+SaDeleteExampleTask.so \
+		:st = .text 0x08e50000, 0x00010000:\
+		:st = .data 0x08e60000, 0x00010000:
+SaAddModemTask.so \
+		:st = .text 0x08e30000, 0x00010000:\
+		:st = .data 0x08e40000, 0x00010000:
+SaDeleteModemTask.so \
+		:st = .text 0x08e10000, 0x00010000:\
+		:st = .data 0x08e20000, 0x00010000:
+SaShareFsTask.so \
+		:st = .text 0x08df0000, 0x00010000:\
+		:st = .data 0x08e00000, 0x00010000:
+SaUnshareFsTask.so \
+		:st = .text 0x08dd0000, 0x00010000:\
+		:st = .data 0x08de0000, 0x00010000:
+SaConfigNetIfTask.so \
+		:st = .text 0x08db0000, 0x00010000:\
+		:st = .data 0x08dc0000, 0x00010000:
+SaAddPppOutTask.so \
+		:st = .text 0x08d80000, 0x00020000:\
+		:st = .data 0x08da0000, 0x00010000:
+SaAddPppInTask.so \
+		:st = .text 0x08d60000, 0x00010000:\
+		:st = .data 0x08d70000, 0x00010000:
+SaAddUserTask.so \
+		:st = .text 0x08d30000, 0x00020000:\
+		:st = .data 0x08d50000, 0x00010000:
+SaMountSingleFSTask.so \
+		:st = .text 0x08d00000, 0x00010000:\
+		:st = .data 0x08d10000, 0x00020000:
+SaDeleteUserTask.so \
+		:st = .text 0x08ce0000, 0x00010000:\
+		:st = .data 0x08cf0000, 0x00010000:
+SaConfigIsdnTask.so \
+		:st = .text 0x08cc0000, 0x00010000:\
+		:st = .data 0x08cd0000, 0x00010000:
+SaDeletePppTask.so \
+		:st = .text 0x08ca0000, 0x00010000:\
+		:st = .data 0x08cb0000, 0x00010000:
+SaModifyPppInTask.so \
+		:st = .text 0x08c70000, 0x00020000:\
+		:st = .data 0x08c90000, 0x00010000:
+SaUnmountFSTask.so \
+		:st = .text 0x08c50000, 0x00010000:\
+		:st = .data 0x08c60000, 0x00010000:
+SaModifyUserTask.so \
+		:st = .text 0x08c20000, 0x00020000:\
+		:st = .data 0x08c40000, 0x00010000:
+SaModifyPasswordTask.so \
+		:st = .text 0x08c00000, 0x00010000:\
+		:st = .data 0x08c10000, 0x00010000:
+SaModifyMyPasswordTask.so \
+		:st = .text 0x08be0000, 0x00010000:\
+		:st = .data 0x08bf0000, 0x00010000:
+SaNetlessTask.so \
+		:st = .text 0x08bc0000, 0x00010000:\
+		:st = .data 0x08bd0000, 0x00010000:
+SaSharePrintersTask.so \
+		:st = .text 0x08ba0000, 0x00010000:\
+		:st = .data 0x08bb0000, 0x00010000:
+SaNisSetupTask.so \
+		:st = .text 0x08b80000, 0x00010000:\
+		:st = .data 0x08b90000, 0x00010000:
+SaRemoveSwapTask.so \
+		:st = .text 0x08b60000, 0x00010000:\
+		:st = .data 0x08b70000, 0x00010000:
+SaNfsSetupTask.so \
+		:st = .text 0x08b40000, 0x00010000:\
+		:st = .data 0x08b50000, 0x00010000:
+SaAddSerialDeviceTask.so \
+		:st = .text 0x08b20000, 0x00010000:\
+		:st = .data 0x08b30000, 0x00010000:
+SaAddVirtualSwapTask.so \
+		:st = .text 0x08b00000, 0x00010000:\
+		:st = .data 0x08b10000, 0x00010000:
+SaDeleteSerialDeviceTask.so \
+		:st = .text 0x08ae0000, 0x00010000:\
+		:st = .data 0x08af0000, 0x00010000:
+libsarmediaui.so \
+		:st = .text 0x08ac0000, 0x00010000:\
+		:st = .data 0x08ad0000, 0x00010000:
+SaShareRemovableMediaTask.so \
+		:st = .text 0x08aa0000, 0x00010000:\
+		:st = .data 0x08ab0000, 0x00010000:
+SaUnshareRemovableMediaTask.so \
+		:st = .text 0x08a80000, 0x00010000:\
+		:st = .data 0x08a90000, 0x00010000:
+SaMonitorRemovableMediaTask.so \
+		:st = .text 0x08a60000, 0x00010000:\
+		:st = .data 0x08a70000, 0x00010000:
+SaUnmonitorRemovableMediaTask.so \
+		:st = .text 0x08a40000, 0x00010000:\
+		:st = .data 0x08a50000, 0x00010000:
+SaStripeDisksTask.so \
+		:st = .text 0x08a20000, 0x00010000:\
+		:st = .data 0x08a30000, 0x00010000:
+SaRemoveLVTask.so \
+		:st = .text 0x08a00000, 0x00010000:\
+		:st = .data 0x08a10000, 0x00010000:
+SaFormatRMediaTask.so \
+		:st = .text 0x089e0000, 0x00010000:\
+		:st = .data 0x089f0000, 0x00010000:
+SaModifyPppOutTask.so \
+		:st = .text 0x089b0000, 0x00020000:\
+		:st = .data 0x089d0000, 0x00010000:
+SaUnsharePrintersTask.so \
+		:st = .text 0x08990000, 0x00010000:\
+		:st = .data 0x089a0000, 0x00010000:
+SaAddLocalFileSwapTask.so \
+		:st = .text 0x08970000, 0x00010000:\
+		:st = .data 0x08980000, 0x00010000:
+SaCreateExtendableXLVTask.so \
+		:st = .text 0x08950000, 0x00010000:\
+		:st = .data 0x08960000, 0x00010000:
+SaMountFsTask.so \
+		:st = .text 0x08900000, 0x00030000:\
+		:st = .data 0x08930000, 0x00020000:
+SaStopNisTask.so \
+		:st = .text 0x088e0000, 0x00010000:\
+		:st = .data 0x088f0000, 0x00010000:
+SaMountNfsTask.so \
+		:st = .text 0x088c0000, 0x00010000:\
+		:st = .data 0x088d0000, 0x00010000:
+SaStopNfsTask.so \
+		:st = .text 0x088a0000, 0x00010000:\
+		:st = .data 0x088b0000, 0x00010000:
+SaDtShutdownTask.so \
+		:st = .text 0x08880000, 0x00010000:\
+		:st = .data 0x08890000, 0x00010000:
+SaDtRebootTask.so \
+		:st = .text 0x08860000, 0x00010000:\
+		:st = .data 0x08870000, 0x00010000:
+SaCustomizeNetTask.so \
+		:st = .text 0x08840000, 0x00010000:\
+		:st = .data 0x08850000, 0x00010000:
+SaSetLogOptionsTask.so \
+		:st = .text 0x08820000, 0x00010000:\
+		:st = .data 0x08830000, 0x00010000:
+SaSecureSystemsTask.so \
+		:st = .text 0x087f0000, 0x00020000:\
+		:st = .data 0x08810000, 0x00010000:
+SaRemoveDiskTask.so \
+		:st = .text 0x087d0000, 0x00010000:\
+		:st = .data 0x087e0000, 0x00010000:
+SaExtendXLVTask.so \
+		:st = .text 0x087b0000, 0x00010000:\
+		:st = .data 0x087c0000, 0x00010000:
+SaInitAndUseDiskTask.so \
+		:st = .text 0x08790000, 0x00010000:\
+		:st = .data 0x087a0000, 0x00010000:
+SaVerifyDiskTask.so \
+		:st = .text 0x08770000, 0x00010000:\
+		:st = .data 0x08780000, 0x00010000:
+SaUnmountMacLprTask.so \
+		:st = .text 0x08750000, 0x00010000:\
+		:st = .data 0x08760000, 0x00010000:
+SaMountMacLprTask.so \
+		:st = .text 0x08710000, 0x00020000:\
+		:st = .data 0x08730000, 0x00020000:
+SaAddPrivTask.so \
+		:st = .text 0x086f0000, 0x00010000:\
+		:st = .data 0x08700000, 0x00010000:
+SaDeletePrivTask.so \
+		:st = .text 0x086d0000, 0x00010000:\
+		:st = .data 0x086e0000, 0x00010000:
+SaScheduleBackupTask.so \
+		:st = .text 0x08690000, 0x00020000:\
+		:st = .data 0x086b0000, 0x00020000:
+SaRestoreFilesTask.so \
+		:st = .text 0x08660000, 0x00020000:\
+		:st = .data 0x08680000, 0x00010000:
+SaEnablePrivsTask.so \
+		:st = .text 0x08640000, 0x00010000:\
+		:st = .data 0x08650000, 0x00010000:
+SaDisablePrivsTask.so \
+		:st = .text 0x08620000, 0x00010000:\
+		:st = .data 0x08630000, 0x00010000:
+SaUnscheduleBackupTask.so \
+		:st = .text 0x08600000, 0x00010000:\
+		:st = .data 0x08610000, 0x00010000:
+SaSetFsMonitoringTask.so \
+		:st = .text 0x085e0000, 0x00010000:\
+		:st = .data 0x085f0000, 0x00010000:
+SaConfigAutoLoginTask.so \
+		:st = .text 0x085c0000, 0x00010000:\
+		:st = .data 0x085d0000, 0x00010000:
+SaAddHostTask.so \
+		:st = .text 0x085a0000, 0x00010000:\
+		:st = .data 0x085b0000, 0x00010000:
+SaDeleteHostTask.so \
+		:st = .text 0x08580000, 0x00010000:\
+		:st = .data 0x08590000, 0x00010000:
+SaModifyHostTask.so \
+		:st = .text 0x08560000, 0x00010000:\
+		:st = .data 0x08570000, 0x00010000:
+SaConfigCloginTask.so \
+		:st = .text 0x08530000, 0x00020000:\
+		:st = .data 0x08550000, 0x00010000:
+SaRemountFsTask.so \
+		:st = .text 0x08510000, 0x00010000:\
+		:st = .data 0x08520000, 0x00010000:
+libaudioconvert.so \
+		:st = .text 0x08440000, 0x00060000:\
+		:st = .data 0x084a0000, 0x00020000:
+libaudiorateconv.so \
+		:st = .text 0x083b0000, 0x00070000:\
+		:st = .data 0x08420000, 0x00020000:
+libmpeg1audio.so \
+		:st = .text 0x08360000, 0x00030000:\
+		:st = .data 0x08390000, 0x00020000:
+libmultirate.so \
+		:st = .text 0x082e0000, 0x00060000:\
+		:st = .data 0x082b0000, 0x00030000:
+libdvaudio.so \
+		:st = .text 0x082a0000, 0x00010000:\
+		:st = .data 0x08270000, 0x00030000:
+libdviaudio.so \
+		:st = .text 0x08340000, 0x00010000:\
+		:st = .data 0x08350000, 0x00010000:
+libg711.so \
+		:st = .text 0x08250000, 0x00010000:\
+		:st = .data 0x08260000, 0x00010000:
+libg722.so \
+		:st = .text 0x08230000, 0x00010000:\
+		:st = .data 0x08240000, 0x00010000:
+libg726.so \
+		:st = .text 0x08210000, 0x00010000:\
+		:st = .data 0x08220000, 0x00010000:
+libg728.so \
+		:st = .text 0x081f0000, 0x00010000:\
+		:st = .data 0x08200000, 0x00010000:
+libgsm.so \
+		:st = .text 0x081d0000, 0x00010000:\
+		:st = .data 0x081e0000, 0x00010000:
+libfs1016.so \
+		:st = .text 0x081a0000, 0x00010000:\
+		:st = .data 0x081b0000, 0x00010000:
+libcvid.so \
+		:st = .text 0x08170000, 0x00030000:\
+		:st = .data 0x081c0000, 0x00010000:
+libhdcc.so \
+		:st = .text 0x08150000, 0x00010000:\
+		:st = .data 0x08160000, 0x00010000:
+libindeo.so \
+		:st = .text 0x080f0000, 0x00030000:\
+		:st = .data 0x08120000, 0x00030000:
+liboldjpeg.so \
+		:st = .text 0x080b0000, 0x00030000:\
+		:st = .data 0x080e0000, 0x00010000:
+libjpeg.so \
+		:st = .text 0x08070000, 0x00030000:\
+		:st = .data 0x080a0000, 0x00010000:
+libmpeg1video.so \
+		:st = .text 0x07ff0000, 0x00060000:\
+		:st = .data 0x08050000, 0x00010000:
+libmpeg2.so \
+		:st = .text 0x07fb0000, 0x00020000:\
+		:st = .data 0x07fd0000, 0x00010000:
+libmvc1.so \
+		:st = .text 0x07f30000, 0x00030000:\
+		:st = .data 0x07f60000, 0x00050000:
+libmvc2.so \
+		:st = .text 0x07fe0000, 0x00010000:\
+		:st = .data 0x07f10000, 0x00020000:
+libmvc3.so \
+		:st = .text 0x07ef0000, 0x00020000:\
+		:st = .data 0x08060000, 0x00010000:
+libqtanim.so \
+		:st = .text 0x07e90000, 0x00010000:\
+		:st = .data 0x07ea0000, 0x00050000:
+libqtvideo.so \
+		:st = .text 0x07e50000, 0x00010000:\
+		:st = .data 0x07e60000, 0x00030000:
+librle.so \
+		:st = .text 0x07e30000, 0x00010000:\
+		:st = .data 0x07e40000, 0x00010000:
+librle24.so \
+		:st = .text 0x07e10000, 0x00010000:\
+		:st = .data 0x07e20000, 0x00010000:
+librle32.so \
+		:st = .text 0x07df0000, 0x00010000:\
+		:st = .data 0x07e00000, 0x00010000:
+librice.so \
+		:st = .text 0x07dd0000, 0x00010000:\
+		:st = .data 0x07de0000, 0x00010000:
+libdataudio2.so \
+		:st = .text 0x07db0000, 0x00010000:\
+		:st = .data 0x07d90000, 0x00020000:
+libmoviefile.so \
+		:st = .text 0x07cc0000, 0x000a0000:\
+		:st = .data 0x07d60000, 0x00020000:
+libmovieplay.so \
+		:st = .text 0x07c80000, 0x00030000:\
+		:st = .data 0x07cb0000, 0x00010000:
+libmovie.so \
+		:st = .text 0x07c60000, 0x00010000:\
+		:st = .data 0x07c70000, 0x00010000:
+mvaudio.so \
+		:st = .text 0x07c40000, 0x00010000:\
+		:st = .data 0x07c50000, 0x00010000:
+mvcosmo1.so \
+		:st = .text 0x07c20000, 0x00010000:\
+		:st = .data 0x07c30000, 0x00010000:
+mvimpactcomp.so \
+		:st = .text 0x07c00000, 0x00010000:\
+		:st = .data 0x07c10000, 0x00010000:
+mvopenglx.so \
+		:st = .text 0x07be0000, 0x00010000:\
+		:st = .data 0x07bf0000, 0x00010000:
+mvvideo.so \
+		:st = .text 0x07bb0000, 0x00020000:\
+		:st = .data 0x07bd0000, 0x00010000:
+mvrenderGL.so \
+		:st = .text 0x07b80000, 0x00020000:\
+		:st = .data 0x07ba0000, 0x00010000:
+mvrendergl.so \
+		:st = .text 0x07b60000, 0x00010000:\
+		:st = .data 0x07b70000, 0x00010000:
+libksync.so \
+		:st = .text 0x07ac0000, 0x00010000:\
+		:st = .data 0x07ad0000, 0x00010000:
+libdmnet.so \
+		:st = .text 0x07aa0000, 0x00010000:\
+		:st = .data 0x07ab0000, 0x00010000:
+hippi-fp.so \
+		:st = .text 0x07a80000, 0x00010000:\
+		:st = .data 0x07a90000, 0x00010000:
+libcosmojpeg.so \
+		:st = .text 0x07a60000, 0x00010000:\
+		:st = .data 0x07a70000, 0x00010000:
+impactcomp.so \
+		:st = .text 0x066e0000, 0x00010000:\
+		:st = .data 0x07a40000, 0x00020000:
+libdmu_generic.so \
+		:st = .text 0x07a00000, 0x00020000:\
+		:st = .data 0x07a20000, 0x00010000:
+libdmu_generic_n32_M3.so \
+		:st = .text 0x079d0000, 0x00020000:\
+		:st = .data 0x079f0000, 0x00010000:
+libdmu_generic21_n32_M3.so \
+		:st = .text 0x079a0000, 0x00020000:\
+		:st = .data 0x079c0000, 0x00010000:
+libvkSGI.so.2 \
+		:st = .text 0x07980000, 0x00010000:\
+		:st = .data 0x07990000, 0x00010000:
+libTextViewer.so \
+		:st = .text 0x07960000, 0x00010000:\
+		:st = .data 0x07970000, 0x00010000:
+libTextViewer.so.2 \
+		:st = .text 0x07940000, 0x00010000:\
+		:st = .data 0x07950000, 0x00010000:
+libAudioViewer.so \
+		:st = .text 0x07920000, 0x00010000:\
+		:st = .data 0x07930000, 0x00010000:
+libAudioViewer.so.2 \
+		:st = .text 0x07900000, 0x00010000:\
+		:st = .data 0x07910000, 0x00010000:
+libImageViewer.so \
+		:st = .text 0x078e0000, 0x00010000:\
+		:st = .data 0x078f0000, 0x00010000:
+libImageViewer.so.2 \
+		:st = .text 0x078b0000, 0x00030000:\
+		:st = .data 0x098a0000, 0x00010000:
+libInventorViewer.so \
+		:st = .text 0x07890000, 0x00010000:\
+		:st = .data 0x078a0000, 0x00010000:
+sgi.so \
+		:st = .text 0x07870000, 0x00010000:\
+		:st = .data 0x07880000, 0x00010000:
+oldsgi.so \
+		:st = .text 0x07850000, 0x00010000:\
+		:st = .data 0x07860000, 0x00010000:
+bsd.so \
+		:st = .text 0x07830000, 0x00010000:\
+		:st = .data 0x07840000, 0x00010000:
+libInventorViewer.so.2 \
+		:st = .text 0x077f0000, 0x00030000:\
+		:st = .data 0x07820000, 0x00010000:
+libXBMViewer.so \
+		:st = .text 0x077d0000, 0x00010000:\
+		:st = .data 0x077e0000, 0x00010000:
+libXBMViewer.so.2 \
+		:st = .text 0x077b0000, 0x00010000:\
+		:st = .data 0x077c0000, 0x00010000:
+libMovieViewer.so \
+		:st = .text 0x07780000, 0x00020000:\
+		:st = .data 0x077a0000, 0x00010000:
+libMovieViewer.so.2 \
+		:st = .text 0x07750000, 0x00020000:\
+		:st = .data 0x07770000, 0x00010000:
+libHTMLmediaw.so \
+		:st = .text 0x07730000, 0x00010000:\
+		:st = .data 0x07740000, 0x00010000:
+libHTMLmediaw.so.2 \
+		:st = .text 0x07710000, 0x00010000:\
+		:st = .data 0x07720000, 0x00010000:
+libdvc.so \
+		:st = .text 0x07650000, 0x00020000:\
+		:st = .data 0x075a0000, 0x000b0000:
+haven.so \
+		:st = .text 0x076f0000, 0x00010000:\
+		:st = .data 0x07700000, 0x00010000:
+libh261.so \
+		:st = .text 0x076b0000, 0x00020000:\
+		:st = .data 0x07680000, 0x00030000:
+libns_db_n32.so \
+		:st = .text 0x076d0000, 0x00010000:\
+		:st = .data 0x076e0000, 0x00010000:
+libns_dns_n32.so \
+		:st = .text 0x07590000, 0x00010000:\
+		:st = .data 0x07670000, 0x00010000:
+libns_files_n32.so \
+		:st = .text 0x07560000, 0x00020000:\
+		:st = .data 0x07580000, 0x00010000:
+libns_mdbm_n32.so \
+		:st = .text 0x07540000, 0x00010000:\
+		:st = .data 0x07550000, 0x00010000:
+libns_ndbm_n32.so \
+		:st = .text 0x07520000, 0x00010000:\
+		:st = .data 0x07530000, 0x00010000:
+libns_nis_n32.so \
+		:st = .text 0x07500000, 0x00010000:\
+		:st = .data 0x07510000, 0x00010000:
+libns_nisserv_n32.so \
+		:st = .text 0x074e0000, 0x00010000:\
+		:st = .data 0x074f0000, 0x00010000:
+nis_n32_M3.so \
+		:st = .text 0x074c0000, 0x00010000:\
+		:st = .data 0x074d0000, 0x00010000:
+resolv_n32_M3.so \
+		:st = .text 0x074a0000, 0x00010000:\
+		:st = .data 0x074b0000, 0x00010000:
+straddr_n32_M3.so \
+		:st = .text 0x07480000, 0x00010000:\
+		:st = .data 0x07490000, 0x00010000:
+tcpip_n32_M3.so \
+		:st = .text 0x07460000, 0x00010000:\
+		:st = .data 0x07470000, 0x00010000:
+libdlook.so \
+		:st = .text 0x07440000, 0x00010000:\
+		:st = .data 0x07450000, 0x00010000:
+audio_dcoffset.so \
+		:st = .text 0x07420000, 0x00010000:\
+		:st = .data 0x07430000, 0x00010000:
+SaInstallProductTask.so \
+		:st = .text 0x07400000, 0x00010000:\
+		:st = .data 0x07410000, 0x00010000:
+SaRemoveProductTask.so \
+		:st = .text 0x073e0000, 0x00010000:\
+		:st = .data 0x073f0000, 0x00010000:
+audio_echo.so \
+		:st = .text 0x073c0000, 0x00010000:\
+		:st = .data 0x073d0000, 0x00010000:
+SaListProductTask.so \
+		:st = .text 0x073a0000, 0x00010000:\
+		:st = .data 0x073b0000, 0x00010000:
+audio_eq.so \
+		:st = .text 0x07370000, 0x00020000:\
+		:st = .data 0x07390000, 0x00010000:
+audio_fadein.so \
+		:st = .text 0x07350000, 0x00010000:\
+		:st = .data 0x07360000, 0x00010000:
+audio_fadeout.so \
+		:st = .text 0x07330000, 0x00010000:\
+		:st = .data 0x07340000, 0x00010000:
+audio_normalize.so \
+		:st = .text 0x07310000, 0x00010000:\
+		:st = .data 0x07320000, 0x00010000:
+audio_reverse.so \
+		:st = .text 0x072f0000, 0x00010000:\
+		:st = .data 0x07300000, 0x00010000:
+audio_volume.so \
+		:st = .text 0x072d0000, 0x00010000:\
+		:st = .data 0x072e0000, 0x00010000:
+Image.so \
+		:st = .text 0x072b0000, 0x00010000:\
+		:st = .data 0x072c0000, 0x00010000:
+Audio.so \
+		:st = .text 0x07290000, 0x00010000:\
+		:st = .data 0x072a0000, 0x00010000:
+BlackWhite.so \
+		:st = .text 0x07270000, 0x00010000:\
+		:st = .data 0x07280000, 0x00010000:
+Blur.so \
+		:st = .text 0x07250000, 0x00010000:\
+		:st = .data 0x07260000, 0x00010000:
+BlurMore.so \
+		:st = .text 0x07230000, 0x00010000:\
+		:st = .data 0x07240000, 0x00010000:
+BrightnessContrast.so \
+		:st = .text 0x07210000, 0x00010000:\
+		:st = .data 0x07220000, 0x00010000:
+Clip.so \
+		:st = .text 0x071f0000, 0x00010000:\
+		:st = .data 0x07200000, 0x00010000:
+ColorBalance.so \
+		:st = .text 0x071d0000, 0x00010000:\
+		:st = .data 0x071e0000, 0x00010000:
+ConvolutionKernel.so \
+		:st = .text 0x071b0000, 0x00010000:\
+		:st = .data 0x071c0000, 0x00010000:
+unixReceiver.so \
+		:st = .text 0x07190000, 0x00010000:\
+		:st = .data 0x071a0000, 0x00010000:
+unixSender.so \
+		:st = .text 0x07170000, 0x00010000:\
+		:st = .data 0x07180000, 0x00010000:
+Crop.so \
+		:st = .text 0x07150000, 0x00010000:\
+		:st = .data 0x07160000, 0x00010000:
+DissolveIn.so \
+		:st = .text 0x07130000, 0x00010000:\
+		:st = .data 0x07140000, 0x00010000:
+DissolveOut.so \
+		:st = .text 0x07110000, 0x00010000:\
+		:st = .data 0x07120000, 0x00010000:
+Emboss.so \
+		:st = .text 0x070f0000, 0x00010000:\
+		:st = .data 0x07100000, 0x00010000:
+Fade.so \
+		:st = .text 0x070d0000, 0x00010000:\
+		:st = .data 0x070e0000, 0x00010000:
+FindEdges.so \
+		:st = .text 0x070b0000, 0x00010000:\
+		:st = .data 0x070c0000, 0x00010000:
+HorizontalFlip.so \
+		:st = .text 0x07090000, 0x00010000:\
+		:st = .data 0x070a0000, 0x00010000:
+TestObj.so \
+		:st = .text 0x07070000, 0x00010000:\
+		:st = .data 0x07080000, 0x00010000:
+GaussianBlur.so \
+		:st = .text 0x07050000, 0x00010000:\
+		:st = .data 0x07060000, 0x00010000:
+GaussianSharpen.so \
+		:st = .text 0x07030000, 0x00010000:\
+		:st = .data 0x07040000, 0x00010000:
+GradientWipe.so \
+		:st = .text 0x07010000, 0x00010000:\
+		:st = .data 0x07020000, 0x00010000:
+LumaKey.so \
+		:st = .text 0x06ff0000, 0x00010000:\
+		:st = .data 0x07000000, 0x00010000:
+Negative.so \
+		:st = .text 0x06fd0000, 0x00010000:\
+		:st = .data 0x06fe0000, 0x00010000:
+Reverse.so \
+		:st = .text 0x06fb0000, 0x00010000:\
+		:st = .data 0x06fc0000, 0x00010000:
+Sharpen.so \
+		:st = .text 0x06f90000, 0x00010000:\
+		:st = .data 0x06fa0000, 0x00010000:
+SharpenEdges.so \
+		:st = .text 0x06f70000, 0x00010000:\
+		:st = .data 0x06f80000, 0x00010000:
+SharpenMore.so \
+		:st = .text 0x06f50000, 0x00010000:\
+		:st = .data 0x06f60000, 0x00010000:
+Sphere.so \
+		:st = .text 0x06f30000, 0x00010000:\
+		:st = .data 0x06f40000, 0x00010000:
+VerticalFlip.so \
+		:st = .text 0x06f10000, 0x00010000:\
+		:st = .data 0x06f20000, 0x00010000:
+libSaFoundPrinterModel.so \
+		:st = .text 0x06ee0000, 0x00010000:\
+		:st = .data 0x06ef0000, 0x00020000:
+SaExampleCatalog.so \
+		:st = .text 0x06ec0000, 0x00010000:\
+		:st = .data 0x06ed0000, 0x00010000:
+SaUserAccountCatalog.so \
+		:st = .text 0x06ea0000, 0x00010000:\
+		:st = .data 0x06eb0000, 0x00010000:
+SaNetIfCatalog.so \
+		:st = .text 0x06e80000, 0x00010000:\
+		:st = .data 0x06e90000, 0x00010000:
+SaDiskCatalog.so \
+		:st = .text 0x06e60000, 0x00010000:\
+		:st = .data 0x06e70000, 0x00010000:
+SaPppCatalog.so \
+		:st = .text 0x06e40000, 0x00010000:\
+		:st = .data 0x06e50000, 0x00010000:
+SaIsdnCatalog.so \
+		:st = .text 0x06e20000, 0x00010000:\
+		:st = .data 0x06e30000, 0x00010000:
+SaFilesystemCatalog.so \
+		:st = .text 0x06e00000, 0x00010000:\
+		:st = .data 0x06e10000, 0x00010000:
+SaSwapCatalog.so \
+		:st = .text 0x06de0000, 0x00010000:\
+		:st = .data 0x06df0000, 0x00010000:
+SaSerialDeviceCatalog.so \
+		:st = .text 0x06dc0000, 0x00010000:\
+		:st = .data 0x06dd0000, 0x00010000:
+SaRemovableMediaCatalog.so \
+		:st = .text 0x06da0000, 0x00010000:\
+		:st = .data 0x06db0000, 0x00010000:
+SaSchedBackupCatalog.so \
+		:st = .text 0x06d80000, 0x00010000:\
+		:st = .data 0x06d90000, 0x00010000:
+SaProcessCatalog.so \
+		:st = .text 0x06d60000, 0x00010000:\
+		:st = .data 0x06d70000, 0x00010000:
+SaHostCatalog.so \
+		:st = .text 0x06d40000, 0x00010000:\
+		:st = .data 0x06d50000, 0x00010000:
+fxbuiltFilter.so \
+		:st = .text 0x06cf0000, 0x00040000:\
+		:st = .data 0x06d30000, 0x00010000:
+SaDiskPanel.so \
+		:st = .text 0x06cd0000, 0x00010000:\
+		:st = .data 0x06ce0000, 0x00010000:
+SaUserAccountPanel.so \
+		:st = .text 0x06cb0000, 0x00010000:\
+		:st = .data 0x06cc0000, 0x00010000:
+SaExamplePanel.so \
+		:st = .text 0x06c90000, 0x00010000:\
+		:st = .data 0x06ca0000, 0x00010000:
+fxbuiltTransition.so \
+		:st = .text 0x06c40000, 0x00040000:\
+		:st = .data 0x06c80000, 0x00010000:
+SaNetIfPanel.so \
+		:st = .text 0x06c20000, 0x00010000:\
+		:st = .data 0x06c30000, 0x00010000:
+SaPppPanel.so \
+		:st = .text 0x06c00000, 0x00010000:\
+		:st = .data 0x06c10000, 0x00010000:
+BarnDoors.so \
+		:st = .text 0x06be0000, 0x00010000:\
+		:st = .data 0x06bf0000, 0x00010000:
+SaIsdnPanel.so \
+		:st = .text 0x06bc0000, 0x00010000:\
+		:st = .data 0x06bd0000, 0x00010000:
+SaFilesystemPanel.so \
+		:st = .text 0x06ba0000, 0x00010000:\
+		:st = .data 0x06bb0000, 0x00010000:
+CenterMerge.so \
+		:st = .text 0x06b80000, 0x00010000:\
+		:st = .data 0x06b90000, 0x00010000:
+SaModemPanel.so \
+		:st = .text 0x06b60000, 0x00010000:\
+		:st = .data 0x06b70000, 0x00010000:
+CenterSplit.so \
+		:st = .text 0x06b40000, 0x00010000:\
+		:st = .data 0x06b50000, 0x00010000:
+SaSerialDevicePanel.so \
+		:st = .text 0x06b20000, 0x00010000:\
+		:st = .data 0x06b30000, 0x00010000:
+ClockWipe.so \
+		:st = .text 0x06b00000, 0x00010000:\
+		:st = .data 0x06b10000, 0x00010000:
+SaSwapPanel.so \
+		:st = .text 0x06ae0000, 0x00010000:\
+		:st = .data 0x06af0000, 0x00010000:
+CrossDissolve.so \
+		:st = .text 0x06ac0000, 0x00010000:\
+		:st = .data 0x06ad0000, 0x00010000:
+SaRemovableMediaPanel.so \
+		:st = .text 0x06aa0000, 0x00010000:\
+		:st = .data 0x06ab0000, 0x00010000:
+CrossStretch.so \
+		:st = .text 0x06a80000, 0x00010000:\
+		:st = .data 0x06a90000, 0x00010000:
+SaSchedBackupPanel.so \
+		:st = .text 0x06a60000, 0x00010000:\
+		:st = .data 0x06a70000, 0x00010000:
+Direct.so \
+		:st = .text 0x06a40000, 0x00010000:\
+		:st = .data 0x06a50000, 0x00010000:
+SaProcessPanel.so \
+		:st = .text 0x06a20000, 0x00010000:\
+		:st = .data 0x06a30000, 0x00010000:
+Inset.so \
+		:st = .text 0x06a00000, 0x00010000:\
+		:st = .data 0x06a10000, 0x00010000:
+IrisCross.so \
+		:st = .text 0x069e0000, 0x00010000:\
+		:st = .data 0x069f0000, 0x00010000:
+IrisRound.so \
+		:st = .text 0x069c0000, 0x00010000:\
+		:st = .data 0x069d0000, 0x00010000:
+IrisSquare.so \
+		:st = .text 0x069a0000, 0x00010000:\
+		:st = .data 0x069b0000, 0x00010000:
+Push.so \
+		:st = .text 0x06980000, 0x00010000:\
+		:st = .data 0x06990000, 0x00010000:
+Slide.so \
+		:st = .text 0x06960000, 0x00010000:\
+		:st = .data 0x06970000, 0x00010000:
+Split.so \
+		:st = .text 0x06940000, 0x00010000:\
+		:st = .data 0x06950000, 0x00010000:
+Stretch.so \
+		:st = .text 0x06920000, 0x00010000:\
+		:st = .data 0x06930000, 0x00010000:
+Swap.so \
+		:st = .text 0x06900000, 0x00010000:\
+		:st = .data 0x06910000, 0x00010000:
+Take.so \
+		:st = .text 0x068e0000, 0x00010000:\
+		:st = .data 0x068f0000, 0x00010000:
+WedgeWipe.so \
+		:st = .text 0x068c0000, 0x00010000:\
+		:st = .data 0x068d0000, 0x00010000:
+Wipe.so \
+		:st = .text 0x068a0000, 0x00010000:\
+		:st = .data 0x068b0000, 0x00010000:
+Zoom.so \
+		:st = .text 0x06880000, 0x00010000:\
+		:st = .data 0x06890000, 0x00010000:
+libsdtidv.so \
+		:st = .text 0x06820000, 0x00010000:\
+		:st = .data 0x06830000, 0x00010000:
+libvlxc.so \
+		:st = .text 0x06800000, 0x00010000:\
+		:st = .data 0x06810000, 0x00010000:
+mvp.so \
+		:st = .text 0x067d0000, 0x00020000:\
+		:st = .data 0x067f0000, 0x00010000:
+impact.so \
+		:st = .text 0x067a0000, 0x00020000:\
+		:st = .data 0x067c0000, 0x00010000:
+mgv.so \
+		:st = .text 0x06720000, 0x00060000:\
+		:st = .data 0x06780000, 0x00020000:
+vicejpeg.so \
+		:st = .text 0x06710000, 0x00010000:\
+		:st = .data 0x07a30000, 0x00010000:
+vicempeg.so \
+		:st = .text 0x066f0000, 0x00010000:\
+		:st = .data 0x06700000, 0x00010000:
+vicers.so \
+		:st = .text 0x066c0000, 0x00010000:\
+		:st = .data 0x066d0000, 0x00010000:
+vicedv.so \
+		:st = .text 0x06600000, 0x00020000:\
+		:st = .data 0x06620000, 0x000a0000:
+vicecopy.so \
+		:st = .text 0x065e0000, 0x00010000:\
+		:st = .data 0x065f0000, 0x00010000:
+evo.so \
+		:st = .text 0x06550000, 0x00080000:\
+		:st = .data 0x065d0000, 0x00010000:
+libxrx.so \
+		:st = .text 0x06530000, 0x00010000:\
+		:st = .data 0x06540000, 0x00010000:
+libdps.so \
+		:st = .text 0x064c0000, 0x00050000:\
+		:st = .data 0x06510000, 0x00020000:

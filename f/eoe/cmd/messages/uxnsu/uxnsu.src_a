@@ -1,0 +1,215 @@
+#ident  "$Revision: 1.1 $"
+#       Copyright (c) 1990, 1991 UNIX System Laboratories, Inc.
+#       Copyright (c) 1984, 1986, 1987, 1988, 1989, 1990 AT&T
+#         All Rights Reserved
+#
+#       THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF
+#       UNIX System Laboratories, Inc.
+#       The copyright notice above does not evidence any
+#       actual or intended publication of such source code.
+#Begining
+UXNSU_1:Usage: pseudo [-m line] [-l]\n
+UXNSU_2:%s failed for master: %s\n
+UXNSU_3:%s failed: %s\n
+UXNSU_4:%s failed for slave: %s\n
+UXNSU_5:Incorrect usage\n
+UXNSU_6:Usage: %s -l\n
+UXNSU_7:Usage: %s [-a | -c | -d] [local_principal] remote_principal\n
+UXNSU_8:Usage: %s [-k] | [-cn]\n
+UXNSU_9:Invalid %s principal.\n
+UXNSU_10:New key confirmation failed.\n
+UXNSU_11:Pipe %s() operation failed.\n
+UXNSU_12:Module (%s) push failed.\n
+UXNSU_13:Message %s() failed.\n
+UXNSU_14:XDR decode function (%s) failed.\n
+UXNSU_15:XDR encode function (%s) failed.\n
+UXNSU_16:Unexpected message received.\n
+UXNSU_17:Request rejected by daemon.\n
+UXNSU_18:Start failed. %s daemon already running.\n
+UXNSU_19:Stop failed. No %s daemon running.\n
+UXNSU_20:Cannot obtain lock file (%s).\n
+UXNSU_21:Cannot open key database - %s.\n
+UXNSU_22:Cannot stat key database - %s.\n
+UXNSU_23:Cannot read key database - %s.\n
+UXNSU_24:Error encountered in key database - %s.\n
+UXNSU_25:Cannot create updated key database - %s.\n
+UXNSU_26:Cannot rename key database. Left as %s.\n
+UXNSU_27:Memory allocation failed.\n
+UXNSU_28:Fork operation failed.\n
+UXNSU_29:Master key does not match.\n
+UXNSU_30:Cannot fattach() to %s.\n
+UXNSU_31:Error in protocol. Wrong %s.\n
+UXNSU_32:No key available to '%s'.\n
+UXNSU_33:No logname for effective user.\n
+UXNSU_34:namemap() failed for '%s'.\n
+UXNSU_35:attrmap() failed for '%s'.\n
+UXNSU_36:Wrong machine (%s) authenticated.\n
+UXNSU_37:Wrong logname (%s) authenticated.\n
+UXNSU_38:Wrong service (%s) authenticated.\n
+UXNSU_39:putava() failed for %s.\n
+UXNSU_40:setava() failed.\n
+UXNSU_41:Unexpected end of daemon.\n
+UXNSU_42:No local lid for %s.\n
+UXNSU_43:Unable to get key from user.\n
+UXNSU_44:Invalid encryption type (%0o) specified.\n
+UXNSU_45:Invalid checksum type (%0o) specified.\n
+UXNSU_46:Unknown failure code %d.\n
+UXNSU_47:Enter master key for '%s' scheme:
+UXNSU_48:Enter new master key for '%s' scheme:
+UXNSU_49:Re-enter new master key for '%s' scheme:
+UXNSU_50:Enter old %s key:
+UXNSU_51:Enter new %s key:
+UXNSU_52:Re-enter new %s key:
+UXNSU_53:local
+UXNSU_54:remote
+UXNSU_55:type
+UXNSU_56:principal mismatch
+UXNSU_57:principal switch
+UXNSU_58:%s: Cannot open logfile\n
+UXNSU_59:%s: No such attribute\n
+UXNSU_60:%s: Cannot create file\n
+UXNSU_61:%s: Cannot open file\n
+UXNSU_62:%s: Cannot read from file\n
+UXNSU_63:mandatory field(s) missing\n
+UXNSU_64:Return field missing\n
+UXNSU_65:entry already in file\n
+UXNSU_66:remote name already in file\n
+UXNSU_67:%s: format error in file\n
+UXNSU_68:%s: Cannot replace file\n
+UXNSU_69:Entry not found\n
+UXNSU_70:Bad descriptor\n
+UXNSU_71:%s: Attribute already exists\n
+UXNSU_72:%s: Cannot remove file\n
+UXNSU_73:Syntax\n
+UXNSU_74:%s: Usage:\n\t%s [ -A attrname [ -l localval ] ]\n\t%s -A attrname -a -l localval -r remoteval\n\t%s -A attrname -d -l localval [ -r remoteval ]\n\t%s -A attrname -I descr\n\t%s -A attrname [ -Dcf ]\n
+UXNSU_75:%s: No such scheme\n
+UXNSU_76:%s: No such user\n
+UXNSU_77:%s: Bad scheme name\n
+UXNSU_78:%s: Scheme already exists\n
+UXNSU_79:%s: Cannot make directory\n
+UXNSU_80:%s: Cannot remove directory\n
+UXNSU_81:%s: Usage:\n\t%s [ -S scheme [ -l logname ] ]\n\t%s -S scheme -a -l logname -r g_name\n\t%s -S scheme -d -l logname [ -r g_name ]\n\t%s -S scheme -I descr\n\t%s -S scheme [ -Duscf ]\n
+UXNSU_82:User map file for scheme %s is locked\n
+UXNSU_83:%s: Usage:\n\t%s [ -S scheme [ -l logname ] ]\n\t%s -S scheme -a [ -l logname ] -r g_name\n\t%s -S scheme -d -l logname [ -r g_name ]\n\t%s -S scheme [ -cf ]\n
+UXNSU_84:scheme %s is in SECURE mode\n
+UXNSU_85:%s: Not allowed to perform this operation\n
+UXNSU_86:Bad descriptor in attribute map file\n
+UXNSU_87:Error on line number %d: 
+UXNSU_88:Syntax error\n
+UXNSU_89:Mandatory field missing\n
+UXNSU_90:Duplicate entry\n
+UXNSU_91:Line out of order\n
+UXNSU_92:Bad transparent mapping\n
+UXNSU_93:1 error found in attribute map\n
+UXNSU_94:%d errors found in attribute map\n
+UXNSU_95:No errors in attribute map\n
+UXNSU_96:Bad descriptor in attribute map file:\n%s\n
+UXNSU_97:Type c to change, a to abort (default c) 
+UXNSU_98:New descriptor (include leading !): 
+UXNSU_99:Aborting fix...\n
+UXNSU_100:Syntax error:\n
+UXNSU_101:Mandatory field missing:\n
+UXNSU_102:Duplicate entry:\n
+UXNSU_103:Line out of order:\n
+UXNSU_104:Bad transparent mapping:\n
+UXNSU_105:Type c to change, s to skip, d to delete (default c) 
+UXNSU_106:New remote value: 
+UXNSU_107:New local value: 
+UXNSU_108:new entry inserted\n
+UXNSU_109:entry deleted\n
+UXNSU_110:entry skipped\n
+UXNSU_111:%d of them fixed\n
+UXNSU_112:USER mode\n
+UXNSU_113:SECURE mode\n
+UXNSU_114:Bad descriptor in system map file\n
+UXNSU_115:Unknown mapped user\n
+UXNSU_116:1 error found in system map\n
+UXNSU_117:%d errors found in system map\n
+UXNSU_118:No errors in system map\n
+UXNSU_119:Bad descriptor in system map file:\n%s\n
+UXNSU_120:Unknown mapped user:\n
+UXNSU_121:New remote name: 
+UXNSU_122:New local name: 
+UXNSU_123:Bad descriptor in user map file\n
+UXNSU_124:1 error found in user map\n
+UXNSU_125:%d errors found in user map\n
+UXNSU_126:No errors in user map\n
+UXNSU_127:Bad descriptor in user map file:\n%s\n
+UXNSU_128:Usage: cs [-d]\n
+UXNSU_129:getrlimit failed\n
+UXNSU_130:could not open log file: %s\n
+UXNSU_131:could not lock log file: %s\n
+UXNSU_132:could not open debug file %s\n
+UXNSU_133:Usage: reportscheme [-d]\n
+UXNSU_134:%s: No Error\n
+UXNSU_135:%s: System Error: %s\n
+UXNSU_136:%s: Dial error\n
+UXNSU_137:%s: No Memory\n
+UXNSU_138:%s: Could not chdir\n
+UXNSU_139:%s: Authentication scheme specified by server is not acceptable\n
+UXNSU_140:%s: Connection to service failed\n
+UXNSU_141:%s: Error in invoking authentication scheme\n
+UXNSU_142:%s: Authentication scheme unsucessful\n
+UXNSU_143:%s: Could not obtain address of service over any transport\n
+UXNSU_144:%s: Could not create CS pipe\n
+UXNSU_145:%s: Could not mount remote stream to CS pipe\n
+UXNSU_146:%s: Could not push CONNLD\n
+UXNSU_147:%s: Could not fork CS child request\n
+UXNSU_148:%s: host/service not found over available transport %s\n
+UXNSU_149:%s: TLI failure: t_open failed\n
+UXNSU_150:%s: TLI failure: t_bind failed\n
+UXNSU_151:%s: TLI failure: t_connect failed\n
+UXNSU_152:%s: TLI failure: t_alloc failed\n
+UXNSU_153:%s: MAC check failure or Secure Device access denied\n
+UXNSU_154:%s: DAC check failure or Secure Device access denied\n
+UXNSU_155:%s: Connection attempt timed out\n
+UXNSU_156:%s: Privileges not correct for requested network options\n
+UXNSU_157:%s: Netdir option incorrectly set in csopts struct\n
+UXNSU_158:%s: Service not found in server's _pmtab\n
+UXNSU_159:%s: Connection not permitted by LIDAUTH.map\n
+UXNSU_160:%s:  cs_perror error in message reporting\n
+UXNSU_161:Environment file name too long\n
+UXNSU_162:Usage\n
+UXNSU_163:rexec host service [arguments]\n
+UXNSU_164:service host [arguments]\n
+UXNSU_165:%s: Usage:\n
+UXNSU_166:\t%s [-l] [-h]\n
+UXNSU_167:%s: the list of services cannot be obtained\n
+UXNSU_168:see administrator's guide\n
+UXNSU_169:No error\n
+UXNSU_170:Too many open client rexec connections\n
+UXNSU_171:Bad options/flags specified\n
+UXNSU_172:Too many arguments\n
+UXNSU_173:Bad environment specified\n
+UXNSU_174:Unknown host\n
+UXNSU_175:Connection problem\n
+UXNSU_176:Host is not running rxserver\n
+UXNSU_177:Unsupported version\n
+UXNSU_178:Could not open services file\n
+UXNSU_179:Service not available\n
+UXNSU_180:Not authorized to execute service\n
+UXNSU_181:No pseudo terminals available\n
+UXNSU_182:Cannot make pipe for stderr\n
+UXNSU_183:Error in starting server side\n
+UXNSU_184:Server side memory allocation problems\n
+UXNSU_185:Bad rexec connection number\n
+UXNSU_186:Write could cause process to block, try later\n
+UXNSU_187:Bad signal number\n
+UXNSU_188:Wrong state for operation/message\n
+UXNSU_189:Could not push tirdwr module\n
+UXNSU_190:write() handler failed\n
+UXNSU_191:ioctl() handler failed\n
+UXNSU_192:Protocol error - unexpected message received\n
+UXNSU_193:Unknown error\n
+UXNSU_194:No error message for error\n
+UXNSU_195:Invalid service definition\n
+UXNSU_196:Cannot open services file\n
+UXNSU_197:The service is already defined\n
+UXNSU_198:The services file could not be updated\n
+UXNSU_199:Cannot create temp file\n
+UXNSU_200:Service not found - %s\n
+UXNSU_201:Service name too long\n
+UXNSU_202:Service description too long - truncating to %d characters\n
+UXNSU_203:Service definition too long\n
+UXNSU_204:\t%s: Usage:\n\t\t%s -a servicename [-d description] [-u] servicedef\n\t\t%s -r servicename ...\n\t\t%s -l\n
+#End

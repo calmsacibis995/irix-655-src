@@ -1,0 +1,15 @@
+#ident  "$Revision: 1.1 $"
+#       Copyright (c) 1990, 1991 UNIX System Laboratories, Inc.
+#       Copyright (c) 1984, 1986, 1987, 1988, 1989, 1990 AT&T
+#         All Rights Reserved
+#
+#       THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF
+#       UNIX System Laboratories, Inc.
+#       The copyright notice above does not evidence any
+#       actual or intended publication of such source code.
+#Begining
+TTY_USAGE:Usage: tty [-l] [-s]\n
+TTY_NOT_A_TTY:not a tty\n
+TTY_NOT_ON_AN_ACTIVE_SYNC_LINE:not on an active synchronous line\n
+TTY_SYNCHRONOUS_LINE:synchronous line %d\n
+#End

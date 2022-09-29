@@ -1,0 +1,35 @@
+*
+* if_hip:   HIPPI-LE and TCP/IP module for
+*	    Challenge/Onyx HIPPI adapter or
+*           Origin HIPPI-Serial Adapter.
+*
+* $Revision: 1.1 $
+*
+* This version is for internal use only. It leaves out "hippi"
+* or "hps" from the DEPENDENCIES list so that it can be used
+* with either.
+
+*FLAG	PREFIX	SOFT	#DEV	DEPENDENCIES
+s	ifhip_	-	-	bsd
+	ifhip_attach(){false}
+	ifhip_le_input(){false}
+	ifhip_fillin(){false}
+	ifhip_le_odone(){false}
+	ifhip_shutdown(){false}
+$$$
+
+/* on-board TCP & UDP checksums
+ *	0=disabled.
+ *	1=compute checksum on the board for received frames but not
+ *		transmitted frames.
+ *	2=compute checksum on the board for transmitted frames but not
+ *		received frames.
+ *	3=compute checksums for both transmitted and receive frames.
+ */
+int ifhip_cksum = 3;
+
+/* override default MTU
+ *	0=default, 65280.
+ */
+int ifhip_mtusize = 0;
+

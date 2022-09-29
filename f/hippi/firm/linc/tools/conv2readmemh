@@ -1,0 +1,58 @@
+#!/bin/perl
+
+#
+# conv2readmemh [width]
+#
+# Take the pure binary file output of convert and turn it into a
+# readmemh file.  The output of convert should be piped to the standard
+# input of conv2readmemh.  The optional width field allows specifying the
+# width of the memory device (currently only 8 and 32 are supported).  The
+# default width is 32.
+#
+# $Revision: 1.1 $
+#
+
+if ( $#ARGV >= 0 ) {
+	$width = $ARGV[0] / 8;
+	if ( $width != 1 && $width != 4 ) {
+		die "conv2readmemh: width must be 8 or 32.";
+	}
+}
+else {
+	$width = 4;
+}
+
+
+binmode( STDIN );
+
+$column = 0;
+
+while ( read( STDIN, $rawword, $width ) ) {
+
+	if ( $width == 4 ) {
+		$word = unpack( "I", $rawword );
+		if ( $column == 7 ) {
+			printf( "%08x\n", $word );
+			$column = 0;
+		}
+		else {
+			printf( "%08x ", $word );
+			$column += 1;
+		}
+	}
+	else {
+		$word = unpack( "C", $rawword );
+		if ( $column == 15 ) {
+			printf( "%02x\n", $word );
+			$column = 0;
+		}
+		else {
+			printf( "%02x ", $word );
+			$column += 1;
+		}
+	}
+
+	$addr = $addr + $width;
+}
+
+

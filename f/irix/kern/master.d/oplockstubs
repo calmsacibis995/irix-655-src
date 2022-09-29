@@ -1,0 +1,6 @@
+*
+*  oplock stubs
+*
+*FLAG	PREFIX	SOFT	#DEV	DEPENDENCIES
+oxu	-	-	-
+$$$

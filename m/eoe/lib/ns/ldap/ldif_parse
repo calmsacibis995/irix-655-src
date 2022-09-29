@@ -1,0 +1,443 @@
+#! /usr/bin/perl5
+eval 'exec perl5 -S $0 "$@"'
+    if 0;
+
+
+# ldif_parse
+#
+# Will parse name service flat files into ldif format.
+# Assumes a particular schema, which can be edited by
+# changing the character defines below.  A simple 
+# "objectclass=organization" entry will be created at
+# the top of the output file.
+
+
+### general info ###
+
+$organization	= "Your Organization Name";
+$country	= "US";
+$out_file 	= "nis.ldif";
+
+$source_dir 	= "/etc";
+$aliases_file 	= "$source_dir/aliases";
+$ethers_file 	= "$source_dir/ethers";
+$group_file 	= "$source_dir/group";
+$hosts_file 	= "$source_dir/hosts";
+$networks_file 	= "$source_dir/networks";
+$passwd_file 	= "$source_dir/passwd";
+$protocols_file = "$source_dir/protocols";
+$rpc_file 	= "$source_dir/rpc";
+$services_file 	= "$source_dir/services";
+
+$SIG{CHLD} = sub { wait };
+
+
+### schema info ###
+
+# group
+
+$group_class 		= "posixGroup";
+$group_pswd  		= "groupPassword";
+$group_gid   		= "posixGidNumber";
+$group_uid   		= "memberUid";
+$group_cn		= "cn";
+
+# hosts
+
+$hosts_class  		= "ipHost";
+$hosts_class2 		= "domainRelatedObject";
+$hosts_ip     		= "ipHostNumber";
+$hosts_dc     		= "dc";
+$hosts_mac    		= "macAddress";
+$hosts_name   		= "associatedDomain";
+
+# networks
+
+$networks_class  	= "ipNetwork";
+$networks_class2 	= "domainRelatedObject";
+$networks_dc	 	= "dc";
+$networks_ip	 	= "ipNetworkNumber";
+
+# protocols
+
+$protocols_class 	= "ipProtocol";
+$protocols_num	 	= "ipProtocolNumber";
+$protocols_cn	 	= "cn";
+
+# services
+
+$services_class 	= "ipService";
+$services_protocol 	= "ipServiceProtocol";
+$services_port		= "ipServicePort";
+$services_cn		= "cn";
+
+# rpc
+
+$rpc_class		= "oNCRPC";
+$rpc_number		= "oNCRPCNumber";
+$rpc_cn			= "cn";
+
+# passwd
+
+$passwd_class		= "posixAccount";
+$passwd_name		= "uid";
+$passwd_pswd		= "userPassword";
+$passwd_uid		= "posixUidNumber";
+$passwd_gid		= "posixPrimaryGidNumber";
+$passwd_gecos		= "posixGecos";
+$passwd_home		= "posixHomeDirectory";
+$passwd_shell		= "posixShell";
+
+# aliases
+
+$aliases_class		= "mailRecipient";
+$aliases_member		= "mail";
+$aliases_cn		= "cn";
+$aliases_name		= "uid";
+
+
+### map subroutines ###
+
+sub ns_top {
+	print OUT "dn: $base\n";
+	print OUT "o: $organization\n";
+	print OUT "objectclass: organization\n";
+	print OUT "objectclass: top\n";
+}
+
+sub ns_group {
+	unless (open(IN, $group_file)) {
+		print STDERR "Can't open $group_file: $!\n";
+		return;
+	}
+
+	while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		chomp($_);
+
+		undef $nm, $pw, $gid, $mem;
+		($nm, $pw, $gid, $mem) = split(/:/);
+
+		print OUT "\n";
+		print OUT "dn: $group_cn=$nm, $base\n";
+		print OUT "$group_cn: $nm\n";
+		print OUT "$group_pswd: $pw\n";
+		print OUT "$group_gid: $gid\n";
+		
+		foreach (split(/,/, $mem)) {
+			print OUT "$group_uid: $_\n";
+		}
+
+		print OUT "objectclass: $group_class\n";
+		print OUT "objectclass: top\n";
+	}
+
+	close(IN);
+}
+
+sub ns_hosts {
+	$have_ethers = 0;
+	undef %mac;
+
+	if (open(IN, $ethers_file)) {
+		while (<IN>) {
+			next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+			$_ = (split(/#/))[0];
+			chomp($_);
+
+			undef $mac, $net;
+			($mac, $net) = split(/\s+/);
+			$mac{$net} = $mac;	
+		}
+
+		close(IN);
+	}
+
+	unless (open(IN, $hosts_file)) {
+		print STDERR "Can't open $hosts_file: $!\n";
+		return;
+	}
+
+	while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		$_ = (split(/#/))[0];
+		chomp($_);
+
+		undef @data, $name;
+		$mac = "";
+		@data = split(/\s+/);
+
+		$name = (split(/\./, $data[1]))[0];
+
+		print OUT "\n";
+		print OUT "dn: $name, $base\n";
+		print OUT "$hosts_dc: $name\n";
+		
+		for ($i = 1; $i < $#data; $i++) {
+			print OUT "$hosts_name: $data[$i]\n";
+			if ($mac{$data[$i]}) { $mac = $mac{$data[$i]}; }
+		}
+
+		if ($mac != "") { print OUT "$hosts_mac: $mac\n"; }
+
+		print OUT "$hosts_ip: $data[0]\n";
+		print OUT "objectclass: $hosts_class\n";
+		print OUT "objectclass: $hosts_class2\n";
+		print OUT "objectclass: top\n";
+	}
+
+	close(IN);
+}		
+
+sub ns_networks {
+	unless (open(IN, $networks_file)) {
+		print STDERR "Can't open $networks_file: $!\n";
+		return;
+	}
+
+	while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		$_ = (split(/#/))[0];
+		chomp($_);
+
+		undef @data;
+		@data = split(/\s+/);
+		
+		print OUT "\n";
+		print OUT "dn: $networks_dc=$data[0], $base\n";
+		print OUT "$networks_dc: $data[0]\n";
+		
+		for ($i = 2; $i <= $#data; $i++) {
+			print OUT "$networks_dc: $data[$i]\n";
+		}
+
+		print OUT "$networks_ip: $data[1]\n";
+		print OUT "objectclass: $networks_class\n";
+		print OUT "objectclass: $networks_class2\n";
+		print OUT "objectclass: top\n";
+	}
+
+	close(IN);
+}
+
+sub ns_protocols {
+	unless (open(IN, $protocols_file)) {
+		print STDERR "Can't open $protocols_file: $!\n";
+		return;
+	}
+
+	while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		$_ = (split(/#/))[0];
+		chomp($_);
+
+		undef @data;
+		@data = split(/\s+/);
+		
+		print OUT "\n";
+		print OUT "dn: $protocols_cn=$data[0], $base\n";
+		print OUT "$protocols_cn: $data[0]\n";
+	
+		for ($i = 2; $i <= $#data; $i++) {
+			print OUT "$protocols_cn: $data[$i]\n";
+		}
+
+		print OUT "$protocols_num: $data[1]\n";
+		print OUT "objectclass: $protocols_class\n";
+		print OUT "objectclass: top\n";
+	}
+
+	close(IN);
+}
+
+sub ns_services {
+	unless (open(IN, $services_file)) {
+		print STDERR "Can't open $services_file: $!\n";
+		return;
+	}
+
+	 while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		$_ = (split(/#/))[0];
+		chomp($_);
+
+		undef @data, $port, $serv;
+		@data = split(/\s+/);
+
+		print OUT "\n";
+		print OUT "dn: $services_cn=$data[0], $base\n";
+		print OUT "$services_cn: $data[0]\n";
+	
+		for ($i = 2; $i <= $#data; $i++) {
+			print OUT "$services_cn: $data[$i]\n";
+		}
+
+		($port, $serv) = split(/\//, $data[1]);
+		print OUT "$services_port: $port\n";
+		print OUT "$services_protocol: $serv\n";
+		print OUT "objectclass: $services_class\n";
+		print OUT "objectclass: top\n";
+	}
+
+	close(IN);
+}
+
+sub ns_rpc {
+	unless (open(IN, $rpc_file)) {
+		print STDERR "Can't open $rpc_file: $!\n";
+		return;
+	}
+
+	while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		$_ = (split(/#/))[0];
+		chomp($_);
+
+		undef @data;
+		@data = split(/\s+/);
+
+		print OUT "\n";
+		print OUT "dn: $rpc_cn=$data[0], $base\n";
+		print OUT "$rpc_cn: $data[0]\n";
+
+		for ($i = 2; $i <= $#data; $i++) {
+			print OUT "$rpc_cn: $data[$i]\n";
+		}
+
+		print OUT "$rpc_number: $data[1]\n";
+		print OUT "objectclass: $rpc_class\n";
+		print OUT "objectclass: top\n";
+	}
+
+	close(IN);
+}
+
+sub ns_passwd {
+	unless (open(IN, $passwd_file)) {
+		print STDERR "Can't open $passwd_file: $!\n";
+		return;
+	}
+
+	while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		chomp($_);
+
+		undef @data;
+		@data = split(/:/);
+
+		print OUT "\n";
+		print OUT "dn: $passwd_name=$data[0], $base\n";
+		print OUT "$passwd_name: $data[0]\n";
+		print OUT "$passwd_pswd: $data[1]\n";
+		print OUT "$passwd_uid: $data[2]\n";
+		print OUT "$passwd_gid: $data[3]\n";
+		print OUT "$passwd_gecos: $data[4]\n";
+		print OUT "$passwd_home: $data[5]\n";
+		print OUT "$passwd_shell: $data[6]\n";
+		print OUT "objectclass: $passwd_class\n";
+		print OUT "objectclass: top\n";
+	}
+
+	close(IN);
+}
+
+sub ns_aliases {
+	unless (open(IN, $aliases_file)) {
+		print STDERR "Can't open $aliases_file: $!\n";
+		return;
+	}
+
+	while (<IN>) {
+		next if ($_ =~ /^\s*\#/ || $_ =~ /^\s*$/);
+		chomp($_);
+
+		undef $name, $members, @members;
+		($name, $members) = split(/\s*:\s*/);
+		@members = split(/\s*,\s*/, $members);
+
+		print OUT "\n";
+		print OUT "dn: $aliases_name=$name, $base\n";
+		print OUT "$aliases_name: $name\n";
+		
+		foreach (@members) {
+			print OUT "$aliases_member: $_\n";
+		}
+
+		print OUT "objectclass: $aliases_class\n";
+		print OUT "objectclass: top\n";
+	}
+}
+
+sub usage {
+	print "usage: ldif_parse [-s <source directory>] [-d <destination "
+		. "file>]\n\t[-o <organization>] [-c <country>] [maps...]\n";
+	exit(1);
+}
+
+
+### begin execution ###
+
+while ($arg = shift(@ARGV)) {
+	if ($arg eq "-s") {
+		$ns_dir = $source_dir = shift(@ARGV);
+	}
+	elsif ($arg eq "-d") {
+		$out_file = shift(@ARGV);
+	}
+	elsif ($arg eq "-o") {
+		$organization = shift(@ARGV);
+	}
+	elsif ($arg eq "-c") {
+		$country = shift(@ARGV);
+	}
+	elsif ($arg eq "-h") {
+		&usage;
+	}
+	else {
+		push(@maps, $arg);
+	}
+}
+
+$base = "o=$organization, c=$country";
+
+unless (open(OUT, "> $out_file")) {
+	print STDERR "Can't open $out_file: $!\n";
+	exit(1);
+}
+
+ns_top();
+
+if ($#maps < 0) {
+	ns_group();
+	ns_hosts();
+	ns_networks();
+	ns_passwd();
+	ns_protocols();
+	ns_rpc();
+	ns_services();
+	exit(0);
+}
+
+for (@maps) {
+	if (/^group/i) {
+		ns_group();
+	} elsif (/^host/i) {
+		ns_hosts();
+	} elsif (/^network/i) {
+		ns_networks();
+	} elsif (/^passw/i) {
+		ns_passwd();
+	} elsif (/^protocol/i) {
+		ns_protocols();
+	} elsif (/^rpc/i) {
+		ns_rpc();
+	} elsif (/^service/i) {
+		ns_services();
+	} elsif (/^aliases/i) {
+		ns_aliases();
+	} else {
+		print STDERR "Do not know how to parse map: $_";
+	}
+}
+
+close(OUT);

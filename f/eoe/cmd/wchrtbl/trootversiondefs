@@ -1,0 +1,4 @@
+VERSION=troot
+
+LCOPTS=-non_shared
+LLDOPTS=-nostdlib -L$(ROOT)/usr/$(LIB_LOCATION)/nonshared

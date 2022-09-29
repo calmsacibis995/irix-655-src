@@ -1,0 +1,79 @@
+.\" All local SGI man macros go here, except for .Op, which is in its own 
+.\" file, and .Ne, which has been added to stdmacro.  The local version of
+.\" the }H macro is here, too.
+.\" $Revision: 1.13 $
+.
+.
+.\" Use this macro start a code example.  It will printed as an indented
+.\" (using .RS), unfilled section using font 7, which is assumed to be a 
+.\" constant-width font (Courier or similar).  It takes one optional 
+.\" argument: the number of lines in the example; it calls .Ne with it.
+.\" Added by CSK  6/12/89
+.de Ex
+.Ne \\$1
+.P
+.RS
+.ft 7
+.nf
+..
+.
+.\" Use this macro to end a code example started with .Ex.
+.\" Added by CSK  6/12/89
+.de Ee
+.if n .DT
+.fi
+.ft 1
+.sp 0.8v
+.RE
+..
+.de}H
+.ev1
+.}C
+.}E
+.ie\\n()s 'sp 8.4v	.\" controls distance from top of page to header
+.el'sp 3v
+.ps\\n()S
+.bd1 3
+.ft 6
+.\" online header
+.if n \{\
+.\"	if the full header fits, print it
+.ie \\w\\*(]E\ \ \\*(Oh\ \ \\*(]E<=\\n(.l \{\
+.tl \\*(]E\\*(Oh\\*(]E \}
+.el \{\
+.\"	if the header fits with one name and the optional header info, print it
+.ie \\w\\*(]E\ \ \\*(Oh<=\\n(.l \{\
+.tl \\*(]E\\*(Oh \}
+.el \{\
+.\"	if all else fails, print the name on the left only
+.tl \\*(]E \} \} \}
+.\" printed header
+.if t \{.ie \\nt=2 \{\
+.\"	do odd/even headers; assume that they fit
+.if o .tl \\s9\\*(Oh\\s11\\*(]E 
+.if e .tl \\s11\\*(]E\\s9\\*(Oh \}
+.el \{.\" do all-the-same headers
+.\"	if the full header fits, print it
+.ie \\w\\s11\\*(]E\ \ \\s9\\*(Oh\ \ \\s11\\*(]E<=\\n(.l \{\
+.tl \\s11\\*(]E\\s9\\*(Oh\\s11\\*(]E \}
+.el \{\
+.\"	if the header fits with one name and the optional header info, print it
+.ie \\w\\s11\\*(]E\ \ \\*(Oh<=\\n(.l \{\
+.tl \\s11\\*(]E\\*(Oh \}
+.el \{\
+.\"	if all else fails, print the name on the left only
+.tl \\s11\\*(]E \} \} \}
+.\"	print a rule on all printed pages
+.vs 4p
+.tl \l'\n(LLu'
+.vs \\n()Vp
+.\}
+.\" end of printed header
+.ft 1
+.bd1
+.ps\\n()S
+.ie\\n()s 'sp 1.5v
+.el'sp 3v
+.ev
+.ns
+..

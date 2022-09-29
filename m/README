@@ -1,0 +1,144 @@
+
+WARNING: FOR LEGAL REASONS THIS FILE MUST REMAIN INSTALLED;
+         DO NOT REMOVE IT FROM THE SYSTEM.
+
+
+This IRIX source product contains a subset of the source code for IRIX and
+a build environment for the source files.
+
+
+(C) COPYRIGHT SILICON GRAPHICS, INC.
+UNPUBLISHED PROPRIETARY INFORMATION.
+ALL RIGHTS RESERVED.
+
+
+Install location:
+   Files are installed under usr/share/src/SrcPrd/<version>
+   where <version> is the IRIX version number.
+
+
+Files:
+   Makefile       - Main make definition file
+   README         - This file
+   eoe/           - Directory containing eoe source files
+   eoe-bld.cpio   - Copy file archive containing build files for eoe
+   file.lst       - List of files contained in the source product distribution
+   hippi/         - Directory hippi containing source files
+   hippi-bld.cpio - Copy file archive containing build files for hippi
+   irix/          - Directory containing irix source files
+   irix-bld.cpio  - Copy file archive containing build files for irix
+   root           - Directory containing the build root
+   troot          - Directory containing the build tool root
+
+
+Supported make targets:
+   buildable       - Loads the build files
+   check           - Verified that the build roots were loaded
+   clean           - Removes files not list in the file "file.lst"
+   default         - Builds the eoe and irix software in place
+   eoe             - Builds the eoe software in place
+   eoe_buildable   - Loads build binaries for eoe build
+   hippi           - Builds the hippi software in place
+   hippi_buildable - Loads build binaries for hippi build
+   irix            - Builds the irix software in place
+   irix_buildable  - Loads build binaries for irix build
+
+
+Terms:
+  The build directory refers to the name of the directory where the source
+  product was installed.  A copy of this file should reside in the build
+  directory.  The symbol "BLD_DIR" refers to the build directory.
+
+
+Build information:
+   To build both eoe and irix, simply change your working directory (cd) to
+   the build directory (BLD_DIR) and issue the command "make".
+
+   To only build either eoe, irix or hippi, invoke make as above with the
+   appropriate target (e.g. make eoe).
+
+
+   To build a subset of of a source tree:
+
+     1) Set the environment variable "WORKAREA" to the name of the
+        build directory.
+
+     2) Set the environment variable "ROOT" to the name of the
+        root directory (BLD_DIR/root).
+
+     3) Set the environment variable "TOOLROOT" to the name of the
+        tool root directory (BLD_DIR/troot).
+
+     4) Set the environment variable "SRC_PRD" to 1.
+   
+     5) Change your working directory (cd) to the build directory and
+        issue the command "make buildable" to load the build files.
+
+     6) Change your working directory (cd) to the directory which 
+        contains the source to build from and issue the command
+        "make default".
+
+
+Build notes:
+   The make targets "headers" and "exports" need not be built and
+   may not build properly.  Therefore, changes to the files which
+   are operated upon by the "headers" and/or "exports" targets
+   should be made to the build root as well as to the build area
+   prior to performing a build.
+
+   The "clean" target of the main make description file remove all
+   files which are not part of the source product (i.e. all files
+   not listed in the file "file.lst").  Therefore, any files which
+   are added and should survive a "make clean" should be added to
+   the "file.lst" file and the "file.lst" file should then be sorted.
+
+   The source files and build files can be loaded separately.  Make
+   sure that the appropriate files have been loaded prior to performing
+   a build.
+
+   A test build for this product was performed on a Origin machine which
+   was running the latest version of IRIX.  Other build machines or
+   configurations may not be supported.
+
+
+Restrictions:
+   This source product requires a Source License Agreement from
+   Silicon Graphics, Inc. and a separate license for UNIX System V
+   Release 4.1ES from Santa Cruz Operation, Inc.
+
+   IRIX is derived from UNIX(R) System V Release 4.1ES.
+   UNIX is a Registered Trademark in the United States and other
+   countries, licensed exclusively through X/Open Company Ltd.
+
+   This source product contains Confidential Information.  Licensee
+   shall hold Confidential Information in confidence and shall not
+   sell, lease, transfer or otherwise disclose Confidential Information
+   to anyone, except to employees of Licensee at the Site with whom
+   Licensee has or shall obtain, written agreement that each shall hold
+   Confidential Information in confidence and not disclose
+   Confidential Information to anyone.  Licensee shall neither disclose
+   nor disseminate Confidential Information to any other person,
+   firm or organization, or any employee of Licensee who does not
+   have a direct need to obtain access.  Licensee will treat
+   Confidential Information with at least the same degree of care
+   as it would its own software source code and other valuable
+   trade secrets.
+
+   Portions of this product may still be in development. The
+   existence of those portions still in development is not a
+   commitment of actual release or support by Silicon Graphics, Inc.
+   Silicon Graphics, Inc. assumes no liability for any damages
+   resulting from attempts to use any functionality or documentation
+   not officially released and supported. If it is released, the
+   final form and the time of official release and start of support
+   is at the discretion of Silicon Graphics, Inc.
+
+   The build root and the build tool root files are only to be used
+   to build the source product.  All other uses are prohibited.
+
+
+  **************************************************************
+  * This is a licensed product and is subject to restrictions. *
+  * Refer to the license agreement for additional information. *
+  **************************************************************
+

@@ -1,0 +1,181 @@
+#ident "$Revision: 1.1 $"
+# NOTE: this is the uxepu catalogue - alas at the time of writing -
+# the ESMP/5 releases didn't seem to have a uxepu catalogue source!
+# So this is just the portion of uxepu that make uses.. with lots of blanks
+#
+#
+#
+#
+#
+#Begin
+UXEPU_1::
+UXEPU_2::
+UXEPU_3::
+UXEPU_4::
+UXEPU_5::
+UXEPU_6::
+UXEPU_7::
+UXEPU_8::
+UXEPU_9::
+UXEPU_10::
+UXEPU_11::
+UXEPU_12::
+UXEPU_13::
+UXEPU_14::
+UXEPU_15::
+UXEPU_16::
+UXEPU_17::
+UXEPU_18::
+UXEPU_19::
+UXEPU_20::
+UXEPU_21::
+UXEPU_22::
+UXEPU_23::
+UXEPU_24::
+UXEPU_25::
+UXEPU_26::
+UXEPU_27::
+UXEPU_28::
+UXEPU_29::
+UXEPU_30::
+UXEPU_31::
+UXEPU_32::
+UXEPU_33::
+UXEPU_34::
+UXEPU_35::
+UXEPU_36::
+UXEPU_37::
+UXEPU_38::
+UXEPU_39::
+UXEPU_40::
+UXEPU_41::
+UXEPU_42::
+UXEPU_43::
+UXEPU_44::
+UXEPU_45::
+UXEPU_46::
+UXEPU_47::
+UXEPU_48::
+UXEPU_49::
+UXEPU_50::
+UXEPU_51::
+UXEPU_52::
+UXEPU_53::
+UXEPU_54::
+UXEPU_55::
+UXEPU_56::
+UXEPU_57::
+UXEPU_58:Too many command lines for `%s' (bu10)\n
+UXEPU_59:`%s' no action taken.\n
+UXEPU_60:`%s' not remade because of errors (bu14)\n
+UXEPU_61:`%s' is up to date.\n
+UXEPU_62:touch(%s)\n
+UXEPU_63:\nMaking target \"%s(%s)\"\n
+UXEPU_64:\nMaking target \"%s\"\n
+UXEPU_65:$! nulled, predecessor cycle\n
+UXEPU_66::
+UXEPU_67::
+UXEPU_68:predecessor cycle (%s)\n
+UXEPU_69::
+UXEPU_70:don't know how to make %s (bu42)
+UXEPU_71:realloc failed
+UXEPU_72::
+UXEPU_73::
+UXEPU_74::
+UXEPU_75::
+UXEPU_76::
+UXEPU_77::
+UXEPU_78:Cannot touch %s (bu25)
+UXEPU_79:couldn't load shell: Argument list too long (bu22)
+UXEPU_80:couldn't load shell (bu22)
+UXEPU_81:couldn't fork
+UXEPU_82:bad wait code (bu23)
+UXEPU_83:Fail to dup block file(%d)
+UXEPU_84:doexec: out of memory
+UXEPU_85:cannot load %s : Argument list too long (bu24)
+UXEPU_86:cannot load %s (bu24)
+UXEPU_87:seek error on archive %s
+UXEPU_88:Bad date field for %.14s in %s
+UXEPU_89:Bad size field for %.14s in archive %s
+UXEPU_90:read error on archive %s
+UXEPU_91:cannot find symbol %s in archive %s
+UXEPU_92:cannot alloc offsets table for archive %s
+UXEPU_93:cannot alloc string table for archive %s
+UXEPU_94:Bad date for %.14s, archive %s
+UXEPU_95:Cannot do global variable search old object file.
+UXEPU_96:%s is not an object module (bu42)
+UXEPU_97::
+UXEPU_98::
+UXEPU_99::
+UXEPU_100::
+UXEPU_101:No suffix list.\n
+UXEPU_102:\n*** %s NOT removed.\n
+UXEPU_103:\n*** %s removed.\n
+UXEPU_104:Open directories:\n
+UXEPU_105:Macros:\n
+UXEPU_106:Lookup chain: %s\n\t
+UXEPU_107:(MAIN NAME)
+UXEPU_108:\n depends on:
+UXEPU_109:commands:\n
+UXEPU_110:Usage: make [-f makefile] [-p] [-i] [-k] [-s] [-r] [-n] [-u] [-v viewpath] [-o]\n\t
+UXEPU_111::
+UXEPU_112::
+UXEPU_113::
+UXEPU_114::
+UXEPU_115::
+UXEPU_116::
+UXEPU_117:no description file after -f flag (bu1)
+UXEPU_118:cannot open %s
+UXEPU_119:no arguments or description file (bu7)
+UXEPU_120:description file error (bu9)
+UXEPU_121:getcwd (bu5)
+UXEPU_122:%s changed after being used\n
+UXEPU_123::
+UXEPU_124:$? (bu35)\n
+UXEPU_125::
+UXEPU_126::
+UXEPU_127::
+UXEPU_128::
+UXEPU_129::
+UXEPU_130:cannot alloc memory
+UXEPU_131:out of memory
+UXEPU_132:infinitely recursive macro?
+UXEPU_133:cannot alloc mem
+UXEPU_134:too many env parameters.
+UXEPU_135:null archive name `%s'
+UXEPU_136::
+UXEPU_137::
+UXEPU_138::
+UXEPU_139::
+UXEPU_140:couldn't malloc len=%d
+UXEPU_141:No sh block tar=%s\n
+UXEPU_142:Bad done tar=%s, done=%d\n
+UXEPU_143:No shenv to restore tar=%s, done=%d\n
+UXEPU_144:Internal ERROR: Some dep. didn't built
+UXEPU_145:Fail to open <%s>
+UXEPU_146::
+UXEPU_147::
+UXEPU_148::
+UXEPU_149::
+UXEPU_150::
+UXEPU_151::
+UXEPU_152::
+UXEPU_153::
+UXEPU_154::
+UXEPU_155::
+UXEPU_156::
+UXEPU_157::
+UXEPU_158:inconsistent rules lines for `%s' (bu36)\n
+UXEPU_159:multiple make lines for %s (bu37)\n
+UXEPU_160::
+UXEPU_161:Too many lefts
+UXEPU_162::
+UXEPU_163:bad character %c (octal %o), line %d (bu40)
+UXEPU_164:line too long
+UXEPU_165:cannot get %s for including
+UXEPU_166:cannot open %s for including
+UXEPU_167:special target `%s:' not first rule: ignoring\n
+UXEPU_168:special target `%s:' illegal prerequisites or commands
+UXEPU_169:MAKEFLAGS buffer overrun
+UXEPU_170:Unmatched closing curly braces or parenthesis in line containing:\n\t%s
+#end

@@ -1,0 +1,48 @@
+#!/bin/perl
+
+#
+# conv2memload loadaddr [endaddress]
+#
+# Take a pure binary output of convert and make it usable
+# by the mem_load.pf diagnostic.  The output of convert should be
+# piped in to standard input.
+#
+# conv2memload converts the words to hex and inserts a hex address in
+# front of every word.  The loadaddr arg is the load address.  If 
+# endaddress is present, the output file is padded with zeros up
+# to (but not including) that address.
+#
+# $Revision: 1.1 $
+#
+
+if ( $#ARGV < 0 ) {
+	die "Usage: conv2memload loadaddr [endaddress]";
+}
+
+$addr = hex( $ARGV[0] );
+if ( $#ARGV > 1 ) {
+	$addrend = hex( $ARGV[1] );
+}
+else {
+	$addrend = 0;
+}
+
+binmode( STDIN );
+
+while ( read( STDIN, $rawword, 4 ) ) {
+
+	$word = unpack( "I", $rawword );
+
+	printf( "0x%08X\n", $addr );
+	printf( "0x%08X\n", $word );
+
+	$addr = $addr + 4;
+}
+
+while ( $addr < $addrend ) {
+	printf( "0x%08X\n", $addr );
+	print "0x00000000\n";
+
+	$addr = $addr + 4;
+}
+

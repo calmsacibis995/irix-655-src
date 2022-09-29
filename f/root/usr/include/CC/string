@@ -1,0 +1,1702 @@
+/*
+ * Copyright (c) 1997
+ * Silicon Graphics Computer Systems, Inc.
+ *
+ * Permission to use, copy, modify, distribute and sell this software
+ * and its documentation for any purpose is hereby granted without fee,
+ * provided that the above copyright notice appear in all copies and
+ * that both that copyright notice and this permission notice appear
+ * in supporting documentation.  Silicon Graphics makes no
+ * representations about the suitability of this software for any
+ * purpose.  It is provided "as is" without express or implied warranty.
+ */ 
+
+#ifndef __SGI_STL_STRING
+#define __SGI_STL_STRING
+
+#include <ctype.h>
+#include <stdexcept>      // Includes stl_string_fwd.h and stl_config.h
+#include <char_traits.h>
+#include <iterator>
+#include <functional>
+#include <memory>
+#include <algorithm>
+
+// Standard C++ string class.  This class has performance
+// characteristics very much like vector<>, meaning, for example, that
+// it does not perform reference-count or copy-on-write, and that
+// concatenation of two strings is an O(N) operation. 
+
+// There are three reasons why basic_string is not identical to
+// vector.  First, basic_string always stores a null character at the
+// end; this makes it possible for c_str to be a fast operation.
+// Second, the C++ standard requires basic_string to copy elements
+// using char_traits<>::assign, char_traits<>::copy, and
+// char_traits<>::move.  This means that all of vector<>'s low-level
+// operations must be rewritten.  Third, basic_string<> has a lot of
+// extra functions in its interface that are convenient but, strictly
+// speaking, redundant.
+
+// Additionally, the C++ standard imposes a major restriction: according
+// to the standard, the character type charT must be a POD type.  This
+// implementation weakens that restriction, and allows charT to be a
+// a user-defined non-POD type.  However, charT must still have a
+// default constructor.
+
+namespace std {
+
+#if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
+#pragma set woff 1174
+#endif
+
+// Helper classes that turn char_traits into function objects.
+
+template <class Traits>
+struct __eq_traits
+  : public binary_function<typename Traits::char_type,
+                           typename Traits::char_type,
+                           bool>
+{
+  bool operator()(const typename Traits::char_type& x,
+                  const typename Traits::char_type& y) const
+    { return Traits::eq(x, y); }
+};
+
+template <class Traits>
+struct __lt_traits
+  : public binary_function<typename Traits::char_type,
+                           typename Traits::char_type,
+                           bool>
+{
+  bool operator()(const typename Traits::char_type& x,
+                  const typename Traits::char_type& y) const
+    { return Traits::lt(x, y); }
+};
+
+template <class Traits>
+struct __not_within_traits
+  : public unary_function<typename Traits::char_type, bool>
+{
+  typedef const typename Traits::char_type* pointer;
+  const pointer first;
+  const pointer last;
+
+  __not_within_traits(pointer f, pointer l) : first(f), last(l) {}
+
+  bool operator()(const typename Traits::char_type& x) const
+    { return find_if(first, last, bind1st(__eq_traits<Traits>(), x)) == last; }
+};
+
+// ------------------------------------------------------------
+// Class __string_base.  
+
+// __string_base is a helper class whose only purpose is to make
+//  it easier to write an exception-safe version of basic_string.
+//  The constructor allocates, but does not initialize, a block of
+//  memory.  The destructor deallocates, but does not destroy elements
+//  within, a block of memory.  The destructor assumes that start either
+//  is null, or else points to a block of memory that was allocated using
+//  __string_base's allocator and whose size is end_of_storage - start.
+
+#pragma set woff 1375
+
+template <class T, class Alloc> class __string_base {
+protected:
+  typedef simple_alloc<T, Alloc> data_allocator;
+
+  T* start;
+  T* finish;
+  T* end_of_storage;
+
+  T* allocate(size_t n) { return data_allocator::allocate(n); }
+
+
+                                // Precondition: 0 < n <= max_size().
+  void create_block(size_t n) { 
+    if (n <= max_size()) {
+      start  = allocate(n);
+      finish = start;
+      end_of_storage = start + n;
+    }
+    else
+      throw_length_error();
+  }
+
+  void deallocate() {
+    if (start) data_allocator::deallocate(start, end_of_storage - start);
+  }
+  
+  void deallocate(T* p, size_t n) { data_allocator::deallocate(p, n); }
+
+  size_t max_size() const { return (size_t(-1) / sizeof(T)) - 1; }
+
+  __string_base() : start(0), finish(0), end_of_storage(0) { }
+  
+  __string_base(size_t n) : start(0), finish(0), end_of_storage(0)
+    { create_block(n); }
+
+  ~__string_base() { deallocate(); }
+
+  void throw_length_error() const;
+  void throw_out_of_range() const;
+};
+
+template <class T, class Alloc> 
+void __string_base<T, Alloc>::throw_length_error() const {
+  __STL_THROW(length_error("basic_string"));
+}
+
+template <class T, class Alloc> 
+void __string_base<T, Alloc>::throw_out_of_range() const {
+  __STL_THROW(out_of_range("basic_string"));
+}
+
+// ------------------------------------------------------------
+// Class basic_string.  
+
+// Class invariants:
+// (1) [start, finish) is a valid range.
+// (2) Each iterator in [start, finish) points to a valid object
+//     of type value_type.
+// (3) *finish is a valid object of type value_type; in particular,
+//     it is value_type().
+// (4) [finish + 1, end_of_storage) is a valid range.
+// (5) Each iterator in [finish + 1, end_of_storage) points to 
+//     unininitialized memory.
+
+// Note one important consequence: a string of length n must manage
+//  a block of memory whose size is at least n + 1.  
+
+
+template <class charT, class traits, class Alloc> 
+class basic_string : private __string_base<charT, Alloc> {
+public:
+  typedef charT value_type;
+  typedef traits traits_type;
+
+  typedef value_type* pointer;
+  typedef const value_type* const_pointer;
+  typedef value_type& reference;
+  typedef const value_type& const_reference;
+  typedef size_t size_type;
+  typedef ptrdiff_t difference_type;
+
+  typedef const value_type*                const_iterator;
+  typedef value_type*                      iterator;
+  typedef reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef reverse_iterator<iterator>       reverse_iterator;
+
+  static const size_type npos = -1;
+
+  typedef __string_base<charT, Alloc> __base;
+
+public:                         // Constructor, destructor, assignment.
+
+  basic_string() : __base(8) { construct(finish); }
+
+  struct __reserve_t {};
+  basic_string(__reserve_t, size_t n) : __base(n + 1) { construct(finish); }
+
+  basic_string(const basic_string& s) : __base() 
+    { range_initialize(s.begin(), s.end()); }
+
+  basic_string(const basic_string& s, size_type pos, size_type n = npos) 
+    : __base() {
+    if (pos > s.size())
+      throw_out_of_range();
+    else
+      range_initialize(s.begin() + pos,
+                       s.begin() + pos + min(n, s.size() - pos));
+  }
+
+  basic_string(const charT* s, size_type n) : __base() 
+    { range_initialize(s, s + n); }
+
+  basic_string(const charT* s) : __base() 
+    { range_initialize(s, s + traits::length(s)); }
+
+  basic_string(size_type n, charT c) : __base(n + 1) {
+    finish = uninitialized_fill_n(start, n, c);
+    terminate_string();
+  }
+  basic_string(int n, charT c) : __base(n + 1) {
+    finish = uninitialized_fill_n(start, n, c);
+    terminate_string();
+  }
+  basic_string(long n, charT c) : __base(n + 1) {
+    finish = uninitialized_fill_n(start, n, c);
+    terminate_string();
+  }
+
+  template <class InputIterator>
+  basic_string(InputIterator f, InputIterator l) : __base() {
+    range_initialize(f, l);
+  }
+
+  ~basic_string() { destroy(start, finish + 1); }
+    
+  basic_string& operator=(const basic_string& s) {
+    if (&s != this) 
+      assign(s.begin(), s.end());
+    return *this;
+  }
+
+  basic_string& operator=(const charT* s) 
+    { return assign(s, s + traits::length(s)); }
+
+  basic_string& operator=(charT c)
+    { return assign(static_cast<size_type>(1), c); }
+
+private:                        // Helper functions used by constructors.
+                                //  It is a severe error for any of them to 
+                                //  be called anywhere except from 
+                                //  within constructors.
+
+  void terminate_string() {
+    __STL_TRY {
+      construct(finish);
+    }
+    __STL_UNWIND(destroy(start, finish));
+  }
+    
+  template <class InputIter>
+  void range_initialize(InputIter f, InputIter l, input_iterator_tag) {
+    create_block(8);
+    construct(finish);
+    __STL_TRY {
+      append(f, l);
+    }
+    __STL_UNWIND(destroy(start, finish + 1));
+  }
+
+  template <class ForwardIter>
+  void range_initialize(ForwardIter f, ForwardIter l, forward_iterator_tag) {
+    typename iterator_traits<ForwardIter>::difference_type n = distance(f, l);
+    create_block(n + 1);
+    finish = uninitialized_copy(f, l, start);
+    terminate_string();
+  }
+
+  template <class InputIter>
+  void range_initialize(InputIter f, InputIter l) {
+    typedef typename iterator_traits<InputIter>::iterator_category category;
+    range_initialize(f, l, category());
+  }
+
+public:                         // Iterators.
+  iterator begin()             { return start; }
+  iterator end()               { return finish; }
+  const_iterator begin() const { return start; }
+  const_iterator end()   const { return finish; }  
+
+  reverse_iterator rbegin()             
+    { return reverse_iterator(finish); }
+  reverse_iterator rend()               
+    { return reverse_iterator(start); }
+  const_reverse_iterator rbegin() const 
+    { return const_reverse_iterator(finish); }
+  const_reverse_iterator rend()   const 
+    { return const_reverse_iterator(start); }
+
+public:                         // Size, capacity, etc.
+  size_type size() const { return finish - start; }
+  size_type length() const { return size(); }
+  using __base::max_size;
+
+  void resize(size_type n, charT c = charT()) {
+    if (n <= size())
+      erase(begin() + n, end());
+    else
+      append(n - size(), c);
+  }
+
+  void reserve(size_type res_arg = 0);
+
+  size_type capacity() const { return (end_of_storage - start) - 1; }
+
+  void clear() {
+    if (!empty()) {
+      traits::assign(*start, charT());
+      destroy(start+1, finish+1);
+      finish = start;
+    }
+  } 
+
+  bool empty() const { return start == finish; }    
+
+public:                         // Element access.
+
+  const_reference operator[](size_type n) const { return *(start + n); }
+  reference operator[](size_type n) { return *(start + n); }
+
+  const_reference at(size_type n) const {
+    if (n >= size())
+      throw_out_of_range();
+    return *(start + n);
+  }
+
+  reference at(size_type n) {
+    if (n >= size())
+      throw_out_of_range();
+    return *(start + n);
+  }
+
+public:                         // Append, operator+=, push_back.
+
+  basic_string& operator+=(const basic_string& s) { return append(s); }
+  basic_string& operator+=(const charT* s) { return append(s); }
+  basic_string& operator+=(charT c) { push_back(c); return *this; }
+
+  basic_string& append(const basic_string& s) 
+    { return append(s.begin(), s.end()); }
+
+  basic_string& append(const basic_string& s, size_type pos, size_type n) {
+    if (pos > s.size())
+      throw_out_of_range();
+    return append(s.begin() + pos, s.begin() + pos + min(n, s.size() - pos));
+  }
+
+  basic_string& append(const charT* s, size_type n) { return append(s, s+n); }
+
+  basic_string& append(const charT* s) 
+    { return append(s, s + traits::length(s)); }
+
+  basic_string& append(size_type n, charT c);
+  basic_string& append(int n, charT c) { return append((size_t) n, c); }
+  basic_string& append(long n, charT c) { return append((size_t) n, c); }
+
+  template <class InputIter>
+  basic_string& append(InputIter f, InputIter l) {
+    typedef typename iterator_traits<InputIter>::iterator_category category;
+    return append(f, l, category());
+  }
+
+  void push_back(charT c) {
+    if (finish + 1 == end_of_storage)
+      reserve(size() + max(size(), static_cast<size_type>(1)));
+    construct(finish + 1);
+    traits::assign(*finish, c);
+    ++finish;
+  }
+
+  void pop_back() {
+    traits::assign(*(finish - 1), charT());
+    destroy(finish);
+    --finish;
+  }
+
+private:                        // Helper functions for append.
+
+  template <class InputIter>
+  basic_string& append(InputIter f, InputIter l, input_iterator_tag);
+
+  template <class ForwardIter>
+  basic_string& append(ForwardIter f, ForwardIter l, forward_iterator_tag);
+
+public:                         // Assign
+  
+  basic_string& assign(const basic_string& s) 
+    { return assign(s.begin(), s.end()); }
+
+  basic_string& assign(const basic_string& s, size_type pos, size_type n) {
+    if (pos > s.size())
+      throw_out_of_range();
+    return assign(s.begin() + pos, s.begin() + pos + min(n, s.size() - pos));
+  }
+
+  basic_string& assign(const charT* s, size_type n)
+    { return assign(s, s + n); }
+
+  basic_string& assign(const charT* s)
+    { return assign(s, s + traits::length(s)); }
+
+  basic_string& assign(size_type n, charT c);
+  basic_string& assign(int n, charT c)
+    { return assign(static_cast<size_type>(n), c); }
+  basic_string& assign(long n, charT c)
+    { return assign(static_cast<size_type>(n), c); }
+
+  template <class InputIter>
+  basic_string& assign(InputIter f, InputIter l);
+
+  basic_string& assign(const charT* f, const charT* l);
+
+public:                         // Insert
+
+  basic_string& insert(size_type pos, const basic_string& s) {
+    if (pos > size())
+      throw_out_of_range();
+    if (size() > max_size() - s.size())
+      throw_length_error();
+    insert(start + pos, s.begin(), s.end());
+    return *this;
+  }
+
+  basic_string& insert(size_type pos, const basic_string& s,
+                       size_type beg, size_type n) {
+    if (pos > size() || beg > s.size())
+      throw_out_of_range();
+    size_type len = min(n, s.size() - beg);
+    if (size() > max_size() - len)
+      throw_length_error();
+    insert(start + pos, s.begin() + beg, s.begin() + beg + len);
+    return *this;
+  }
+
+  basic_string& insert(size_type pos, const charT* s, size_type n) {
+    if (pos > size())
+      throw_out_of_range();
+    if (size() > max_size() - n)
+      throw_length_error();
+    insert(start + pos, s, s + n);
+    return *this;
+  }
+
+  basic_string& insert(size_type pos, const charT* s) {
+    if (pos > size())
+      throw_out_of_range();
+    size_type len = traits::length(s);
+    if (size() > max_size() - len)
+      throw_length_error();
+    insert(start + pos, s, s + len);
+    return *this;
+  }
+    
+  basic_string& insert(size_type pos, size_type n, charT c) {
+    if (pos > size())
+      throw_out_of_range();
+    if (size() > max_size() - n)
+      throw_length_error();
+    insert(start + pos, n, c);
+    return *this;
+  }
+
+  iterator insert(iterator p, charT c) {
+    if (p == finish) {
+      push_back(c);
+      return finish - 1;
+    }
+    else
+      return insert_aux(p, c);
+  }
+
+  void insert(iterator p, size_t n, charT c);
+  void insert(iterator p, int n, charT c) { insert(p, (size_t) n, c); }
+  void insert(iterator p, long n, charT c) { insert(p, (size_t) n, c); }
+
+  template <class InputIter>
+  void insert(iterator p, InputIter first, InputIter last) {
+    typedef typename iterator_traits<InputIter>::iterator_category category;
+    insert(p, first, last, category());
+
+  }
+
+private:                        // Insert helper functions.
+  template <class InputIter>
+  void insert(iterator p, InputIter, InputIter, input_iterator_tag);
+
+  template <class ForwardIter>
+  void insert(iterator p, ForwardIter, ForwardIter, forward_iterator_tag);
+
+  iterator insert_aux(iterator, charT);
+
+  template <class InputIterator>
+  void _copy(InputIterator first, InputIterator last, iterator result) {
+    for ( ; first != last; ++first, ++result)
+      traits::assign(*result, *first);
+  }
+
+  void _copy(const charT* first, const charT* last, charT* result) {
+    traits::copy(result, first, last - first);
+  }
+
+public:                         // Erase.
+
+  basic_string& erase(size_type pos = 0, size_type n = npos) {
+    if (pos > size())
+      throw_out_of_range();
+    erase(start + pos, start + pos + min(n, size() - pos));
+    return *this;
+  }  
+
+  iterator erase(iterator position) {
+                                // The move includes the terminating charT().
+    traits::move(position, position + 1, finish - position);
+    destroy(finish);
+    --finish;
+    return position;
+  }
+
+  iterator erase(iterator first, iterator last) {
+    if (first != last) {
+                                // The move includes the terminating charT().
+      traits::move(first, last, (finish - last) + 1);
+      const iterator new_finish = finish - (last - first);
+      destroy(new_finish + 1, finish + 1);
+      finish = new_finish;
+    }
+    return first;
+  }
+
+public:                         // Replace
+  basic_string& replace(size_type pos, size_type n, const basic_string& s) {
+    if (pos > size())
+      throw_out_of_range();
+    const size_type len = min(n, size() - pos);
+    if (size() - len >= max_size() - s.size())
+      throw_length_error();
+    return replace(start + pos, start + pos + len, s.begin(), s.end());
+  }
+
+  basic_string& replace(size_type pos1, size_type n1,
+                        const basic_string& s,
+                        size_type pos2, size_type n2) {
+    if (pos1 > size() || pos2 > s.size())
+      throw_out_of_range();
+    const size_type len1 = min(n1, size() - pos1);
+    const size_type len2 = min(n2, s.size() - pos2);
+    if (size() - len1 >= max_size() - len2)
+      throw_length_error();
+    return replace(start + pos1, start + pos1 + len1,
+                   s.start + pos2, s.start + pos2 + len2);
+  }
+
+  basic_string& replace(size_type pos, size_type n1,
+                        const charT* s, size_type n2) {
+    if (pos > size())
+      throw_out_of_range();
+    const size_type len = min(n1, size() - pos);
+    if (n2 > max_size() || size() - len >= max_size() - n2)
+      throw_length_error();
+    return replace(start + pos, start + pos + len,
+                   s, s + n2);
+  }
+
+  basic_string& replace(size_type pos, size_type n1,
+                        const charT* s) {
+    if (pos > size())
+      throw_out_of_range();
+    const size_type len = min(n1, size() - pos);
+    const size_type n2 = traits::length(s);
+    if (n2 > max_size() || size() - len >= max_size() - n2)
+      throw_length_error();
+    return replace(start + pos, start + pos + len,
+                   s, s + traits::length(s));
+  }
+
+  basic_string& replace(size_type pos, size_type n1,
+                        size_type n2, charT c) {
+    if (pos > size())
+      throw_out_of_range();
+    const size_type len = min(n1, size() - pos);
+    if (n2 > max_size() || size() - len >= max_size() - n2)
+      throw_length_error();
+    return replace(start + pos, start + pos + len, n2, c);
+  }
+
+  basic_string& replace(iterator first, iterator last, 
+                        const basic_string& s) 
+    { return replace(first, last, s.begin(), s.end()); }
+
+  basic_string& replace(iterator first, iterator last,
+                        const charT* s, size_type n) 
+    { return replace(first, last, s, s + n); }
+
+  basic_string& replace(iterator first, iterator last,
+                        const charT* s) {
+    return replace(first, last, s, s + traits::length(s));
+  }
+
+  basic_string& replace(iterator first, iterator last, size_type n, charT c);
+
+  basic_string& replace(iterator first, iterator last, int n, charT c) 
+    { return replace(first, last, static_cast<size_type>(n), c); }
+
+  basic_string& replace(iterator first, iterator last, long n, charT c) 
+    { return replace(first, last, static_cast<size_type>(n), c); }
+
+  template <class InputIter>
+  basic_string& replace(iterator first, iterator last,
+                        InputIter f, InputIter l) {
+    typedef typename iterator_traits<InputIter>::iterator_category category;
+    return replace(first, last, f, l, category());
+  }
+
+private:                        // Helper functions for replace.
+
+  template <class InputIter>
+  basic_string& replace(iterator first, iterator last,
+                        InputIter f, InputIter l, input_iterator_tag);
+
+  template <class ForwardIter>
+  basic_string& replace(iterator first, iterator last,
+                        ForwardIter f, ForwardIter l, forward_iterator_tag);
+
+public:                         // Other modifier member functions.
+
+  size_type copy(charT* s, size_type n, size_type pos = 0) const {
+    if (pos > size())
+      throw_out_of_range();
+    const size_type len = min(n, size() - pos);
+    traits::copy(s, start + pos, len);
+    return len;
+  }
+
+  void swap(basic_string& s) {
+    std::swap(start, s.start);
+    std::swap(finish, s.finish);
+    std::swap(end_of_storage, s.end_of_storage);
+  }
+
+public:                         // Conversion to C string.
+
+  const charT* c_str() const { return start; }
+  const charT* data() const { return start; }
+
+public:                         // Find.
+
+  size_type find(const basic_string& s, size_type pos = 0) const 
+    { return find(s.begin(), pos, s.size()); }
+
+  size_type find(const charT* s, size_type pos = 0) const 
+    { return find(s, pos, traits::length(s)); }
+
+  size_type find(const charT* s, size_type pos, size_type n) const;
+  size_type find(charT c, size_type pos = 0) const;
+
+public:                         // Rfind.
+
+  size_type rfind(const basic_string& s, size_type pos = npos) const 
+    { return rfind(s.begin(), pos, s.size()); }
+
+  size_type rfind(const charT* s, size_type pos = npos) const 
+    { return rfind(s, pos, traits::length(s)); }
+
+  size_type rfind(const charT* s, size_type pos, size_type n) const;
+  size_type rfind(charT c, size_type pos = npos) const;
+
+public:                         // find_first_of
+  
+  size_type find_first_of(const basic_string& s, size_type pos = 0) const 
+    { return find_first_of(s.begin(), pos, s.size()); }
+
+  size_type find_first_of(const charT* s, size_type pos = 0) const 
+    { return find_first_of(s, pos, traits::length(s)); }
+
+  size_type find_first_of(const charT* s, size_type pos, size_type n) const;
+
+  size_type find_first_of(charT c, size_type pos = 0) const 
+    { return find(c, pos); }
+
+public:                         // find_last_of
+
+  size_type find_last_of(const basic_string& s, size_type pos = npos) const 
+    { return find_last_of(s.begin(), pos, s.size()); }
+
+  size_type find_last_of(const charT* s, size_type pos = npos) const 
+    { return find_last_of(s, pos, traits::length(s)); }
+
+  size_type find_last_of(const charT* s, size_type pos, size_type n) const;
+
+  size_type find_last_of(charT c, size_type pos = npos) const {
+    return rfind(c, pos);
+  }
+
+public:                         // find_first_not_of
+
+  size_type find_first_not_of(const basic_string& s, size_type pos = 0) const 
+    { return find_first_not_of(s.begin(), pos, s.size()); }
+
+  size_type find_first_not_of(const charT* s, size_type pos = 0) const 
+    { return find_first_not_of(s, pos, traits::length(s)); }
+
+  size_type find_first_not_of(const charT* s, size_type pos,
+                              size_type n) const;
+
+  size_type find_first_not_of(charT c, size_type pos = 0) const;
+
+public:                         // find_last_not_of
+
+  size_type find_last_not_of(const basic_string& s, size_type pos = npos) const
+    { return find_last_not_of(s.begin(), pos, s.size()); }
+
+  size_type find_last_not_of(const charT* s, size_type pos = npos) const
+    { return find_last_not_of(s, pos, traits::length(s)); }
+
+  size_type find_last_not_of(const charT* s, size_type pos,
+                             size_type n) const;
+
+  size_type find_last_not_of(charT c, size_type pos = npos) const;
+
+public:                         // Substring.
+
+  basic_string substr(size_type pos = 0, size_type n = npos) const {
+    if (pos > size())
+      throw_out_of_range();
+    return basic_string(start + pos, start + pos + min(n, size() - pos));
+  }
+
+public:                         // Compare
+
+  int compare(const basic_string& s) const 
+    { return _compare(start, finish, s.start, s.finish); }
+
+  int compare(size_type pos1, size_type n1, const basic_string& s) const {
+    if (pos1 > size())
+      throw_out_of_range();
+    return _compare(start + pos1, start + pos1 + min(n1, size() - pos1),
+                    s.start, s.finish);
+  }
+    
+  int compare(size_type pos1, size_type n1,
+              const basic_string& s,
+              size_type pos2, size_type n2) const {
+    if (pos1 > size() || pos2 > s.size())
+      throw_out_of_range();
+    return _compare(start + pos1, start + pos1 + min(n1, size() - pos1),
+                    s.start + pos2, s.start + pos2 + min(n2, size() - pos2));
+  }
+
+  int compare(const charT* s) const 
+    { return _compare(start, finish, s, s + traits::length(s)); }
+
+  int compare(size_type pos1, size_type n1, const charT* s) const {
+    if (pos1 > size())
+      throw_out_of_range();
+    return _compare(start + pos1, start + pos1 + min(n1, size() - pos1),
+                    s, s + traits::length(s));
+  }
+
+  int compare(size_type pos1, size_type n1, const charT* s,
+              size_type n2) const {
+    if (pos1 > size())
+      throw_out_of_range();
+    return _compare(start + pos1, start + pos1 + min(n1, size() - pos1),
+                    s, s + n2);
+  }
+
+private:                        // Compare helper functions.
+  
+  static int _compare(const charT* f1, const charT* l1,
+                      const charT* f2, const charT* l2) {
+    const ptrdiff_t n1 = l1 - f1;
+    const ptrdiff_t n2 = l2 - f2;
+    const int cmp = traits::compare(f1, f2, min(n1, n2));
+    return cmp != 0 ? cmp : (n1 < n2 ? -1 : (n1 > n2 ? 1 : 0));
+  }
+
+  friend bool operator<(const basic_string<charT, traits, Alloc>&,
+                        const basic_string<charT, traits, Alloc>&);
+  friend bool operator<(const charT*,
+                        const basic_string<charT, traits, Alloc>&);
+  friend bool operator<(const basic_string<charT, traits, Alloc>&,
+                        const charT*);
+
+};
+
+
+
+// ------------------------------------------------------------
+// Non-inline declarations.
+
+template <class charT, class traits, class Alloc> 
+const basic_string<charT, traits, Alloc>::size_type 
+basic_string<charT, traits, Alloc>::npos;
+
+// Change the string's capacity so that it is large enough to hold
+//  at least res_arg elements, plus the terminating charT().  Note that,
+//  if res_arg < capacity(), this member function may actually decrease
+//  the string's capacity.
+template <class charT, class traits, class Alloc> 
+void basic_string<charT, traits, Alloc>::reserve(size_type res_arg = 0) {
+  if (res_arg > max_size())
+    throw_length_error();
+
+  size_type n = max(res_arg, size()) + 1;
+  pointer new_start = allocate(n);
+  pointer new_finish = new_start;
+
+  __STL_TRY {
+    new_finish = uninitialized_copy(start, finish, new_start);
+    construct(new_finish);
+  }
+  __STL_UNWIND((destroy(new_start, new_finish), deallocate(new_start, n)));
+
+  destroy(start, finish + 1);
+  deallocate();
+  start = new_start;
+  finish = new_finish;
+  end_of_storage = new_start + n;
+}
+
+template <class charT, class traits, class Alloc> 
+basic_string<charT, traits, Alloc>& 
+basic_string<charT, traits, Alloc>::append(size_type n, charT c) {
+  if (n > max_size() || size() > max_size() - n)
+    throw_length_error();
+  if (size() + n > capacity())
+    reserve(size() + max(size(), n));
+  if (n > 0) {
+    uninitialized_fill_n(finish + 1, n - 1, c);
+    __STL_TRY {
+      construct(finish + n);
+    }
+    __STL_UNWIND(destroy(finish + 1, finish + n));
+    traits::assign(*finish, c);
+    finish += n;
+  }
+  return *this;
+}
+
+template <class T, class traits, class Alloc> 
+template <class InputIterator>
+basic_string<T, traits, Alloc>& 
+basic_string<T, traits, Alloc>::append(InputIterator first, InputIterator last,
+                                       input_iterator_tag) {
+  for ( ; first != last ; ++first)
+    push_back(*first);
+  return *this;
+}
+
+template <class T, class traits, class Alloc> 
+template <class ForwardIter>
+basic_string<T, traits, Alloc>& 
+basic_string<T, traits, Alloc>::append(ForwardIter first, ForwardIter last,
+                                       forward_iterator_tag) {
+  if (first != last) {
+    const size_type old_size = size();
+    typename iterator_traits<ForwardIter>::difference_type n 
+      = distance(first, last);
+    if (n > max_size() || old_size > max_size() - n)
+      throw_length_error();
+    if (old_size + n > capacity()) {
+      const size_type len = old_size +
+                            max(old_size, static_cast<size_type>(n)) + 1;
+      pointer new_start = allocate(len);
+      pointer new_finish = new_start;
+      __STL_TRY {
+        new_finish = uninitialized_copy(start, finish, new_start);
+        new_finish = uninitialized_copy(first, last, new_finish);
+        construct(new_finish);
+      }
+      __STL_UNWIND((destroy(new_start,new_finish), deallocate(new_start,len)));
+      destroy(start, finish + 1);
+      deallocate();
+      start = new_start;
+      finish = new_finish;
+      end_of_storage = new_start + len; 
+    }
+    else {
+      ForwardIter f1 = first;
+      ++f1;
+      uninitialized_copy(f1, last, finish + 1);
+      __STL_TRY {
+        construct(finish + n);
+      }
+      __STL_UNWIND(destroy(finish + 1, finish + n));
+      traits::assign(*finish, *first);
+      finish += n;
+    }
+  }
+  return *this;  
+}
+
+template <class charT, class traits, class Alloc> 
+basic_string<charT, traits, Alloc>& 
+basic_string<charT, traits, Alloc>::assign(size_type n, charT c) {
+  if (n <= size()) {
+    traits::assign(start, n, c);
+    erase(start + n, finish);
+  }
+  else {
+    traits::assign(start, size(), c);
+    append(n - size(), c);
+  }
+  return *this;
+}
+
+template <class charT, class traits, class Alloc> 
+template <class InputIter>
+basic_string<charT, traits, Alloc>& 
+basic_string<charT, traits, Alloc>::assign(InputIter f, InputIter l)
+{
+  pointer cur = start;
+  while (f != l && cur != finish) {
+    traits::assign(*cur, *f);
+    ++f;
+    ++cur;
+  }
+  if (f == l)
+    erase(cur, finish);
+  else
+    append(f, l);
+  return *this;
+}
+
+template <class charT, class traits, class Alloc> 
+basic_string<charT, traits, Alloc>& 
+basic_string<charT, traits, Alloc>::assign(const charT* f, const charT* l)
+{
+  const ptrdiff_t n = l - f;
+  if (n <= size()) {
+    traits::copy(start, f, n);
+    erase(start + n, finish);
+  }
+  else {
+    traits::copy(start, f, size());
+    append(f + size(), l);
+  }
+  return *this;
+}
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::iterator 
+basic_string<charT, traits, Alloc>::
+  insert_aux(basic_string<charT, traits, Alloc>::iterator p, charT c)
+{
+  iterator new_pos = p;
+  if (finish + 1 < end_of_storage) {
+    construct(finish + 1);
+    traits::move(p + 1, p, finish - p);
+    traits::assign(*p, c);
+    ++finish;
+  }
+  else {
+    const size_type old_len = size();
+    const size_type len = old_len +
+                          max(old_len, static_cast<size_type>(1)) + 1;
+    iterator new_start = allocate(len);
+    iterator new_finish = new_start;
+    __STL_TRY {
+      new_pos = uninitialized_copy(start, p, new_start);
+      construct(new_pos, c);
+      new_finish = new_pos + 1;
+      new_finish = uninitialized_copy(p, finish, new_finish);
+      construct(new_finish);
+    }
+    __STL_UNWIND((destroy(new_start, new_finish), deallocate(new_start, len)));
+    destroy(start, finish + 1);
+    deallocate();
+    start = new_start;
+    finish = new_finish;
+    end_of_storage = new_start + len;
+  }
+  return new_pos;
+}
+
+template <class charT, class traits, class Alloc>
+void basic_string<charT, traits, Alloc>::
+       insert(basic_string<charT, traits, Alloc>::iterator position,
+              size_t n, charT c)
+{
+  if (n != 0) {
+    if (size_type(end_of_storage - finish) >= n + 1) {
+      const size_type elems_after = finish - position;
+      iterator old_finish = finish;
+      if (elems_after >= n) {
+        uninitialized_copy((finish - n) + 1, finish + 1, finish + 1);
+        finish += n;
+        traits::move(position + n, position, (elems_after - n) + 1);
+        traits::assign(position, n, c);
+      }
+      else {
+        uninitialized_fill_n(finish + 1, n - elems_after - 1, c);
+        finish += n - elems_after;
+        __STL_TRY {
+          uninitialized_copy(position, old_finish + 1, finish);
+          finish += elems_after;
+        }
+        __STL_UNWIND((destroy(old_finish + 1, finish), finish = old_finish));
+        traits::assign(position, elems_after + 1, c);
+      }
+    }
+    else {
+      const size_type old_size = size();        
+      const size_type len = old_size + max(old_size, n) + 1;
+      iterator new_start = allocate(len);
+      iterator new_finish = new_start;
+      __STL_TRY {
+        new_finish = uninitialized_copy(start, position, new_start);
+        new_finish = uninitialized_fill_n(new_finish, n, c);
+        new_finish = uninitialized_copy(position, finish, new_finish);
+        construct(new_finish);
+      }
+      __STL_UNWIND((destroy(new_start,new_finish), deallocate(new_start,len)));
+      destroy(start, finish + 1);
+      deallocate();
+      start = new_start;
+      finish = new_finish;
+      end_of_storage = new_start + len;    
+    }
+  }
+}
+
+template <class T, class traits, class Alloc>
+template <class InputIter>
+void basic_string<T, traits, Alloc>::insert(iterator p,
+                                            InputIter first, InputIter last,
+                                            input_iterator_tag)
+{
+  for ( ; first != last; ++first) {
+    p = insert(p, *first);
+    ++p;
+  }
+}
+
+template <class charT, class traits, class Alloc>
+template <class ForwardIter>
+void 
+basic_string<charT, traits, Alloc>::insert(iterator position,
+                                           ForwardIter first, ForwardIter last,
+                                           forward_iterator_tag)
+{
+  if (first != last) {
+    const difference_type n = distance(first, last);
+    if (end_of_storage - finish >= n + 1) {
+      const difference_type elems_after = finish - position;
+      iterator old_finish = finish;
+      if (elems_after >= n) {
+        uninitialized_copy((finish - n) + 1, finish + 1, finish + 1);
+        finish += n;
+        traits::move(position + n, position, (elems_after - n) + 1);
+        _copy(first, last, position);
+      }
+      else {
+        ForwardIter mid = first;
+        advance(mid, elems_after + 1);
+        uninitialized_copy(mid, last, finish + 1);
+        finish += n - elems_after;
+        __STL_TRY {
+          uninitialized_copy(position, old_finish + 1, finish);
+          finish += elems_after;
+        }
+        __STL_UNWIND((destroy(old_finish + 1, finish), finish = old_finish));
+        _copy(first, mid, position);
+      }
+    }
+    else {
+      const size_type old_size = size();        
+      const size_type len = old_size +
+                            max(old_size, static_cast<size_type>(n)) + 1;
+      pointer new_start = allocate(len);
+      pointer new_finish = new_start;
+      __STL_TRY {
+        new_finish = uninitialized_copy(start, position, new_start);
+        new_finish = uninitialized_copy(first, last, new_finish);
+        new_finish = uninitialized_copy(position, finish, new_finish);
+        construct(new_finish);
+      }
+      __STL_UNWIND((destroy(new_start,new_finish), deallocate(new_start,len)));
+      destroy(start, finish + 1);
+      deallocate();
+      start = new_start;
+      finish = new_finish;
+      end_of_storage = new_start + len; 
+    }
+  }
+}
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>&
+basic_string<charT, traits, Alloc>::replace(iterator first, iterator last,
+                                            size_type n, charT c)
+{
+  const size_type len = static_cast<size_type>(last - first);
+  if (len >= n) {
+    traits::assign(first, n, c);
+    erase(first + n, last);
+  }
+  else {
+    traits::assign(first, len, c);
+    insert(last, n - len, c);
+  }
+  return *this;
+}
+
+template <class charT, class traits, class Alloc>
+template <class InputIter>
+basic_string<charT, traits, Alloc>&
+basic_string<charT, traits, Alloc>::replace(iterator first, iterator last,
+                                            InputIter f, InputIter l,
+                                            input_iterator_tag) {
+  for ( ; first != last && f != l; ++first, ++f)
+    traits::assign(*first, *f);
+
+  if (f == l)
+    erase(first, last);
+  else
+    insert(last, f, l);
+  return *this;
+}
+
+template <class charT, class traits, class Alloc>
+template <class ForwardIter>
+basic_string<charT, traits, Alloc>&
+basic_string<charT, traits, Alloc>::replace(iterator first, iterator last,
+                                            ForwardIter f, ForwardIter l,
+                                            forward_iterator_tag) 
+{
+    const typename iterator_traits<ForwardIter>::difference_type n =
+      distance(f, l);
+    const difference_type len = last - first;
+    if (len >= n) {
+      _copy(f, l, first);
+      erase(first + n, last);
+    }
+    else {
+      ForwardIter m = f;
+      advance(m, len);
+      _copy(f, m, first);
+      insert(last, m, l);
+    }
+    return *this;
+}
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::find(const charT* s,
+                                         size_type pos, size_type n) const 
+{
+  if (pos >= size())
+    return npos;
+  else {
+    const const_iterator result =
+      search(start + pos, finish, s, s + n, __eq_traits<traits>());
+    return result != finish ? result - begin() : npos;
+  }
+}
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::find(charT c, size_type pos = 0) const 
+{
+  if (pos >= size())
+    return npos;
+  else {
+    const const_iterator result =
+      find_if(start + pos, finish, bind2nd(__eq_traits<traits>(), c));
+    return result != finish ? result - begin() : npos;
+  }
+}    
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::rfind(const charT* s,
+                                      size_type pos, size_type n) const {
+  const size_t len = size();
+
+  if (n > len)
+    return npos;
+  else if (n == 0)
+    return min(len, pos);
+  else {
+    const const_iterator last = begin() + min(len - n, pos) + n;
+    const const_iterator result = find_end(begin(), last,
+                                           s, s + n,
+                                           __eq_traits<traits>());
+    return result != last ? result - begin() : npos;
+  }
+}
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::rfind(charT c, size_type pos = npos) const 
+{
+  const size_type len = size();
+
+  if (len < 1)
+    return npos;
+  else {
+    const const_iterator last = begin() + min(len - 1, pos) + 1;
+    const_reverse_iterator rresult =
+      find_if(const_reverse_iterator(last), rend(),
+              bind2nd(__eq_traits<traits>(), c));
+    return rresult != rend() ? (rresult.base() - 1) - begin() : npos;
+  }
+}
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::find_first_of(const charT* s,
+                                                  size_type pos,
+                                                  size_type n) const
+{
+  if (pos >= size())
+    return npos;
+  else {
+    const const_iterator result = std::find_first_of(begin() + pos, end(),
+                                                     s, s + n,
+                                                     __eq_traits<traits>());
+    return result != finish ? result - begin() : npos;
+  }
+}
+
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::find_last_of(const charT* s,
+                                                 size_type pos,
+                                                 size_type n) const
+{
+  const size_type len = size();
+
+  if (len < 1)
+    return npos;
+  else {
+    const const_iterator last = start + min(len - 1, pos) + 1;
+    const const_reverse_iterator rresult =
+      std::find_first_of(const_reverse_iterator(last), rend(),
+                         s, s + n,
+                         __eq_traits<traits>());
+    return rresult != rend() ? (rresult.base() - 1) - start : npos;
+  }
+}
+
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::find_first_not_of(const charT* s,
+                                                      size_type pos,
+                                                      size_type n) const 
+{
+  if (pos > size())
+    return npos;
+  else {
+    const_iterator result = find_if(start + pos, finish,
+                                    __not_within_traits<traits>(s, s + n));
+    return result != finish ? result - start : npos;
+  }
+}
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::find_first_not_of(charT c,
+                                                      size_type pos = 0) const
+{
+  if (pos > size())
+    return npos;
+  else {
+    const_iterator result = find_if(begin() + pos, end(),
+                                    not1(bind2nd(__eq_traits<traits>(), c)));
+    return result != finish ? result - begin() : npos;
+  }
+}    
+
+template <class charT, class traits, class Alloc>
+basic_string<charT, traits, Alloc>::size_type
+basic_string<charT, traits, Alloc>::find_last_not_of(const charT* s,
+                                                     size_type pos,
+                                                     size_type n) const 
+{
+
+  const size_type len = size();
+
+  if (len < 1)
+    return npos;
+  else {
+    const const_iterator last = begin() + min(len - 1, pos) + 1;
+    const const_reverse_iterator rresult =
+      find_if(const_reverse_iterator(last), rend(),
+              __not_within_traits<traits>(s, s + n));
+    return rresult != rend() ? (rresult.base() - 1) - begin() : npos;
+  }
+}
+
+template <class T, class traits, class Alloc>
+basic_string<T, traits, Alloc>::size_type
+basic_string<T, traits, Alloc>::find_last_not_of(T c,
+                                                 size_type pos = npos) const 
+{
+  const size_type len = size();
+
+  if (len < 1)
+    return npos;
+  else {
+    const const_iterator last = begin() + min(len - 1, pos) + 1;
+    const_reverse_iterator rresult =
+      find_if(const_reverse_iterator(last), rend(),
+              not1(bind2nd(__eq_traits<traits>(), c)));
+    return rresult != rend() ? (rresult.base() - 1) - begin() : npos;
+  }
+}
+
+// ------------------------------------------------------------
+// Non-member functions.
+
+// Operator+
+
+template <class charT, class traits, class Alloc>
+inline basic_string<charT, traits, Alloc>
+operator+(const basic_string<charT, traits, Alloc>& x,
+          const basic_string<charT, traits, Alloc>& y) {
+  typedef basic_string<charT, traits, Alloc> str;
+  typedef typename str::__reserve_t reserve_t;
+  str result(reserve_t(), x.size() + y.size());
+  result.append(x);
+  result.append(y);
+  return result;
+}
+
+template <class charT, class traits, class Alloc>
+inline basic_string<charT, traits, Alloc>
+operator+(const charT* s,
+          const basic_string<charT, traits, Alloc>& y) {
+  typedef basic_string<charT, traits, Alloc> str;
+  typedef typename str::__reserve_t reserve_t;
+  const size_t n = traits::length(s);
+  str result(reserve_t(), n + y.size());
+  result.append(s, s + n);
+  result.append(y);
+  return result;
+}
+
+template <class charT, class traits, class Alloc>
+inline basic_string<charT, traits, Alloc>
+operator+(charT c,
+          const basic_string<charT, traits, Alloc>& y) {
+  typedef basic_string<charT, traits, Alloc> str;
+  typedef typename str::__reserve_t reserve_t;
+  str result(reserve_t(), 1 + y.size());
+  result.push_back(c);
+  result.append(y);
+  return result;
+}
+
+template <class charT, class traits, class Alloc>
+inline basic_string<charT, traits, Alloc>
+operator+(const basic_string<charT, traits, Alloc>& x,
+          const charT* s) {
+  typedef basic_string<charT, traits, Alloc> str;
+  typedef typename str::__reserve_t reserve_t;
+  const size_t n = traits::length(s);
+  str result(reserve_t(), x.size() + n);
+  result.append(x);
+  result.append(s, s + n);
+  return result;
+}
+
+template <class charT, class traits, class Alloc>
+inline basic_string<charT, traits, Alloc>
+operator+(const basic_string<charT, traits, Alloc>& x,
+          const charT c) {
+  typedef basic_string<charT, traits, Alloc> str;
+  typedef typename str::__reserve_t reserve_t;
+  str result(reserve_t(), x.size() + 1);
+  result.append(x);
+  result.push_back(c);
+  return result;
+}
+
+// Operator== and operator!=
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator==(const basic_string<charT, traits, Alloc>& x,
+           const basic_string<charT, traits, Alloc>& y) {
+  return x.size() == y.size() &&
+         traits::compare(x.data(), y.data(), x.size()) == 0;
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator==(const charT* s,
+           const basic_string<charT, traits, Alloc>& y) {
+  size_t n = traits::length(s);
+  return n == y.size() && traits::compare(s, y.data(), n) == 0;
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator==(const basic_string<charT, traits, Alloc>& x,
+           const charT* s) {
+  size_t n = traits::length(s);
+  return x.size() == n && traits::compare(x.data(), s, n) == 0;
+}
+
+#ifdef __STL_FUNCTION_TMPL_PARTIAL_ORDER
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator!=(const basic_string<charT, traits, Alloc>& x,
+           const basic_string<charT, traits, Alloc>& y) {
+  return !(x == y);
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator!=(const charT* s,
+           const basic_string<charT, traits, Alloc>& y) {
+  return !(s == y);
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator!=(const basic_string<charT, traits, Alloc>& x,
+           const charT* s) {
+  return !(x == s);
+}
+
+#endif /* __STL_FUNCTION_TMPL_PARTIAL_ORDER */
+
+// Operator< (and also >, <=, and >=).
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator<(const basic_string<charT, traits, Alloc>& x,
+          const basic_string<charT, traits, Alloc>& y) {
+  return basic_string<charT, traits, Alloc>::_compare(x.begin(), x.end(),
+                                                      y.begin(), y.end()) < 0;
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator<(const charT* s,
+          const basic_string<charT, traits, Alloc>& y) {
+  size_t n = traits::length(s);
+  return basic_string<charT, traits, Alloc>::_compare(s, s + n,
+                                                      y.begin(), y.end()) < 0;
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator<(const basic_string<charT, traits, Alloc>& x,
+          const charT* s) {
+  size_t n = traits::length(s);
+  return basic_string<charT, traits, Alloc>::_compare(x.begin(), x.end(),
+                                                      s, s + n) < 0;
+}
+
+#ifdef __STL_FUNCTION_TMPL_PARTIAL_ORDER
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator>(const basic_string<charT, traits, Alloc>& x,
+          const basic_string<charT, traits, Alloc>& y) {
+  return y < x;
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator>(const charT* s,
+          const basic_string<charT, traits, Alloc>& y) {
+  return y < s;
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator>(const basic_string<charT, traits, Alloc>& x,
+          const charT* s) {
+  return s < x;
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator<=(const basic_string<charT, traits, Alloc>& x,
+           const basic_string<charT, traits, Alloc>& y) {
+  return !(y < x);
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator<=(const charT* s,
+           const basic_string<charT, traits, Alloc>& y) {
+  return !(y < s);
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator<=(const basic_string<charT, traits, Alloc>& x,
+           const charT* s) {
+  return !(s < x);
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator>=(const basic_string<charT, traits, Alloc>& x,
+           const basic_string<charT, traits, Alloc>& y) {
+  return !(x < y);
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator>=(const charT* s,
+           const basic_string<charT, traits, Alloc>& y) {
+  return !(s < y);
+}
+
+template <class charT, class traits, class Alloc>
+inline bool
+operator>=(const basic_string<charT, traits, Alloc>& x,
+           const charT* s) {
+  return !(x < s);
+}
+
+#endif /* __STL_FUNCTION_TMPL_PARTIAL_ORDER */
+
+// Swap.
+
+#ifdef __STL_FUNCTION_TMPL_PARTIAL_ORDER
+
+template <class charT, class traits, class Alloc>
+inline void swap(basic_string<charT, traits, Alloc>& x,
+                 basic_string<charT, traits, Alloc>& y) {
+  x.swap(y);
+}
+
+#endif /* __STL_FUNCTION_TMPL_PARTIAL_ORDER */
+
+// I/O.  (Using istream and ostream only, as opposed to the 
+// basic_istream and basic_ostream templates.  The result is that
+// these functions really don't make all that much sense except
+// for basic_string<char>.)
+
+inline void __sgi_string_fill(ostream& o, size_t n)
+{
+  char f = o.fill();
+  size_t i;
+
+  for (i = 0; i < n; i++) o.put(f);
+}
+
+template <class charT, class traits, class Alloc>
+ostream& operator<<(ostream& os, const basic_string<charT, traits, Alloc>& s)
+{
+  size_t n = s.size();
+  size_t pad_len = 0;
+  const bool left = bool(os.flags() & ios::left);
+  const size_t w = os.width();
+
+  if (w > 0) {
+    n = min(w, n);
+    pad_len = w - n;
+  }
+    
+  if (!left)
+    __sgi_string_fill(os, pad_len);
+  
+  const size_t nwritten = os.rdbuf()->sputn(s.data(), n);
+
+  if (left)
+    __sgi_string_fill(os, pad_len);
+
+  if (nwritten != n)
+    os.clear(os.rdstate() | ios::failbit);
+
+  os.width(0);
+  return os;
+}
+
+template <class charT, class traits, class Alloc>
+istream& operator>>(istream& is, basic_string<charT, traits, Alloc>& s)
+{
+
+  if (is.flags() & ios::skipws) {
+    charT c;
+    do 
+      is.get(c);
+    while (is && isspace(c));
+    if (is)
+      is.putback(c);
+  }
+
+  if (is) {
+    s.clear();
+
+    size_t n = is.width();
+    if (n == 0)
+      n = (size_t)(-1);
+    else
+      s.reserve(n);
+
+    while (n-- > 0) {
+      charT c;
+      is.get(c);
+      if (!is)
+        break;
+      else if (isspace(c)) {
+        is.putback(c);
+        break;
+      }
+      s.push_back(c);
+    }
+  }
+
+  is.width(0);
+  return is;
+}
+
+template <class charT, class traits, class Alloc>    
+istream& getline(istream& is,
+                 basic_string<charT, traits, Alloc>& s,
+                 charT delim = '\n') {
+  size_t nread = 0;
+  if (is) {
+    s.clear();
+
+    charT c;
+    while (nread < s.max_size() && is.get(c)) {
+      ++nread;
+      if (!traits::eq(c, delim)) 
+        s.push_back(c);
+      else
+        break;                  // Character is extracted but not appended.
+    }
+  }
+
+  if (nread == 0 || nread >= s.max_size())
+    is.clear(is.rdstate() | ios::failbit);
+  return is;
+}
+
+template <class charT, class traits, class Alloc>
+void __string_copy(const basic_string<charT, traits, Alloc>& s,
+                   charT* buf,
+                   size_t N)
+{
+  if (N > 0) {
+    const size_t n = min(N - 1, s.size());
+    copy(s.begin(), s.begin() + n, buf);
+    buf[n] = charT();
+  }
+}
+
+#pragma reset woff 1375
+
+// ------------------------------------------------------------
+// Typedefs
+
+typedef basic_string<char> string;
+typedef basic_string<wchar_t> wstring;
+
+
+#if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
+#pragma reset woff 1174
+#endif
+
+} // Close namespace std.
+
+#include <stl_hash_fun.h>
+
+namespace std {
+
+template <class charT, class traits, class Alloc>
+struct hash<basic_string<charT, traits, Alloc> > {
+  size_t operator()(const basic_string<charT, traits, Alloc>& s) const {
+    unsigned long h = 0; 
+    for (basic_string<charT, traits, Alloc>::const_iterator i = s.begin();
+         i != s.end();
+         ++i)
+      h = 5*h + *i;
+    return size_t(h);
+  }
+};
+
+} // Close namespace std
+
+#endif /* __SGI_STL_STRING */
+
+
+// Local Variables:
+// mode:C++
+// End:
+

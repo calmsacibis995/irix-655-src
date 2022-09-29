@@ -1,0 +1,13 @@
+*
+* hippibp: HIPPI Bypass driver
+*
+* $Revision: 1.0 $	$Date: 1996/09/30 23:08:07 $
+*
+*FLAG	PREFIX	SOFT	#DEV	DEPENDENCIES
+csn	hippibp	-	-
+	hippibp_attach(){true}
+	hippibp_bd_down(){false}
+	hippibp_bd_up(){false}
+	hippibp_portint(){false}
+$$$
+

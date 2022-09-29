@@ -1,0 +1,222 @@
+#ident $Revision: 1.98 $
+#
+# Generic rules for making reference pages
+#
+# make <name>.xpsv	# view page with $(XPSVIEW) (no file created)
+# make <name>.xp	# view page with $(XPSVIEW) (no file created)
+# make <name>.gv	# view page with $(GHOSTVIEW) (no file created)
+# make <name>.p		# print page (no file created, includes mod
+#			# date on bottom)
+# make <name>.ps	# create PostScript for page (no mod date)
+# make <name>.z		# create online packed version; view with
+#			# man -d <name>.z
+
+# make <name>.m		# view online version (no file created)
+# make print-list	# writes a list of the hardcopy (.p) targets
+#			# for the current directory to stdout
+# make default		# make online reference pages
+# make install		# install online reference pages
+# make clean		# remove all generated files except .z files
+# make clobber		# remove all generated files
+
+# make html		# convert all troff files to html
+# make <name>.html	# convert a single man page to html
+# make <name>.gz	# gzip <name>.html to <name>.gz
+# make <name>.z		# gzip <name>.html to <name>.z 
+#			# only if HTML_Z is defined in the local Makefile.
+#			# Used for compatibility with pre-kudzu man
+
+## HTML Conversion:
+## Built <name>.1 -> <name>.z -> <name>.html -> <name>.gz
+## After the html is built and runs clean thru weblint, remove 
+## the troff source, or your html target maybe overwritten.
+##
+## HTML_Z:
+## After the conversion is done, if HTML_Z is defined, then 
+## build: <name>.html -> <name>.z (compatible with pre-kudzu releases)
+## If HTML_Z is defined in the local Makefile, the <name>.html
+## rules to convert .z to .html is disabled due to a circular 
+## dependency.
+
+#if defined(HTML_Z)
+HTML_TARGET = z
+#else
+HTML_TARGET = gz
+#endif
+
+TT = $${TMPDIR:-/usr/tmp}/mmdoc$$$$
+
+# To provide override, define MANPREF
+$(MANPREF)default: $(MANPREF)_force
+	@$(LISTLEGAL) \
+	    | sed -e 's/\.$(LEGALSUF0)$$/.$(HTML_TARGET)/' \
+		-e 's/\.$(LEGALSUF1)$$/.z/' -e 's/\.$(LEGALSUF2)$$/.z/' \
+	    	-e 's/\.$(LEGALSUF3)$$/.z/' -e 's/\.$(LEGALSUF4)$$/.z/' \
+	    	-e 's/\.$(LEGALSUF5)$$/.z/' -e 's/\.$(LEGALSUF6)$$/.z/' \
+	    	-e 's/\.$(LEGALSUF7)$$/.z/' -e 's/\.$(LEGALSUF8)$$/.z/' \
+	    	-e 's/\.$(LEGALSUF9)$$/.z/' \
+	    | xargs -l4 $(MAKE)
+
+# remove all .ps, and unsuffixed versions of legal man filenames (except
+# a, c, f, and p).
+$(MANPREF)clean::
+	@find . -name '*.ps' -print | xargs rm -f
+	@$(LISTLEGAL) \
+	    | sed -e 's/\.$(LEGALSUF1)$$//' -e 's/\.$(LEGALSUF2)$$//' \
+	    	-e 's/\.$(LEGALSUF3)$$//' -e 's/\.$(LEGALSUF4)$$//' \
+	    	-e 's/\.$(LEGALSUF5)$$//' -e 's/\.$(LEGALSUF6)$$//' \
+	    	-e 's/\.$(LEGALSUF7)$$//' -e 's/\.$(LEGALSUF8)$$//' \
+	    	-e 's/\.$(LEGALSUF9)$$//' -e 's/\.$(LEGALSUF0)$$//'\
+	    | sed '/^[acfp]$$/d' \
+	    | xargs rm -f
+	@rm -f $(LDIRT) $(XDIRT)
+	@echo "\tremoving .ps files and files that don't have legal suffixes"
+
+$(MANPREF)clobber:: $(MANPREF)clean
+	@find . \( -name '*.z' -o -name '*.gz' \) -print | xargs rm -f
+	@echo "\tremoving .z & .gz files"
+
+# Some generic targets don't need to do anything for man pages
+$(MANPREF)tags $(MANPREF)rmtargets $(MANPREF)fluff:
+
+#
+# Define generic build rules
+#
+# Some directories have multiple sections in them (like 3c, 3, 3x, etc)
+# and so we must define more than 1 default rule.
+#
+# The .mn suffix is for pages that are part of the printed GL Reference Manual
+# but not of the online man pages.
+#
+# The GLMACHDEPS dependency is needed for OpenGL man pages, which must
+# be rebuilt whenever the machine-dependencies database changes (even
+# though the man page sources themselves might not have changed).  Note
+# that the GLMACHDEPS macro is empty for all man pages except OpenGL, so
+# the other man page builds are unaffected by this dependency.
+#
+.SUFFIXES:.m .gv .p .ps .xp .xpsv .z .1 .1X .1c .1g .1m .1w .2 .2b .3 .3X11 .3Xt .3a .3b .3c .3dm .3f .3g .3i .3il .3l .3m .3mv .3n .3p .3r .3s .3t .3v .3w .3x .3y .4 .5 .5w .6 .6d .7 .7m .7p .8 .d1 .d2 .d2x .d3 .d3x .d4 .d4x .d5 .gl .mn .html .gz
+
+# Convert all files to html.
+# troff -> formatted nroff -> man2html -> html
+html:
+	@$(LISTLEGAL) \
+	    | sed -e 's/\.$(LEGALSUF1)$$/.html/' -e 's/\.$(LEGALSUF2)$$/.html/' \
+	    	-e 's/\.$(LEGALSUF3)$$/.html/' -e 's/\.$(LEGALSUF4)$$/.html/' \
+	    	-e 's/\.$(LEGALSUF5)$$/.html/' -e 's/\.$(LEGALSUF6)$$/.html/' \
+	    	-e 's/\.$(LEGALSUF7)$$/.html/' -e 's/\.$(LEGALSUF8)$$/.html/' \
+	    	-e 's/\.$(LEGALSUF9)$$/.html/' \
+	    | xargs -l4 $(MAKE)
+
+#if defined(HTML_Z)
+.html.z:
+	@echo "\tweblint $*.html"
+	-@$(WEBLINT) $*.html
+	@if [ -x $(HTML2TERM) ]; then \
+	echo "\thtml2term < $*.html | pack > $*.z (approx.)"; \
+	$(HTML2TERM) < $*.html > $*; \
+	pack -f $* 2> /dev/null; \
+	else \
+	echo "Error: html2term is required to convert $*.html to *.z"; \
+	echo "install infosearch_toolroot"; \
+	fi	
+
+#else 
+.html.gz:
+	@echo "\tweblint $*.html"
+	-@$(WEBLINT) $*.html
+	@echo "\tgzip -c $< > $*.gz"
+	@gzip -c $< > $*.gz
+
+# Convert a packed nroff man page to html
+	
+.z.html:
+	@if [ -x $(MAN2HTML) ]; then \
+	echo "\t$(MAN2HTML) -stylesheet $*.z > $*.html"; \
+	if [ ! -x $(PERL5) ]; then \
+	echo "Error: $(PERL5) is required on build host"; \
+	fi ;\
+	$(PERL5) $(MAN2HTML) -stylesheet $*.z > $*.html; \
+	else \
+	echo "Error: man2html is required to convert $*.z to html"; \
+	echo "install infosearch_toolroot"; \
+	fi
+#endif
+
+.1.z .1X.z .1c.z .1g.z .1m.z .1w.z .2.z .2b.z .3.z .3X11.z .3Xt.z .3a.z .3b.z .3c.z .3dm.z .3f.z .3g.z .3i.z .3il.z .3l.z .3m.z .3mv.z .3n.z .3p.z .3r.z .3s.z .3t.z .3v.z .3w.z .3x.z .3y.z .4.z .5.z .5w.z .6.z .6d.z .7.z .7m.z .7p.z .8.z .d1.z .d2.z .d2x.z .d3.z .d3x.z .d4.z .d4x.z .d5.z .gl.z .mn.z: $(GLMACHDEPS)
+	@echo "\t$(MMDOC) Op=$(LANGOPT) $< | pack > $*.z (approx.)"
+#	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) $(TT) | $(SQUEEZE) | \
+#	$(POSTNROFF) > $* ; rm -f $(TT)
+	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) $(TT) | $(POSTNROFF) > $* ; rm -f $(TT)
+	@rm -f $*.z; pack -f $* 2> /dev/null
+
+.1.p .1X.p .1c.p .1g.p .1m.p .1w.p .2.p .2b.p .3.p .3X11.p .3Xt.p .3a.p .3b.p .3c.p .3dm.p .3f.p .3g.p .3i.p .3il.p .3l.p .3m.p .3mv.p .3n.p .3p.p .3r.p .3s.p .3t.p .3v.p .3w.p .3x.p .3y.p .4.p .5.p .5w.p .6.p .6d.p .7.p .7m.p .7p.p .8.p .d1.p .d2.p .d2x.p .d3.p .d3x.p .d4.p .d4x.p .d5.p .gl.p .mn.p: $(GLMACHDEPS)
+	@echo "\t$(MMDOC) -Tpsc -rC5 Op=$(LANGOPT) $< (approx.)"
+	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) -Tpsc -rC5 $(TT) ; rm -f $(TT)
+
+.1.ps .1X.ps .1c.ps .1g.ps .1m.ps .1w.ps .2.ps .2b.ps .3.ps .3X11.ps .3Xt.ps .3a.ps .3b.ps .3c.ps .3dm.ps .3f.ps .3g.ps .3i.ps .3il.ps .3l.ps .3m.ps .3mv.ps .3n.ps .3p.ps .3r.ps .3s.ps .3t.ps .3v.ps .3w.ps .3x.ps .3y.ps .4.ps .5.ps .5w.ps .6.ps .6d.ps .7.ps .7m.ps .7p.ps .8.ps .d1.ps .d2.ps .d2x.ps .d3.ps .d3x.ps .d4.ps .d4x.ps .d5.ps .gl.ps .mn.ps: $(GLMACHDEPS)
+	@echo "\t$(MMDOC) -TPS Op=$(LANGOPT) $< > $@ (approx.)"
+	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) -TPS $(TT) > $@ ; rm -f $(TT)
+
+.1.xpsv .1X.xpsv .1c.xpsv .1g.xpsv .1m.xpsv .1w.xpsv .2.xpsv .2b.xpsv .3.xpsv .3X11.xpsv .3Xt.xpsv .3a.xpsv .3b.xpsv .3c.xpsv .3dm.xpsv .3f.xpsv .3g.xpsv .3i.xpsv .3il.xpsv .3l.xpsv .3m.xpsv .3mv.xpsv .3n.xpsv .3p.xpsv .3r.xpsv .3s.xpsv .3t.xpsv .3v.xpsv .3w.xpsv .3x.xpsv .3y.xpsv .4.xpsv .5.xpsv .5w.xpsv .6.xpsv .6d.xpsv .7.xpsv .7m.xpsv .7p.xpsv .8.xpsv .d1.xpsv .d2.xpsv .d2x.xpsv .d3.xpsv .d3x.xpsv .d4.xpsv .d4x.xpsv .d5.xpsv .gl.xpsv .mn.xpsv: $(GLMACHDEPS)
+	@echo "\t$(MMDOC) -TPS -rC4 Op=$(LANGOPT) $< | $(XPSVIEW) $(XPSVIEWOPTS) (approx.)"
+	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) -TPS -rC4 $(TT) | $(XPSVIEW) $(XPSVIEWOPTS); rm -f $(TT)
+
+.1.xp .1X.xp .1c.xp .1g.xp .1m.xp .1w.xp .2.xp .2b.xp .3.xp .3X11.xp .3Xt.xp .3a.xp .3b.xp .3c.xp .3dm.xp .3f.xp .3g.xp .3i.xp .3il.xp .3l.xp .3m.xp .3mv.xp .3n.xp .3p.xp .3r.xp .3s.xp .3t.xp .3v.xp .3w.xp .3x.xp .3y.xp .4.xp .5.xp .5w.xp .6.xp .6d.xp .7.xp .7m.xp .7p.xp .8.xp .d1.xp .d2.xp .d2x.xp .d3.xp .d3x.xp .d4.xp .d4x.xp .d5.xp .gl.xp .mn.xp: $(GLMACHDEPS)
+	@echo "\t$(MMDOC) -TPS -rC4 Op=$(LANGOPT) $< | $(XPSVIEW) $(XPSVIEWOPTS) (approx.)"
+	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) -TPS -rC4 $(TT) | $(XPSVIEW) $(XPSVIEWOPTS); rm -f $(TT)
+
+.1.gv .1X.gv .1c.gv .1g.gv .1m.gv .1w.gv .2.gv .2b.gv .3.gv .3X11.gv .3Xt.gv .3a.gv .3b.gv .3c.gv .3dm.gv .3f.gv .3g.gv .3i.gv .3il.gv .3l.gv .3m.gv .3mv.gv .3n.gv .3p.gv .3r.gv .3s.gv .3t.gv .3v.gv .3w.gv .3x.gv .3y.gv .4.gv .5.gv .5w.gv .6.gv .6d.gv .7.gv .7m.gv .7p.gv .8.gv .d1.gv .d2.gv .d2x.gv .d3.gv .d3x.gv .d4.gv .d4x.gv .d5.gv .gl.gv .mn.gv: $(GLMACHDEPS)
+	@echo "\t$(MMDOC) -TPS -rC4 Op=$(LANGOPT) $< | $(GHOSTVIEW) $(GHOSTVIEWOPTS) (approx.)"
+	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) -TPS -rC4 $(TT) | $(GHOSTVIEW) $(GHOSTVIEWOPTS); rm -f $(TT)
+
+.1.m .1X.m .1c.m .1g.m .1m.m .1w.m .2.m .2b.m .3.m .3X11.m .3Xt.m .3a.m .3b.m .3c.m .3dm.m .3f.m .3g.m .3i.m .3il.m .3l.m .3m.m .3mv.m .3n.m .3p.m .3r.m .3s.m .3t.m .3v.m .3w.m .3x.m .3y.m .4.m .5.m .5w.m .6.m .6d.m .7.m .7m.m .7p.m .8.m .d1.m .d2.m .d2x.m .d3.m .d3x.m .d4.m .d4x.m .d5.m .gl.m .mn.m: $(GLMACHDEPS)
+	@echo "\t$(MMDOC) Op=$(LANGOPT) $< | man -d (approx.)"
+#	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) $(TT) | $(SQUEEZE) | \
+#	$(POSTNROFF) > $* ; rm -f $(TT)
+	@$(ADDMAGIC) > $(TT) ; $(RUNMMDOC) $(TT) | $(POSTNROFF) > $* ; rm -f $(TT)
+	@man -d $*
+	@rm -f $*
+
+.html.m:
+	$(HTML2TERM) < $< | ul -b | more -s -f
+
+# write a list of the hardcopy (.p) targets for the current directory to stdout
+# use LOCALPRINTLISTFILTER to do directory-dependent filtering, e.g reordering
+# to put intro.p first
+print-list: $(MANPREF)_force
+	@$(LISTLEGAL) \
+	    | sed -e 's/\.$(LEGALSUF1)$$/.p/' -e 's/\.$(LEGALSUF2)$$/.p/' \
+	    	-e 's/\.$(LEGALSUF3)$$/.p/' -e 's/\.$(LEGALSUF4)$$/.p/' \
+	    	-e 's/\.$(LEGALSUF5)$$/.p/' -e 's/\.$(LEGALSUF6)$$/.p/' \
+	    	-e 's/\.$(LEGALSUF7)$$/.p/' \
+	    | sort -t. +0 -1 \
+	    $(LOCALPRINTLISTFILTER)
+
+$(MANPREF)install:: $(MANPREF)default MakeOtherInstalls
+	@echo "\trunning install lines"; \
+	if [ "$(IDB_TAG)" = "" ] ; then \
+		if ls *.z 1>/dev/null 2>/dev/null ; then \
+		$(INSTALL) -m 444 -F $(IDB_PATH) *.z ;\
+		fi ;\
+		if ls *.gz 1>/dev/null 2>/dev/null ; then \
+		$(INSTALL) -m 444 -F $(IDB_PATH) *.gz ;\
+		fi \
+	else \
+		if ls *.z 1>/dev/null 2>/dev/null; then \
+		$(INSTALL) -idb "$(IDB_TAG)" -m 444 -F $(IDB_PATH) *.z ;\
+		fi ;\
+		if ls *.gz 1>/dev/null 2>/dev/null; then \
+		$(INSTALL) -idb "$(IDB_TAG)" -m 444 -F $(IDB_PATH) *.gz ;\
+		fi \
+	fi
+
+# only look for aliases in legal man page filenames
+MakeOtherInstalls: $(MANPREF)_force
+	@echo "\tmaking symlink install lines"
+	@$(LISTLEGAL) \
+	    | xargs $(GETNAMES) opt=$(LANGOPT) \
+	    | $(ADDINST) $(IDB_PATH) $(INSTALL) "$(IDB_TAG)" > $(TT); \
+	    sh -x $(TT); rm -f $(TT)
+
+$(MANPREF)_force:
+

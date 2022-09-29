@@ -1,0 +1,286 @@
+#ident  "$Revision: 1.1 $"
+#       Copyright (c) 1990, 1991 UNIX System Laboratories, Inc.
+#       Copyright (c) 1984, 1986, 1987, 1988, 1989, 1990 AT&T
+#        All Rights Reserved
+#
+#      THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF
+#      UNIX System Laboratories, Inc.
+#      The copyright notice above does not evidence any
+#      actual or intended publication of such source code.
+#Begining
+UXED_ABI_1:Trace create error on \"%s\": %s\n
+UXED_ABI_2:Incorrect usage\n
+UXED_ABI_3:Usage: %s [- | -s] [-l] [-L] [-R] [-r [file]] [-t tag] [-T [-S suffix]]\n
+UXED_ABI_4:Usage: %s [- | -s] [-l] [-L] [-R] [-r [file]] [-t tag]\n
+UXED_ABI_5:       [-v] [-V] [-x] [-C] [+cmd | -c cmd] file...\n
+UXED_ABI_6:Warning--Cannot encrypt temporary buffer\n
+UXED_ABI_7:Addr1 > addr2|First address exceeds second
+UXED_ABI_8:Bad count|Nonzero count required
+UXED_ABI_9:No address allowed@on this command
+UXED_ABI_10:Badly formed address
+UXED_ABI_11:No match to BOTTOM|Address search hit BOTTOM without matching pattern
+UXED_ABI_12:No match to TOP|Address search hit TOP without matching pattern
+UXED_ABI_13:Fail|Pattern not found
+UXED_ABI_14:Marks are ' and a-z
+UXED_ABI_15:Undefined mark@referenced
+UXED_ABI_16:Negative address@- first buffer line is 1
+UXED_ABI_17:Not that many lines@in buffer
+UXED_ABI_18:Offset out-of-bounds|Offset after command too large
+UXED_ABI_19:Home directory unknown
+UXED_ABI_20:Mark what?|%s requires following letter
+UXED_ABI_21:Bad mark|Mark must specify a letter
+UXED_ABI_22:Preserve failed!
+UXED_ABI_23:File preserved.
+UXED_ABI_24:No write@since last change (:rewind! overrides)
+UXED_ABI_25:Version %s
+UXED_ABI_26:Bad register
+UXED_ABI_27:At EOF|At end-of-file
+UXED_ABI_28:What?|Unknown command character '%s'
+UXED_ABI_29:Extra chars|Extra characters at end of command
+UXED_ABI_30: [Warning - %s is incomplete]
+UXED_ABI_31:%d files|%d files to edit
+UXED_ABI_32:No more files|No more files to edit
+UXED_ABI_33:Extra chars|Extra characters at end of \"%s\" command
+UXED_ABI_34:1 more file|1 more file to edit
+UXED_ABI_35:%d more files|%d more files to edit
+UXED_ABI_36:No write|No write since last change (\":%s!\" overrides)
+UXED_ABI_37:What?|%s: No such command from open/visual
+UXED_ABI_38:What?|%s: Not an editor command
+UXED_ABI_39:[Hit return to continue] 
+UXED_ABI_40:Out of memory|Out of memory - too many lines in file
+UXED_ABI_41:Line overflow|Result line of join would be too long
+UXED_ABI_42:\"%s\" where?|\"%s\" command requires a trailing address
+UXED_ABI_43:That move would do nothing!
+UXED_ABI_44:Move to a moved line
+UXED_ABI_45:Cannot put inside global/macro
+UXED_ABI_46:Line too long|Result line after shift would be too long
+UXED_ABI_47:Bad tag|Give one tag per line
+UXED_ABI_48:No previous tag
+UXED_ABI_49:%s: Bad tags file entry
+UXED_ABI_50:No write|No write since last change (:tag! overrides)
+UXED_ABI_51:No tags file
+UXED_ABI_52:%s: No such tag|No such tag in tags file
+UXED_ABI_53:Cannot yank inside global/macro
+UXED_ABI_54:\nAt EOF
+UXED_ABI_55:At EOF
+UXED_ABI_56:Hit BOTTOM
+UXED_ABI_57:Hit TOP
+UXED_ABI_58:Cannot undo in global|Cannot undo in global commands
+UXED_ABI_59:Nothing to undo
+UXED_ABI_60:Nothing changed|Last undoable command did not change anything
+UXED_ABI_61:Too dangerous to map that
+UXED_ABI_62:Too many macros
+UXED_ABI_63:Not mapped|That macro was not mapped
+UXED_ABI_64:Too much macro text
+UXED_ABI_65: File is read only
+UXED_ABI_66: Tmp file too large
+UXED_ABI_67: [New file]
+UXED_ABI_68: [Read only]
+UXED_ABI_69:========  ========\n
+UXED_ABI_70:APPEND MODE
+UXED_ABI_71:CHANGE MODE
+UXED_ABI_72:Command too long
+UXED_ABI_73:INPUT MODE
+UXED_ABI_74:INSERT MODE
+UXED_ABI_75:Line too long
+UXED_ABI_76:Macro too long|Macro too long - maybe recursive?
+UXED_ABI_77:Missing lhs
+UXED_ABI_78:Missing rhs
+UXED_ABI_79:No file|No current filename
+UXED_ABI_80:No previous command|No previous command to substitute for !
+UXED_ABI_81:No previous re|No previous regular expression
+UXED_ABI_82:No tail recursion
+UXED_ABI_83:Nothing in register %c
+UXED_ABI_84:OPEN MODE
+UXED_ABI_85:REPLACE MODE
+UXED_ABI_86:Replacement pattern too long|Replacement pattern too long - limit 256 characters
+UXED_ABI_87:SUBSTITUTE MODE
+UXED_ABI_88:\nRegister  Contents\n
+UXED_ABI_89:\t\tNothing in register.\n
+UXED_ABI_90:Enter key: 
+UXED_ABI_91:Encryption facility not available\n
+UXED_ABI_92:No alternate filename|No alternate filename to substitute for #
+UXED_ABI_93: Cannot copy key to environment
+UXED_ABI_94:Infinite macro loop
+UXED_ABI_95:Input line too long
+UXED_ABI_96:^H discarded\n
+UXED_ABI_97: [Not edited]
+UXED_ABI_98: [Modified]
+UXED_ABI_99:No file 
+UXED_ABI_100: line %d of %d --%ld%%--
+UXED_ABI_101:Pattern too long
+UXED_ABI_102:Argument buffer overflow
+UXED_ABI_103:No current filename|No current filename to substitute for %%
+UXED_ABI_104:Cannot make pipe to glob
+UXED_ABI_105:Cannot fork to do glob
+UXED_ABI_106:No match
+UXED_ABI_107:Missing filename
+UXED_ABI_108:Ambiguous|Too many file names
+UXED_ABI_109:Filename too long
+UXED_ABI_110: Block special file
+UXED_ABI_111: Teletype
+UXED_ABI_112: Character special file
+UXED_ABI_113: Directory
+UXED_ABI_114:Write forms are 'w' and 'w>>'
+UXED_ABI_115: File exists| File exists - use \"w! %s\" to overwrite
+UXED_ABI_116: Use \"w!\" to write partial buffer
+UXED_ABI_117: [Existing file]
+UXED_ABI_118: [Incomplete last line]
+UXED_ABI_119:Cannot decrypt block of text\n
+UXED_ABI_120: Line too long
+UXED_ABI_121:Too many nested sources
+UXED_ABI_122: %d/%D
+UXED_ABI_123: 1 line, 
+UXED_ABI_124: %d lines, 
+UXED_ABI_125:1 character
+UXED_ABI_126:%d characters
+UXED_ABI_127:%D null
+UXED_ABI_128:%D non-ASCII
+UXED_ABI_129:Global within global|Global within global not allowed
+UXED_ABI_130:Global needs re|Missing regular expression for global
+UXED_ABI_131:Global command too long
+UXED_ABI_132:substitution loop
+UXED_ABI_133:Fail|Substitute pattern match failed
+UXED_ABI_134:Substitute needs re|Missing regular expression for substitute
+UXED_ABI_135:No previous substitute re|No previous substitute to repeat
+UXED_ABI_136:No previously remembered string
+UXED_ABI_137:Replacement string ends with \\
+UXED_ABI_138:Line overflow|Line overflow in substitute
+UXED_ABI_139:1 sub|1 substitution
+UXED_ABI_140:%d subs|%d substitutions
+UXED_ABI_141: on %d lines
+UXED_ABI_142:Regular expressions cannot be delimited by letters or digits
+UXED_ABI_143:Regular expressions cannot be delimited by multibyte characters
+UXED_ABI_144:No previous scan re|No previous scanning regular expression
+UXED_ABI_145:No previous substitute re|No previous substitute regular expression
+UXED_ABI_146:Badly formed re|Regular expression \\ must be followed by / or ?
+UXED_ABI_147:Missing closing delimiter|Missing closing delimiter for regular expression
+UXED_ABI_148:Re too complex|Regular expression too complicated
+UXED_ABI_149:Replacement pattern contains &|Replacement pattern contains & - cannot use in re
+UXED_ABI_150:Replacement pattern contains \\d|Replacement pattern contains \\d - cannot use in re
+UXED_ABI_151:Missing ]
+UXED_ABI_152:No newlines in re's|Cannot escape newlines into regular expressions
+UXED_ABI_153:Badly formed re|Missing closing delimiter for regular expression
+UXED_ABI_154:\\( \\) Imbalance
+UXED_ABI_155:Awash in \\('s!|Too many \\('d subexpressions in a regular expression
+UXED_ABI_156:Illegal byte sequence|Regular expression has illegal byte sequence
+UXED_ABI_157:%s: No such option|%s: No such option - 'set all' gives all option values
+UXED_ABI_158:Option %s is not a toggle
+UXED_ABI_159:Missing =|Missing = in assignment to option %s
+UXED_ABI_160:Digits required|Digits required after =
+UXED_ABI_161:String too long|String too long in option assignment
+UXED_ABI_162:Cannot change type of terminal from within open/visual
+UXED_ABI_163:1 line
+UXED_ABI_164:%d lines
+UXED_ABI_165:Nonzero address required|Nonzero address required on this command
+UXED_ABI_166:No lines|No lines in the buffer
+UXED_ABI_167:1 fewer line|1 fewer line in file after \"%s\"
+UXED_ABI_168:%d fewer lines|%d fewer lines in file after \"%s\"
+UXED_ABI_169:1 more line|1 more line in file after \"%s\"
+UXED_ABI_170:%d more lines|%d more lines in file after \"%s\"
+UXED_ABI_171:Out of memory|Out of memory saving lines for undo - try using ed
+UXED_ABI_172:System error %d
+UXED_ABI_173:emt trap, _ovno is %d|emt trap, _ovno is %d - try again
+UXED_ABI_174:\r\nYour file has been preserved\r\n
+UXED_ABI_175:\nInterrupt
+UXED_ABI_176:Resumed
+UXED_ABI_177:Out of register space (ugh)
+UXED_ABI_178:Cannot put partial line inside macro
+UXED_ABI_179:Register too long|Register too long to fit in memory
+UXED_ABI_180:%s: Unknown terminal type
+UXED_ABI_181:Incomplete shell escape command|Incomplete shell escape command - use 'shell' to get a shell
+UXED_ABI_182:No filename|No filename to substitute for %%
+UXED_ABI_183:[No write]|[No write since last change]
+UXED_ABI_184:No previous command|No previous command to repeat
+UXED_ABI_185:Cannot make pipe for filter
+UXED_ABI_186:Invalid SHELL value: %s\n
+UXED_ABI_187:Cannot make pipe
+UXED_ABI_188: Cannot make pipe for recovery
+UXED_ABI_189: Cannot fork to execute recovery
+UXED_ABI_190: No recovery routine
+UXED_ABI_191:%d: terminated with signal %d
+UXED_ABI_192: -- core dumped
+UXED_ABI_193:Fail|Pattern not found on addressed line
+UXED_ABI_194:Recursive open/visual not allowed
+UXED_ABI_195:I do not know what kind of terminal you are on - all I have is '%s'.
+UXED_ABI_196:[Using open mode]
+UXED_ABI_197:Visual needs addressable cursor or upline capability
+UXED_ABI_198:Cannot use visual on a terminal which overstrikes
+UXED_ABI_199:Visual requires clear screen capability
+UXED_ABI_200:Visual requires scrolling
+UXED_ABI_201:Screen too large for internal buffer
+UXED_ABI_202:Do not know enough about your terminal to use \"%s\"
+UXED_ABI_203:Terminal too wide
+UXED_ABI_204:Screen too large
+UXED_ABI_205:Internal error: vscroll
+UXED_ABI_206:No lines in buffer
+UXED_ABI_207:Internal error: vredraw
+UXED_ABI_208:1 line joined
+UXED_ABI_209:%d lines joined
+UXED_ABI_210:1 line deleted
+UXED_ABI_211:%d lines deleted
+UXED_ABI_212:1 line changed
+UXED_ABI_213:%d lines changed
+UXED_ABI_214:1 line yanked
+UXED_ABI_215:%d lines yanked
+UXED_ABI_216:1 line >>ed
+UXED_ABI_217:%d lines >>ed
+UXED_ABI_218:1 line <<ed
+UXED_ABI_219:%d lines <<ed
+UXED_ABI_220:1 line =ed
+UXED_ABI_221:%d lines =ed
+UXED_ABI_222:1 line copied
+UXED_ABI_223:%d lines copied
+UXED_ABI_224:1 line moved
+UXED_ABI_225:%d lines moved
+UXED_ABI_226:1 line put
+UXED_ABI_227:%d lines put
+UXED_ABI_228:1 line !ed
+UXED_ABI_229:%d lines !ed
+UXED_ABI_230:1 more line
+UXED_ABI_231:%d more lines
+UXED_ABI_232:1 fewer line
+UXED_ABI_233:%d fewer lines
+UXED_ABI_234:Input read error
+UXED_ABI_235:Q gets ex command mode, :q leaves vi
+UXED_ABI_236:REPLACE 1 CHAR
+UXED_ABI_237:Internal error: vclreol
+UXED_ABI_238:Internal error: vgoto
+UXED_ABI_239:Line too long for open
+UXED_ABI_240:%s: %s\n
+UXED_ABI_241:NOT super user\n
+UXED_ABI_242:Buffer format error\t
+UXED_ABI_243:Unable to get uid for user: %s\n
+UXED_ABI_244:Unable to create directory \"%s\": %s\n
+UXED_ABI_245:Buffer read error: %s
+UXED_ABI_246:Cannot find a name\t
+UXED_ABI_247:A copy of an editor buffer of yours was saved when the system went down.\n
+UXED_ABI_248:A copy of an editor buffer of yours was saved when the editor was killed.\n
+UXED_ABI_249:No name was associated with this buffer so it has been named \"LOST\".\n
+UXED_ABI_250:A copy of an editor buffer of your file \"%s\" %swas saved when the system went down.\n
+UXED_ABI_251:[ENCRYPTED]
+UXED_ABI_252:A copy of an editor buffer of your file \"%s\" %swas saved when your editor was killed.\n
+UXED_ABI_253:This buffer can be retrieved using the \"recover\" command of the editor.\n
+UXED_ABI_254:An easy way to do this is to give the command \"vi -r %s\".\n
+UXED_ABI_255:This works for \"edit\" and \"ex\" also.\n
+UXED_ABI_256: [Lost line(s):
+UXED_ABI_257:%s:\n
+UXED_ABI_258:No files saved.\n
+UXED_ABI_259:Unable to get user's id\n
+UXED_ABI_260: Wrong number of arguments to exrecover
+UXED_ABI_261:%a %h %d %T
+UXED_ABI_262: [Dated: %s
+UXED_ABI_263:, newest of %d saved]
+UXED_ABI_264:\r\n [Hit return to continue]
+UXED_ABI_265: Not enough core for lines
+UXED_ABI_266:On %s at 
+UXED_ABI_267: saved %d lines of file \"%s\" 
+UXED_ABI_268: File not found
+UXED_ABI_269:LOST
+UXED_ABI_270:(null pointer)
+UXED_ABI_271: saved 1 line of file \"%s\" 
+UXED_ABI_272:Failed on BLK: %d with %d/%d: %s\n
+UXED_ABI_273:On %s at %s
+UXED_ABI_274:%a %b %d
+UXED_ABI_275:%R
+#End

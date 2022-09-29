@@ -1,0 +1,3 @@
+This directory contains release 3.2 of the HIPPI product source
+software.  This release supports both the HIO (parallel) HIPPI and
+Serial HIPPI XIO cards.

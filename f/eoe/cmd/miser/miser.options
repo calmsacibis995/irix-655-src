@@ -1,0 +1,1 @@
+-f /etc/miser.conf -v -c 1 -m 5m

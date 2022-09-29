@@ -1,0 +1,63 @@
+#ident  "$Revision: 1.1 $"
+#      Copyright (c) 1990, 1991 UNIX System Laboratories, Inc.
+#      Copyright (c) 1984, 1986, 1987, 1988, 1989, 1990 AT&T
+#        All Rights Reserved
+#
+#      THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF
+#      UNIX System Laboratories, Inc.
+#      The copyright notice above does not evidence any
+#      actual or intended publication of such source code.
+#Begining
+UXSYSADM_1:Incorrect usage\n
+UXSYSADM_2:Usage: mvdir fromdir newname\n
+UXSYSADM_3:Cannot move '.'\n
+UXSYSADM_4:%s exists\n
+UXSYSADM_5:%s must be a directory\n
+UXSYSADM_6:Arguments have common path\n
+UXSYSADM_7:Cannot link to %s\n
+UXSYSADM_8:using default CSWIDTH.\n
+UXSYSADM_9:Usage: eucset [ cswidth ]\n       eucset -p\n
+UXSYSADM_10:%s failed\n
+UXSYSADM_11:bad cswidth format\n
+UXSYSADM_12:Usage: wchrtbl [-n] [-s] [ - | file ] 
+UXSYSADM_13:%s: name of output file for \"LC_CTYPE\" is not specified
+UXSYSADM_14:%s: incorrect character class name \"%s\"
+UXSYSADM_15:%s: --- %s --- left angle bracket  \"<\" is missing
+UXSYSADM_16:%s: --- %s --- right angle bracket  \">\" is missing
+UXSYSADM_17:%s: --- %s --- wrong input specification \"%s\"
+UXSYSADM_18:%s: --- %s --- number out of range \"%s\"
+UXSYSADM_19:%s: --- %s --- nonblank character after (\"\\\") on the same line
+UXSYSADM_20:%s: --- %s --- wrong upper limit \"%s\"
+UXSYSADM_21:%s: --- %s --- wrong character \"%c\"
+UXSYSADM_22:%s: --- %s --- number expected
+UXSYSADM_23:%s: --- %s --- too many range \"-\" characters
+UXSYSADM_24:%s: --- %s --- wrong specification, %s
+UXSYSADM_25:malloc error
+UXSYSADM_26:%s: --- %s --- wrong specification
+UXSYSADM_27:%s: name of output file for \"LC_NUMERIC\" is not specified
+UXSYSADM_28:%s: \"decimal_point\" or \"thousands_sep\" must be specified
+UXSYSADM_29:%s: character classification and conversion information must be specified
+UXSYSADM_30:%s: same output file name used in \"LC_CTYPE\" and \"LC_NUMERIC\"
+UXSYSADM_31:%s: character class \"LC_CTYPE%d\" duplicated
+UXSYSADM_32:%s: character class table \"LC_CTYPE%d\" exhausted
+UXSYSADM_33:standard input
+UXSYSADM_34:Idx (%d) too large...\n
+UXSYSADM_35:\n\t/* multiple byte character width information */\n\n
+UXSYSADM_36:\t *		%s  CHARACTER  SET                \n
+UXSYSADM_37:\t/* The first 257 characters are used to determine\n
+UXSYSADM_38:\t * the character class */\n\n
+UXSYSADM_39:\n\n\t/* The next 257 characters are used for \n
+UXSYSADM_40:\t * upper-to-lower and lower-to-upper conversion */\n\n
+UXSYSADM_41:\n\n\t/*  CSWIDTH INFORMATION                           */\n
+UXSYSADM_42:\t/*                    byte width <> screen width  */\n
+UXSYSADM_43:\n\t/* MAXIMUM CHARACTER WIDTH        %d               */\n
+UXSYSADM_44:\n\n\t/* The next entries point to wctype tables */\n
+UXSYSADM_45:\t/*          and have upper and lower limit */\n\n
+UXSYSADM_46:\n\n\t/* The folowing table is used to determine\n
+UXSYSADM_47:\t * the character class for supplementary code sets */\n\n
+WCHRTBL_POSIX_WARN:Warning: locale is not POSIX-compliant because 0x%x is not in %s\n
+#End
+WCHRTBL_NO_ENCODING:%s: No encoding name specified
+WCHRTBL_CANT_OPEN_MBTOWC:%s: Cannot open mbtowc() converter for encoding %s
+WCHRTBL_MBTOWC_FAILED:%s: mbtowc() conversion failed for 0x%x
+

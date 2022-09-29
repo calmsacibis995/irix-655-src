@@ -1,0 +1,21 @@
+#!smake
+#
+# gfxkcommondefs - basic common flags/defs for gfx/kern builds
+#
+# Most Makefiles in gfx/kern will include this, so
+# gfx/kern-specific build definitions should go here.
+#
+# At the moment, this file only contains makefile cruft to
+# determine iwhat particular source tree we're building in,
+# so that we may define anything that needs to be defined for
+# a particular tree.  This makes it easier to keep one copy
+# of the source building for multiple trees.
+#
+
+include $(ROOT)/usr/include/make/releasedefs
+
+LCDEFS += -DKUDZU
+
+sinclude $(WORKAREA)/irix/kern/klocaldefs
+sinclude $(DEPTH)/klocaldefs
+

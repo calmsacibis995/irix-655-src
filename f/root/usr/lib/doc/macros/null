@@ -1,0 +1,4 @@
+.\"	This file is included when the make variable LANGOPT has not been
+.\"	set to one of the languages a (Ada), c (C), C (C++), f (Fortran),
+.\"	or p (Pascal).  It's only purpose is to exist so that the OTHERFILES
+.\"	mechanism works properly.

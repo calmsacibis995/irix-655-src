@@ -1,0 +1,17 @@
+*
+* hippi: Origin2000 XIO HIPPI-Serial card driver
+*
+* $Revision: 1.1 $
+*
+*FLAG	PREFIX	SOFT	#DEV	DEPENDENCIES
+csn	hps_	-	-
+$$$
+
+/*
+ * This flag changes the behavior of the HIPPI destination.  If a parity
+ * or LLRC error is encountered, the destination normally drops the HIPPI
+ * connection.  Setting this flag to a non-zero value overrides this
+ * behavior for these two error cases.
+ */
+int hippi_ndisc_perr = 0;
+

@@ -1,0 +1,71 @@
+/*
+typeinfo -- Include file for type information (18.5.1)
+*/
+#ifndef _TYPEINFO
+#define _TYPEINFO
+
+#include <exception>
+
+#ifdef __EXCEPTIONS
+/* __EXCEPTIONS is defined by the compiler if exceptions is supported. */
+#define THROW_NOTHING() throw()
+#else
+#define THROW_NOTHING() /* Nothing */
+#endif
+
+#ifdef _NAMESPACES
+/* _NAMESPACES is defined by the compiler if namespaces is supported. */
+namespace std {
+#endif /* ifdef _NAMESPACES */
+
+  /*
+  If bool is not supported, use a typedef for bool.
+  */
+  #ifdef _BOOL
+  typedef bool _bool;
+  #else /* ifndef _BOOL */
+  typedef int _bool;
+  #endif /* ifdef _BOOL */
+/* The following pragma is used so that the compiler knows that this definition
+   of type_info is the one that corresponds to the type returned by typeid. */
+#pragma define_type_info
+  class type_info {
+  public:
+    virtual ~type_info();
+    _bool operator==(const type_info&) const;
+    _bool operator!=(const type_info&) const;
+    _bool before(const type_info&) const;
+    const char* name() const;
+  private:
+    type_info& operator=(const type_info&);  
+  protected:
+    // Protected instead of private to suppress the "no accessible
+    // constructor" warning
+    type_info(const type_info&); 
+  };
+
+  class bad_cast : public std::exception {
+  public:
+    bad_cast() THROW_NOTHING();
+    bad_cast(const bad_cast&) THROW_NOTHING();
+    bad_cast& operator=(const bad_cast&) THROW_NOTHING();
+    virtual ~bad_cast() THROW_NOTHING();
+    virtual const char* what() const THROW_NOTHING();
+  };
+
+  class bad_typeid : public std::exception {
+  public:
+    bad_typeid() THROW_NOTHING();
+    bad_typeid(const bad_typeid&) THROW_NOTHING();
+    bad_typeid& operator=(const bad_typeid&) THROW_NOTHING();
+    virtual ~bad_typeid() THROW_NOTHING();
+    virtual const char* what() const THROW_NOTHING();
+  };
+
+#ifdef _NAMESPACES
+}  /* namespace std */
+
+#endif /* ifdef _NAMESPACES */
+
+
+#endif /* _TYPEINFO */

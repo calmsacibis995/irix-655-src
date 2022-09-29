@@ -1,0 +1,12 @@
+#
+# Common definitions for rfind Makefiles.
+
+include ${ROOT}/usr/include/make/commondefs
+
+INCRFIND=-I../include
+LIBRFIND=../lib/librfind.a
+
+LCINCS=${INCRFIND}
+OPTIMIZER=-O
+
+USR_GRP=-u rfindd -g nuucp

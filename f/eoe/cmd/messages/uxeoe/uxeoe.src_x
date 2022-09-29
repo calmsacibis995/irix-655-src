@@ -1,0 +1,834 @@
+$set MAN_ERROR
+MAN_BAD_PAGE Bad manual page expression \"%s\".\n
+MAN_DIR_CNT only %d dirs handled in MANPATH, rest ignored\n
+MAN_TEXT_FORMATTER Standard text formatter package not found, using the \"awf\" formatter\n
+MAN_NOT_PRINTABLE File %s is not a printable man page.\n
+MAN_NOT_INSTALLED The text formatters necessary to format this man page\ndo not appear to be installed or in your PATH.  You must\ninstall the \"Documenter's Workbench\" (dwb) product, or the\nequivalent in order to display unformatted man pages\n
+MAN_SKIPPING Skipping %s.\n
+MAN_LAUNCH Launch %s\n
+MAN_NO_DATABASE No %s database found in man path.  See \"man makewhatis\"\nfor info about creating the %s database with /usr/lib/makewhatis\n
+MAN_APROPOS_WHAT apropos what?\n
+MAN_BAD_APR_EXPR Bad apropos expression \"%s\".\n
+MAN_NO_APR_ENTRY No manual entries seem appropriate for %s.\n
+MAN_WHATIS_WHAT whatis what?\n
+MAN_BAD_WHATIS_EXPR Bad whatis expression \"%s\".\n
+MAN_MALLOC_FAIL Malloc failed .
+MANWHAT_BAD_PAGE Bad manual page expression \"%s\".\n
+MANWHAT_DIR_CNT only %d dirs handled in MANPATH, rest ignored\n
+MANWHAT_TEXT_FORMATTER Standard text formatter package not found, using the \"awf\" formatter\n
+MANWHAT_NOT_PRINTABLE File %s is not a printable man page.\n
+MANWHAT_NOT_INSTALLED The text formatters necessary to format this man page\ndo not appear to be installed or in your PATH.  You must\ninstall the \"Documenter's Workbench\" (dwb) product, or the\nequivalent in order to display unformatted man pages\n
+MANWHAT_SKIPPING Skipping %s.\n
+MANWHAT_BUFMEMORYERR manwhat: Can't allocate memory for Buffers
+MANWHAT_FILEBUFMEMORYERR manwhat: Can't allocate memory for file Buffer
+$set MAN_WARNING
+MAN_NO_ENTRY No manual entry found for %s.\n
+$set MAN_USAGE
+MAN_USAGESTR Usage:  man [-cdwWtpr] [-M manpath] [-T macropackage] [section] title [...]\n        man -k keyword [...]\n        man -f file [...]\n
+MANWHAT_USAGESTR Usage:  manwhatis [-W] [-M manpath]\n
+$set MAN_DEBUG
+MAN_REFORMATTING Reformatting page.  Wait...\n
+$set MAN_NORMAL
+MAN_PROMPT Next page ('q' to quit):
+MAN_QUITCHAR q
+MAN_YESCHAR y
+MAN_NOCHAR n
+GETCATNAME_NAME NAME
+GETCATNAME_SUBCOMMAND_NAME SUBCOMMAND NAME
+GETCATNAME_SYNTAX SYNTAX
+GETCATNAME_SYNOPSIS SYNOPSIS
+GETCATNAME_DESCRIPTION DESCRIPTION
+GETCATNAME_SPECIFICATION SPECIFICATION
+$ tput strings starts from here
+$set TPUT_USAGE
+TPUT_USAGE_HELP usage: \"%s [ -ST term] capname [tparm argument...]\"\n
+$set TPUT_ERROR
+TPUT_NO_TERM_VALUE %s: No value for $TERM and no -T specified\n
+TPUT_UNREADABLE_TERM %s: unreadable terminal descriptor \"%s\"\n
+TPUT_NO_TERMINFO %s: no terminfo database\n
+TPUT_UNKNOWN_TERM %s: unknown terminal \"%s\"\n
+TPUT_UNKNOWN_TERMCAP %s: unknown terminfo capability '%s'\n
+$set TPUT_WARNING
+TPUT_INIT_FILE_ERR %s: Cannot open initialization file %s.\n
+$set TIC_ERROR
+TIC_CORRUPT_FILE  *** Possibly corrupted terminfo file ***
+TIC_CANT_OPEN Cannot open %s/%s\n
+TIC_CANT_OPEN2 Can't open %s/%s\n
+TIC_UNKNOWN_OPT %1$s: Unknown option. Usage is:\n\t%2$s: %3$s\n
+TIC_FORKFAILED %s: SYSTEM ERROR!! Fork failed!!!\n
+TIC_BADMKDIR mkdir %s returned bad status
+TIC_PERM_DENIED %s: %s nonexistent or permission denied\n
+TIC_PERM_DENIED2 %s: %s/%s: Permission denied\n
+TIC_PROG_ERR PROGRAM ERROR: Line %d: 
+TIC_TERMINAL terminal '%s'
+TIC_LINE %s: Line %d: 
+TIC_LINE_ILL_TTY %s: Line %d: Illegal terminal name - '%s'\n
+TIC_LOOP \nError in following up use-links.  Either there is\n a loop in the links or they reference non-existant\n terminals.  The following is a list of the entries\n involved:\n\n
+TIC_WRITE_ERROR Error in writing %s/%s
+TIC_LINK_ERROR Cannot link %s to %s
+TIC_NOTDIR %s:  %s is not a directory\n
+TIC_NO_MEMORY Out of memory
+TIC_PREMATURE_EOF Premature EOF
+TIC_TOOMANYFILES %s: Too many file names.  Usage is:\n\t%s\n
+$set TIC_WARNING
+TIC_NULL_STR_VAL NULL string value
+TIC_WARN_LINE  %s: Warning: near line %d:
+TIC_BADNAME  '%s': bad first term name. 
+TIC_LONGNAME '%s': terminal name too long.
+TIC_SHORTNAME '%s': terminal name too short.
+TIC_TRUNCNAME '%s' filename too long, truncating to '%.255s'\n
+TIC_MULTIDEF '%s' defined in more than one entry.
+TIC_TTY_TOOLONG '%s': terminal name too long.
+TIC_TTY_TOOSHORT '%s': terminal name too short.
+TIC_BAD_TTY '%s': bad term name found in list.
+TIC_LONG_LINK '%s' linkname too long, truncating to '%.255s'\n
+TIC_BADTERM  bad term name found in list.
+TIC_SYN_BEGIN  At least one synonym should begin with a letter.
+TIC_MISSING_COMMA  Missing comma
+TIC_PREMATURE_EOF_COMMA Premature EOF - missing comma?
+TIC_LONG_STR_COMMA Very long string found.  Missing comma?
+TIC_ILL_CHAR_SEQ  Illegal character in \\ sequence
+TIC_ILL_CTRL_CHAR Illegal ^ character
+TIC_BACKSPACED_OFF Backspaced off beginning of line
+TIC_BADTOKEN Bad token type
+TIC_EOF_MSG End of file
+TIC_ILLCHAR Illegal character - '%c'
+TIC_NEWLINE_TERM Newline in middle of terminal name
+TIC_MISSING_NUM Missing numeric value
+TIC_UNKNOWN_CAP Unknown Capability - '%s'
+TIC_WRONG_CAP Wrong type used for capability '%s'
+TIC_UNKNOWN_TOKEN Unknown token type
+TIC_BAD_TERMNAME %s: bad term name
+$set TIC_USAGE
+TIC_USAGE_SGI : [-v[n]] [-s] [-c] source-file
+TIC_USAGE : [-v[n]] [-c] source-file
+TIC_TTY_NAME Terminal names must start with a letter or digit
+TIC_TTY_ILL Illegal terminal name
+TIC_ENTRY_USE Entry being used is '%s'.\n
+TIC_TERM_SYNONYM Terminal name '%s' synonym for itself
+$set TIC_NORMAL
+TIC_DUMP_LIST  dump_list %s\n
+$set TIC_DEBUG
+TIC_BOOL_MSG Boolean;  name='%s'\n
+TIC_NUM_MSG Number; name='%s', value=%d\n
+TIC_STR_MSG String; name='%s', value='%s'\n
+TIC_CANCEL_MSG Cancel; name='%s'\n
+TIC_NAME_MSG Names; value='%s'\n
+TIC_WWD Would be working in %s\n
+TIC_START_USE Starting handling of forward USE's\n
+TIC_PART \n\nPART %d\n\n
+TIC_END_ENQ Finished a pass through enqueued forward USE s\n
+TIC_STARTING Starting '%s'\n
+TIC_NAME_LIST Name list = '%s'\n
+TIC_FIRSTNAME First name = '%s'\n
+TIC_OTHER_NAMES Other names = '%s'\n
+TIC_CREATED Created %.255s\n
+TIC_WHCR Would have created %.255s\n
+TIC_LINKED Linked %.255s\n
+TIC_WHCRL Would have created %.255s\n
+TIC_INIT_TABLE Made initial string table allocation.  Size is %u\n
+TIC_EXT_TABLE Extended string table.  Size now %u\n
+TIC_SAVE_STR Saved string '%s' 
+TIC_AT_LOC at location %d\n
+TIC_FORWARD_USE Forward USE to %s
+TIC_ENQD (enqueued)\n
+TIC_SKIPPED (skipped)\n
+TIC_BACK_USE Backward USE to %s\n
+TIC_HASH_COLL Hash table complete\n%d collisions 
+TIC_OO_ENTR out of %d entries\n
+TIC_WORKING_IN Working in %s\n
+$set CAPTOINFO_USAGE
+CAPTOINFO_PRINT_USAGE usage: %s [-1Vv] [-w width] [filename ...]\n
+CAPTOINFO_PRINT_USAGE1 \t-1\tsingle column output\n
+CAPTOINFO_PRINT_USAGE2 \t-v\tverbose debugging output\n
+CAPTOINFO_PRINT_USAGE3 \t-V\tprint program version\n
+$set CAPTOINFO_ERROR
+$set CAPTOINFO_WARNING
+CAPTOINFO_NULL_TERM %s: Null term_name given.\n
+CAPTOINFO_TGETENT_FAIL %s: TERM=%s: tgetent failed with return code %d (%s).\n
+CAPTOINFO_CODE_COMMENTED %s: TERM=%s: commented out code '%.2s' is unknown.\n
+CAPTOINFO_UNKNOWN_TERMCODE %s: TERM=%s: unknown type given for the termcap code '%.2s'.\n
+CAPTOINFO_WRONG_BOOLTYPE %s: TERM=%s: wrong type given for the boolean termcap code '%.2s'.\n
+CAPTOINFO_WRONG_NUMTYPE %s: TERM=%s: wrong type given for the numeric termcap code '%.2s'.\n
+CAPTOINFO_WRONG_STRTYPE %s: TERM=%s: wrong type given for the string termcap code '%.2s'.\n
+CAPTOINFO_INVALID_TERMCODE %s: TERM=%s: the %s termcap code '%.2s' is not a valid name.\n
+CAPTOINFO_TERMCAP_NULL %s: TERM=%s: cap %s (info %s) is NULL: REMOVED\n
+CAPTOINFO_TERMCAPNAME_NULL %s: TERM=%s: cap %s (no terminfo name) is NULL: REMOVED\n
+CAPTOINFO_OBSOLETE_REMOVED %s: obsolete 2 character name '%2.2s' removed.\n
+CAPTOINFO_SYNONYMS \tsynonyms are: '%s'\n
+CAPTOINFO_TCAPNAME_NOTFOUND %s: TERM=%s: termcap name '%s' not found.\n
+CAPTOINFO_STRING_NOTFOUND %s: TERM=%s: the string name '%s' was not found!\n
+CAPTOINFO_BOOLNAME_NOTFOUND %s: TERM=%s: the boolean name '%s' was not found!\n
+CAPTOINFO_NUMNAME_NOTFOUND %s: TERM=%s: the numeric name '%s' was not found!\n
+CAPTOINFO_DIFFERENT_VALUES %s: TERM=%s: Warning: termcap sg and ug had different values (%d<->%d).\n
+CAPTOINFO_KEY_WITH_VALUE %s: TERM=%s: a function key for '%s' was specified with the value 
+CAPTOINFO_ALREADYHAS_VALUE , but it already has the value '
+CAPTOINFO_TCAPNAME_WAS %s: TERM=%s: the unknown termcap name '%s' was\n
+CAPTOINFO_KO_CAPABILITY specified in the 'ko' termcap capability.\n
+CAPTOINFO_VI_CHARACTER %s: TERM=%s: the vi character '
+CAPTOINFO_HAS_VALUE ' (info '%s') has the value '
+CAPTOINFO_BUT_MA_GIVES ', but 'ma' gives '
+CAPTOINFO_UNKNOWN_VIKEY %s: the unknown vi key '
+CAPTOINFO_MA_CAPABILITY ' was\nspecified in the 'ma' termcap capability.\n
+CAPTOINFO_INEFFICIENT_STR %s: TERM=%s: Warning: the string produced for '%s' may be inefficient.\n
+CAPTOINFO_LOOKBY_HAND It should be looked at by hand.\n
+CAPTOINFO_TENTRYTOOLONG tgetent(): TERM=%s: Termcap entry is too long.\n
+CAPTOINFO_BADTERMCAP_ENTRY tnchktc(): TERM=%s: Bad termcap entry\n
+CAPTOINFO_INFINITE_LOOP tnchktc(): TERM=%s: Infinite tc= loop\n
+CAPTOINFO_TNCHKTC_TOOLONG tnchktc(): TERM=%s: Termcap entry too long\n
+$set CAPTOINFO_NORMAL
+CAPTOINFO_VERSION %s: version %s\n
+CAPTOINFO_TGETENT_RETCODE1 non-existent or invalid entry
+CAPTOINFO_TGETENT_RETCODE2 cannot open $TERMCAP
+CAPTOINFO_TGETENT_UNKNOWN unknown reason
+CAPTOINFO_BOOLEAN boolean
+CAPTOINFO_NUMERIC numeric
+CAPTOINFO_STRING string
+CAPTOINFO_CANCELED canceled
+CAPTOINFO_UNKNOWN unknown
+CAPTOINFO_UNKNOWN_TYPE (unknown type)
+$set CAPTOINFO_DEBUG
+CAPTOINFO_TERMCAP_FROM1 reading from /usr/share/lib/termcap\n
+CAPTOINFO_TERMCAP_FROM2 reading from /etc/termcap\n
+CAPTOINFO_CAP_TO_INFO changing cap to info, TERM=%s.\n
+CAPTOINFO_USE_FOUND use= found, %s uses %s.\n
+CAPTOINFO_TERMCAP_COMMENTED termcap string '%c%c' commented out.\n
+CAPTOINFO_LOOKINGAT_STRING looking at termcap string '%.2s'.\n
+CAPTOINFO_TYPE_OF type of '%.2s' is %s.\n
+CAPTOINFO_BOOLCODES boolcodes=%s, 
+CAPTOINFO_BOOLNAMES boolnames=%s, 
+CAPTOINFO_FLAGVALUE flag=%d.\n
+CAPTOINFO_NUMCODES numcodes=%s, 
+CAPTOINFO_NUMNAMES numnames=%s, 
+CAPTOINFO_NUMVALUE num=%d.\n
+CAPTOINFO_STRCODES strcodes=%s, 
+CAPTOINFO_STRNAMES strnames=%s, 
+CAPTOINFO_STRVALUE str=
+CAPTOINFO_OBOOLCODES oboolcodes=%s, 
+CAPTOINFO_ONUMCODES onumcodes=%s, 
+CAPTOINFO_OSTRCODES ostrcodes=%s, 
+CAPTOINFO_CURRDIR_NAME current directory name=%s.\n
+CAPTOINFO_READING_FROM reading from %s.\n
+CAPTOINFO_CANNOT_READ %s: cannot open %s for reading.\n
+CAPTOINFO_SETTING_ENV setting the environment for %s.\n
+CAPTOINFO_SETTING_ENV_TERM setting the environment for TERM=%s.\n
+CAPTOINFO_ASSIGN_DEFAULTS assigning defaults.\n
+CAPTOINFO_SEARCH_TERMINFO looking for terminfo value of %s.\n
+CAPTOINFO_LOOKING_FOR search looking for %s.\n
+CAPTOINFO_BASE_BRET_NEL base=%#x, bret=%x, nel=%d.\n
+CAPTOINFO_RETURNING returning %d.\n
+CAPTOINFO_VALUE_IS \tvalue is:
+CAPTOINFO_TERMNAME_INVALID terminfo name '%s' not found.\n
+CAPTOINFO_SEARCH_TERMCAP looking for termcap value of %s.\n
+CAPTOINFO_TERMCAP_NOTFOUND termcap name '%s' not found in ostrcodes.\n
+CAPTOINFO_CHANGING_VALUE changing value for %s to 
+CAPTOINFO_VALUE_WAS value was:
+CAPTOINFO_CHANGING_VALUE_TO changing value for %s to %d.\n
+CAPTOINFO_VALUE_WAS_NUM value was: %d.\n
+CAPTOINFO_KO_STRING working on termcap ko string.\n
+CAPTOINFO_KEYTERMCAP_NAME key termcap name is '
+CAPTOINFO_LOOKINGAT_TNAME looking at termcap name %s.\n
+CAPTOINFO_MA_STRING working on termcap ma string.\n
+CAPTOINFO_KEYVALUE_IS key value is '
+CAPTOINFO_VIKEY_IS the vi key is '
+CAPTOINFO_LOOKINGAT_VI looking at vi character '
+CAPTOINFO_NEEDS_COPYING %s needs copying, was:
+CAPTOINFO_HAS_BECOME and has become:
+CAPTOINFO_EXTRACTING_NAME extracting name from '%s'.\n
+CAPTOINFO_RETURNING_STR returning %s.\n
+CAPTOINFO_RETURNING_NULL returning NULL.\n
+CAPTOINFO_BP_EQUALS bp=
+CAPTOINFO_NEWLINE .\n
+CAPTOINFO_NEWLINE1 '\n
+CAPTOINFO_NEWLINE2 '.\n
+CAPTOINFO_STR_NULL str=NULL.\n
+CAPTOINFO_OSTR_EQUALS ostr=
+CAPTOINFO_OSTR_NULL ostr=NULL.\n
+$set INFOCMP_ERROR
+INFOCMP_NO_MEMORY %s: malloc is out of space!\n
+INFOCMP_NO_MEMORY1 %s: malloc is out of space\n
+INFOCMP_TERMNOTFOUND1 Error: Term \"%s\" not found in %s\n
+INFOCMP_TERMNOTFOUND2 Error: Term \"%s\" not found in %s or %s\n
+INFOCMP_TWOTERMS %s: must have at least two terminal names for a comparison to be done.\n
+$set INFOCMP_WARNING
+INFOCMP_TERMCAPTOOLONG %s: WARNING: termcap entry is too long!\n
+$set INFOCMP_USAGE
+INFOCMP_USAGE_STRING usage: %s [-ducn] [-ILC] [-1Vv] [-s d|i|l|c] [-A directory] [-B directory] term-names ...\n
+INFOCMP_USAGE_d \t-d\tprint differences (the default for >1 term-name)\n
+INFOCMP_USAGE_u \t-u\tproduce relative description\n
+INFOCMP_USAGE_c \t-c\tprint common entries\n
+INFOCMP_USAGE_n \t-n\tprint entries in neither\n
+INFOCMP_USAGE_I \t-I\tprint terminfo entries (the default for 1 term-name)\n
+INFOCMP_USAGE_C \t-C\tprint termcap entries\n
+INFOCMP_USAGE_L \t-L\tprint long C variable names\n
+INFOCMP_USAGE_1 \t-1\tsingle column output\n
+INFOCMP_USAGE_V \t-V\tprint program version\n
+INFOCMP_USAGE_v \t-v\tverbose debugging output\n
+INFOCMP_USAGE_s \t-s\tchange sort order\n
+INFOCMP_USAGE_A \t-A\tset $TERMINFO for first term-name\n
+INFOCMP_USAGE_B \t-B\tset $TERMINFO for other term-names\n
+$set INFOCMP_DEBUG
+INFOCMP_LOOKAT looking at %s\n
+INFOCMP_SETUPTERM setting up terminal type \'%s\'.\n
+INFOCMP_ADDTERM adding in terminal type \'%s\'.\n
+INFOCMP_CHANGEDSEEN %s: %d:%d,changed=%d,seen=%d.\n
+INFOCMP_CHANGEDSEEN1 \',changed=%d,seen=%d.\n
+INFOCMP_SETTERMINFO setting TERMINFO=%s.\n
+$set INFOCMP_NORMAL
+INFOCMP_VERSION_INFO %s: version %s\n
+INFOCMP_NUM_BOOLCAPS There are %d boolean capabilities.\n
+INFOCMP_NUM_NUMCAPS There are %d numeric capabilities.\n
+INFOCMP_NUM_STRCAPS There are %d string capabilities.\n
+INFOCMP_NULLSTR NULL
+INFOCMP_COMP1 comparing %s (TERMINFO=%s) to %s (TERMINFO=%s).\n
+INFOCMP_COMP2 comparing %s (TERMINFO=%s) to %s.\n
+INFOCMP_COMP3 comparing %s to %s (TERMINFO=%s).\n
+INFOCMP_COMP4 comparing %s to %s.\n
+INFOCMP_COMPBOOLS     comparing booleans.\n
+INFOCMP_COMPNUMS     comparing numbers.\n
+INFOCMP_USEORDER %s: use= order dependency found:\n
+INFOCMP_HASHAS      %s: %s has %d, %s has %d.\n
+INFOCMP_COMPSTRS     comparing strings.\n
+INFOCMP_USEORDER1 use= order dependency found:\n
+INFOCMP_HASSTRING1      %s: %s has \'
+INFOCMP_HASSTRING2 \', %s has \'
+INFOCMP_USE1 \tuse=%s,\n
+INFOCMP_USE2 %s: \'use=%s\' did not add anything to the description.\n
+INFOCMP_TERMINFOSTR TERMINFO=%s
+INFOCMP_PADREM %s: mandatory padding removed\n
+INFOCMP_PADMOV %s: padding information moved to end\n
+INFOCMP_RECON #   Reconstructed via infocmp from file: %s\n
+INFOCMP_TERMTYPE Terminal type %s\n
+INFOCMP_FLAGS flags\n
+INFOCMP_NUMBERS \nnumbers\n
+INFOCMP_STRINGS \nstrings\n
+INFOCMP_STREND end of strings\n
+INFOCMP_MSGBYHAND !!! MUST CHANGE BY HAND !!!
+INFOCMP_UNKNOWN_BOOLEAN unknown_boolean
+INFOCMP_UNKNOWN_NUMBER unknown_number
+INFOCMP_UNKNOWN_STRING unknown_string
+$set ENV_USAGE
+ENV_USE usage env [-] [name=value ...] [command]\n
+$ 
+$ Messages for bfs
+$ 
+$ 
+$set BFS_ERROR
+$ 
+BFS_TOO_LONG Line %d too long\n
+BFS_MANY_LINES too many lines
+BFS_TRY_AGAIN Try again
+BFS_CANT_OPEN_FILE cannot open %s
+BFS_BAD_CMD bad command
+BFS_ARG_COUNT arg count
+BFS_CANT_OPEN can't open
+BFS_SYNTAX syntax
+BFS_BAD_CMD_LIST bad comd list
+BFS_BAD_MARK bad mark
+BFS_NO_FILE no file
+BFS_NO_DIVERSION no diversion
+BFS_AL_DIVERTED already diverted
+BFS_CANT_CREATE can't create
+BFS_DIGIT_REQD digit required
+BFS_NO_FILE_NAME no file name
+BFS_NO_CHANGE no change indicated
+BFS_BAD_NUM bad num
+BFS_UNDEF_MARK undefined mark
+BFS_JMP_ON_TTY jump on tty
+BFS_LABEL_NOT_FOUND label not found
+BFS_USAGE_DIG usage: %digit
+BFS_TOO_LONG_N line too long\n
+BFS_TOO_LONG_O Line too long--output truncated\n
+BFS_ADR_COUNT adr count
+BFS_RANGE_ERR range
+BFS_ADR1_GT_ADR2 adr1 > adr2
+BFS_NOT_FOUND not found
+$ 
+$set BFS_WARNING
+$ 
+$ 
+$set BFS_USAGE
+$ 
+$ 
+$set BFS_NORMAL
+$ 
+$ 
+$set BFS_DEBUG
+$ 
+$ DIFF3 strings starts from here 
+$set DIFF3_ERROR
+DIFF3_FILES_ARE_LARGE files are too large to fit into memory
+CANNOT_OPEN_FILE Cannot open file %s\n
+DIFF3_INPUT_FILE input file
+DIFF3_INPUT_FILE_SHRANK input file shrank
+DIFF3_READ_FAILED read failed
+DIFF3_MEMORY_EXHAUSTED memory exhausted
+DIFF3_INTERNAL_ERROR_SCREWUP_IN_FORMAT internal error: screwup in format of diff blocks
+DIFF3_INTERNAL_ERROR_INVALID_DIFF_TYPE internal error: invalid diff type in process_diff
+DIFF3_INVALID_CHANGE_SEPERATOR invalid diff format; invalid change separator
+DIFF3_INVALID_INCOMPLETE_LAST_LINE invalid diff format; incomplete last line
+DIFF3_INVALID_INCORRECT_LEADING_LINE_CHARS invalid diff format; incorrect leading line chars
+DIFF3_INVALID_DIFF_TYPE_PASSED internal error: invalid diff type passed to output
+DIFF3_PIPE pipe
+DIFF3_PIPE_CLOSE pipe close
+DIFF3_WAITPID_FAILED waitpid failed
+DIFF3_SUBSIDIARY_DIFF_FAILED subsidiary diff failed
+DIFF3_FORK_FAILED fork failed
+DIFF3_NOT_FOUND : not found\n
+DIFF3_TOO_MANY_LABELS Too many labels were given.  The limit is 3.
+DIFF3_INCOMPATIBLE_OPTIONS incompatible options
+DIFF3_MISSING_OPERAND missing operand
+DIFF3_EXTRA_OPERAND extra operand
+DIFF3_HASH_SPECIFIED_FOR_MORE_FILES `-' specified for more than one input file
+DIFF3_WRITE_ERROR write error
+DIFF3_READ_ERROR read error
+DIFF3_TRY_HELP %s: Try `%s --help' for more information.\n
+DIFF3_IS_A_DIR %s: %s: Is a directory\n
+$set DIFF3_WARNING
+DIFF3_DIFF_ERROR %s: diff error: 
+$set DIFF3_USAGE
+DIFF3_USAGE_MYFILE Usage: %s [OPTION]... MYFILE OLDFILE YOURFILE\n\n
+DIFF3_USAGE2    -e  --ed  Output unmerged changes from OLDFILE to YOURFILE into MYFILE.\n   -E  --show-overlap  Output unmerged changes, bracketing conflicts.\n   -A  --show-all  Output all changes, bracketing conflicts.\n   -x  --overlap-only  Output overlapping changes.\n   -X  Output overlapping changes, bracketing them.\n   -3  --easy-only  Output unmerged nonoverlapping changes.\n\n
+DIFF3_USAGE3    -m  --merge  Output merged file instead of ed script (default -A).\n   -L LABEL  --label=LABEL  Use LABEL instead of file name.\n   -i  Append `w' and `q' commands to ed scripts.\n   -a  --text  Treat all files as text.\n   -T  --initial-tab  Make tabs line up by prepending a tab.\n\n
+DIFF3_USAGE4    -v  --version  Output version info.\n   --help  Output this help.\n\n
+DIFF3_USAGE5 If a FILE is `-', read standard input.\n
+$set DIFF3_DEBUG
+$set DIFF3_NORMAL
+DIFF3_GNU_VERSION diff3 - GNU diffutils version %s\n
+DIFF3_NO_NEWLINE \n\\ No newline at end of file\n
+$ DIFF3 strings ends here
+$ tsort strings start here
+$set TSORT_USAGE
+TSORT_USAGE usage: tsort [ file ] 
+$set TSORT_ERROR
+TSORT_NOT_OPEN cannot open for reading : 
+TSORT_ODD_DATA odd data
+TSORT_PROG_ERROR program error
+TSORT_MEM_ERROR error, malloc cannot allocate block of %d bytes
+TSORT_CYCLE_DATA warning: cycle in data
+$set TSORT_WARNING
+TSORT_WARNING tsort: %s %s\n
+$ tsort strings end here
+$ diff strings start here
+$set DIFF_ERROR
+DIFF_SIGACTION_ERROR : sigaction internal botch\n
+DIFF_CONFLICTING_SPECIFICATIONS_OF_OUTPUT_STYLES conflicting specifications of output style
+DIFF_CONTEXT_LENGTH_SPECIFIED_TWICE context length specified twice
+DIFF_INVALID_CONTEXT_LENGTH invalid context length argument
+DIFF_TOO_MANY_LABELS too many file label options
+DIFF_WRITE_ERROR write error
+DIFF_DOPTION_NOT_SUPPORTED -D option not supported with directories
+DIFF_CANNOT_COMPARE_HASH_TO_DIRECTORY can't compare - to a directory
+DIFF_OF_DIR_AND_NOT_DIR1 %s is a directory but %s is not
+DIFF_USE_EGREP_STYLE use egrep(1) style patterns
+DIFF_VIRTUAL_MEM_EXHAUST virtual memory exhausted
+DIFF_INVALID_LOCALE_CHAR Invalid locale specific character encountered\n
+DIFF_FILE_AND_NOT_FILE File %s is a %s while file %s is a %s\n
+$set DIFF_WARNING
+$set DIFF_USAGE
+DIFF_USAGE1 Usage: diff [-bcefhilnrstw -Dstring -Sname -xpattern ] file1 file2\n
+DIFF_USAGE2 \tGNU diff options: [-# -aBdHNpqTuv -Cnum -Fregexp -Iregexp -Llabel]\n
+$set DIFF_DEBUG
+$set DIFF_NORMAL
+DIFF_NO_NEWLINE_AT_THE_END1 \n\\ No newline at end of file\n
+DIFF_INVALID_REGEXPR Invalid regular expression
+DIFF_UNMATCHED_RIGHT Unmatched \\(
+DIFF_UNMATCHED_LEFT Unmatched \\)
+DIFF_PREMATURE_END Premature end of regular expression
+DIFF_NESTING_TOO_DEEP Nesting too deep
+DIFF_REGEXPR_TOO_BIG Regular expression too big
+DIFF_MEM_EXHAUST Memory exhausted
+DIFF_IDENTICAL_FILES Files %s and %s are identical\n
+DIFF_OF_DIR_AND_NOT_DIR2 %s is a directory but %s is not\n
+DIFF_COMMON_SUBDIRS Common subdirectories: %s and %s\n
+DIFF_DIFFERENT_BINARY_FILES Binary files %s and %s differ\n
+DIFF_NO_NEWLINE_AT_THE_END2 No newline at end of file %s
+DIFF_DIFFERENT_FILES Files %s and %s differ\n
+DIFF_GNU_VERSION GNU diff version %s\n
+DIFF_UNKNOWN unknown
+DIFF_ONLY_IN Only in %s: %s\n
+DIFF_FORMAT_STR_STR %s: %s
+DIFF_FIFO fifo
+DIFF_CHAR_SPECIAL character special
+DIFF_BLOCK_SPECIAL block special
+DIFF_REGULAR regular
+DIFF_SYMBOLIC_LINK symbolic link
+DIFF_SOCKET socket
+$ diff strings end here
+$set TAR_ERROR
+TAR_TAR_CANNOT_CREATE_TEMPORARY tar: cannot create temporary file (%s)\n
+TAR_TAR_LINKDIR_MUST_BE tar: linkdir must be specified with 'X' option\n
+TAR_FIRST_FLAG_MUST_BE First flag must be an function specifier:\n
+TAR_TAR_TAPEFILE_MUST_BE tar: tapefile must be specified with 'f' option\n
+TAR_TAR_BLOCKSIZE_MUST tar: blocksize must be specified with 'b' option\n
+TAR_TAR_M_OPTION_MAY_ONLY tar: 'M' option may only be specified with 'c', 't', or 'x' option\n
+TAR_TAR_USE_F_TAPEFILE tar: Use -f [tapefile] to specify a device other than %s\n
+TAR_K_AND_O_FLAGS_ARE_INCOMPATIBLE 'K' and 'O' flags are incompatible:\n
+TAR_O_AND_S_FLAGS_ARE_INCOMPATIBLE 'o' and 'S' flags are incompatible:\n
+TAR_TAR_FORMAT_C_UNKNOWN tar: %c: unknown or illegal option\n
+TAR_TAR_ARCHIVE_FILE_FORMAT tar: archive file %s does not exist or is a regular file or invalid blocksize\n
+TAR_TAR_CAN_ONLY_CREATE tar: can only create standard output archives\n
+TAR_TAR_FORMAT_S_FORMAT tar: %s: %s\n
+TAR_ILLEGAL_GETPAGESIZE Illegal getpagesize() %d\n
+TAR_TAR_BLOCK_SIZE_FORMAT tar: block size %d too big, can't get memory\n
+TAR_CANNOT_CHANGE_BACK cannot change back?: 
+TAR_TAR_MISSING_LINKS_TO tar: missing links to %s\n
+TAR_TAR_TAPE_ERROR_READING tar: tape error reading dir-block\n
+TAR_TAR_TAPE_ERROR_READING_CONT tar: tape error reading dir-block.  Continuing.
+TAR_TAR_DIRECTORY_CHECKSUM11 tar: directory checksum error\n
+TAR_TAR_THIS_APPEARS_TO_ARCHIVE tar: this appears to be a byte-swapped archive\n
+TAR_TAR_THIS_APPEARS_TO tar: this appears to be a byte-swapped archive, with signed checksums\n
+TAR_TAR_TAPE_READ_ERROR1 tar: tape read error while skipping data\n
+TAR_TAR_OUT_OF_MEMORY tar: out of memory\n
+TAR_TAR_DIRECTORY_CHANGED tar: directory changed size\n
+TAR_TAR_OUT_OF_MEMORY_LINK tar: out of memory, link information lost\n
+TAR_TAR_ERROR_READING_FORMAT tar: error reading %s: %s\n
+TAR_CANT_UNLINK_FORMAT Can't unlink %s: %s\n
+TAR_TAR_TAPE_FORMAT_S_ERROR tar: tape %s error: 
+TAR_WRITE_PROTECTED_TAPE write protected tape\n
+TAR_TAR_READ_FILELIST tar: '-' (read filelist from stdin) valid only with r,u,c:\n
+TAR_TAR_EXTRACT_FAILED tar extract: failed mkdir of %s\n
+TAR_TAR_CANNOT_SET_FORMAT_1 tar: cannot set %s to label \"%s\"\n
+TAR_TAR_CANNOT_SET_FORMAT tar: cannot set %s to acl %s\n
+TAR_CREATE create
+TAR_UNRECOGNIZED_CASE_FORMAT unrecognized case %d: doxtract\n
+TAR_TAR_FORMAT_S_HELP tar: %s: HELP - extract write error\n
+TAR_TARCANT_MKDIR tar:can't mkdir 
+TAR_TAR_PIPE_READ_ERROR tar: pipe read error at end\n
+TAR_TAR_TAPE_READ_ERROR tar: tape read error at end\n
+TAR_TAR_TAPE_BLOCKSIZE tar: tape blocksize error\n
+TAR_TAR_CANNOT_PROMPT_FOR tar: cannot prompt for new tape\n
+TAR_TAR_NO_NEW_TAPE_FORMAT tar: no new tape: %s\n
+TAR_TAR_NO_NEW_TAPE tar: no new tape\n
+TAR_TAR_CANT_FORMAT_S tar: can't %s 
+TAR_OPEN open
+TAR_CREAT creat
+TAR_TAR_CAN_NOT_APPEND tar: can not append to existing archive on tape\n
+TAR_TAR_NO_FUNCTION_SPECIFIER tar: no function specifier.\n
+TAR_TAR_DUPLICATE_FUNCTION tar: duplicate function specifiers %c and %c.\n
+TAR_TAR_DUPLICATE_OPTION tar: duplicate option specifier 'b'. \n
+TAR_TAR_DUPLICATE_OPTION_F tar: duplicate option specifier 'f'. \n
+$set TAR_WARNING
+TAR_TAR_INVALID_BLOCKSIZE tar: invalid blocksize.\n
+TAR_TTWARNING_RESTRICTED \n\n\t\tWARNING: Restricted chown enabled:\n\n\tIRIX configuration 
+TAR_WONT_ALLOW_S_OPTION won't allow 'S' option to chmod\n\n\n
+TAR_TAR_ARCHIVE_APPARENTLY tar: archive apparently built with signed checksums\n
+TAR_TAR_DIRECTORY_CHECKSUM tar: Directory checksum error.  Continuing.
+TAR_TAR1_NAME_TOO_LONG tar(1): name too long (%d: %d max), not archiving: %s\n
+TAR_TAR_FORMAT_S_CANNOT_ACCESS tar: %s: cannot access file\n
+TAR_TAR_FORMAT_S_NO_SUCH tar: %s: no such file or directory\n
+TAR_TAR_FORMAT_S_CANNOT_STAT_FILE tar: %s: cannot stat file\n
+TAR_FORMAT_S_SKIPPED_NOT %s: skipped; not local\n
+TAR_K_OPTION_NOT_SPECIFIED -K option not specified. Skipping file -> %s\n
+TAR_WARNING_INCLUSION_OF Warning: Inclusion of file -> %s will create a non-portable archive\n
+TAR_TAR_FORMAT_S_CANNOT_GET_FILE_LABEL tar: %s: cannot get file label\n
+TAR_TAR_FORMAT_S_CANNOT_GET_LABEL_NAME tar: %s: cannot get label name\n
+TAR_TAR_FORMAT_S_CANNOT_GET_FILE_ACL tar: %s: cannot get file ACL\n
+TAR_TAR_FORMAT_S_CANNOT_GET_ACL tar: %s: cannot get ACL\n
+TAR_TAR_FORMAT_S_LABEL tar: %s: label tmp file collision\n
+TAR_TAR_FORMAT_S_CANNOT_CREATE_LABEL tar: %s: cannot create label tmp file\n
+TAR_TAR2_FORMAT_S_FILE tar(2): %s: file name too long (%d), %d max\n
+TAR_TAR3_FORMAT_S_FILE tar(3): %s: file name too long (%d), %d max\n
+TAR_TAR_FORMAT_S_DIRECTORY tar: %s: directory read error\n
+TAR_TAR4_FORMAT_S_TOTAL tar(4): %s total path too long (%d, %d max), or filename > %d\n
+TAR_TAR5_FORMAT_S_FILE tar(5): %s: file name too long (%d), %d max\n
+TAR_TAR6_FORMAT_S_DESTINATION tar(6): %s: destination filename of symbolic link too long (%d), %d max\n
+TAR_TAR_FORMAT_S_IS_NOT_REGULAR tar: %s is not a regular file. Not dumped\n
+TAR_TAR_FORMAT_S_IS_NOT tar: %s is not a file. Not dumped\n
+TAR_TAR_FORMAT_S_CANNOT_OPEN_FILE tar: %s: cannot open file\n
+TAR_TAR7_FORMAT_S_TOTAL tar(7): %s: total path too long (%d, %d max), or filename > %d\n
+TAR_TAR8_FORMAT_S_FILE tar(8): %s: file name too long (%d), %d max\n
+TAR_TAR8_FORMAT_S_LINK tar(8): %s: link name (%s) too long (%d), %d max\n
+TAR_TAR_FORMAT_S_FILE_CHANGED tar: %s: file changed size\n
+TAR_NO_TAPE_IN_DRIVE no tape in drive\n
+TAR_P_NOT_IN_LIST_SKIP P not in list, skip %s\n
+TAR_TAR_FORMAT_S_SYMBOLIC tar: %s: symbolic link failed\n
+TAR_TAR_NO_LABEL_FOR_FORMAT tar: No label for %s\n
+TAR_TAR_FORMAT_S_CANNOT_LINK_1 tar: %s: cannot link to %s\n
+TAR_SYMLINK_CHANGED_TO symlink changed to hard link
+TAR_LINKED linked
+TAR_TAR_FORMAT_S_CANNOT tar: %s - cannot %s -- %s\n
+TAR_MKNOD mknod
+TAR_T_FORMAT_S \t[%s]
+TAR_TAR_OMITTING_DATA_BLOCK tar: **Omitting data block**\n
+TAR_TAR_DISCARD_FILE_FORMAT tar: Discard file: %s\n\n
+TAR_TAR_FORMAT_S_CANNOT_LINK tar: %s - cannot link\n
+TAR_WARNING_FILES_HAVE Warning: file(s) have user id or group id > 262143, writing \"nobody\" instead\n
+TAR_TAR_TAPE_PREMATURE tar: tape premature EOF; may need to use -b option\n
+TAR_TAR_WARNING_DRIVE_WAS tar: Warning: drive was in audio mode, turning audio mode off\n
+TAR_TAR_WARNING_UNABLE tar: Warning: unable to disable audio mode.  Tape may not be readable\n
+$set TAR_USAGE
+TAR_USAGE_TAR_RUXXTCCACDEFHLMOSPQVWLUBDRVOKFB usage: tar [-][{ruxXtcC}acdefhlm{o|S}pqvwLUBDRV{O|K}fb] [dir] [tapefile] [blocksize] file ...\n
+$set TAR_DEBUG
+TAR_SKIPPING_FORMAT_C skipping %c\n
+TAR_ACTION_FORMAT_C action = %c\n
+TAR_USE_TAPE_AS_ARCHIVE Use $TAPE as archive name: %s\n
+TAR_EXITING_FROM_DOREP Exiting from dorep\n
+TAR_REQUEST_TO_UNLINK_DIR request to unlink dir %s as superuser ignored\n
+TAR_DEBUG_UNRECOGNIZED debug: unrecognized case: longt(st,name)\n
+TAR_EXITING_FROM_DONE_N exiting from done, n %d\n
+TAR_EXITING_FROM_CMP_B0 exiting from cmp, b[0] = %c\n
+TAR_MYIO_FORMAT_S_WANTED myio(%s): wanted %d bytes, got %d\n
+TAR_TERRNO_IS_FORMAT_D \terrno is %d: %s
+TAR_EXITING_MYIO_FIRSTTAPE exiting myio, firsttape %d\n
+TAR_IO_RETURNED_0_BYTES i/o returned 0 bytes, assume multivolume\n
+TAR_FIRST_FORMAT_S_ON_NEW First %s on new tape failed\n
+TAR_BREADFD_FORMAT_DBUF bread(fd=%d,buf=%u,bytes=%d,eot=%d) returned %d\n
+TAR_BWRITEFD_FORMAT_DBUF bwrite(fd=%d,buf=%u,bytes=%d,eot=%d) returned %d\n
+$set TAR_NORMAL
+TAR_FORMAT_S_FORMAT_D %s%d
+TAR_TAPE TAPE
+TAR_FORMAT_S_FORMAT_S_1 %s: %s\n
+TAR_OK OK\n
+TAR_FORMAT_S_FORMAT_S_2 %s %s\n
+TAR_FORMAT_S_FORMAT_S %s/%s
+TAR_A_FORMAT_S a %s 
+TAR_SYMBOLIC_LINK_TO_FORMAT_1 symbolic link to %s\n
+TAR_LINK_TO_FORMAT_S link to %s\n
+TAR_FORMAT_S_SPECIAL %s special (%d/%d)\n
+TAR_CHAR char
+TAR_BLOCK block
+TAR_PIPE_1 pipe\n
+TAR_FORMAT_LLD_BLOCK_FORMAT %lld block%s\n
+TAR_FORMAT_S4 %s\n
+TAR_N_SKIP_FORMAT_S N skip %s\n
+TAR_X_FORMAT_S_SYMBOLIC_1 x %s symbolic link to %s\t[%s]\n
+TAR_X_FORMAT_S_SYMBOLIC x %s symbolic link to %s\n
+TAR_FORMAT_S_FORMAT_S_TO %s %s to %s\n
+TAR_X_FORMAT_S_FORMAT_LLD x %s, %lld bytes, %lld block%s
+TAR_X_FORMAT_S_CHAR_SPECIAL x %s, char special (%d/%d)
+TAR_X_FORMAT_S_PIPE x %s, pipe
+TAR_FORMAT_S2  (%s)\n
+TAR_SAME same
+TAR_NEW new
+TAR_FORMAT_C %c 
+TAR_FORMAT_S1 %s
+TAR_LINKED_TO_FORMAT_S1  linked to %s\n
+TAR_FORMAT_ST [%s]\t
+TAR_FORMAT_S %s
+TAR_LINKED_TO_FORMAT_S  linked to %s
+TAR_SYMBOLIC_LINK_TO_FORMAT  symbolic link to %s
+TAR_FORMAT_3D_FORMAT_2D  %3d/%-2d 
+TAR_FORMAT_13S_FORMAT %-13s %-12.12s %-4.4s 
+TAR_FORMAT_S3 %s: 
+TAR_FORMAT_S_FORMAT_LO %s %lo
+TAR_TAR_BLOCKSIZE_FORMAT tar: blocksize = %d\n
+TAR_READ_FORMAT_C Read '%c'\n
+TAR_DOT .
+TAR_S s
+TAR_READ read
+TAR_WRITE write
+TAR_NEWLINE \n
+TAR_IFCHR c:%d/%d
+TAR_IFBLK b:%d/%d
+TAR_FORMAT_13lld %13lld
+TAR_DIR dir
+TAR_PIPE pipe
+TAR_QUESTION ?
+$ tar messages ends here
+$set MKFIFO_ERROR
+MKFIFO_MKFIFO_MISSING_OPTION mkfifo: Missing option argument\n
+MKFIFO_MKFIFO_BAD_OPTION mkfifo: Bad option (%c)\n
+MKFIFO_MKFIFO_MISSING_ARGUMENTS mkfifo: Missing arguments\n
+MKFIFO_MKFIFO_BAD_STAT_OF mkfifo: Bad stat of %s\n
+MKFIFO_MKFIFO_BAD_CHMOD_OF mkfifo: Bad chmod of %s\n
+MKFIFO_MKFIFO_BAD_MODE mkfifo: Bad mode\n
+MKFIFO_MKFIFO_BAD_MODE_CHAR mkfifo: Bad mode char(%c)\n
+MKFIFO_MKFIFO_DUPLICATE_MODE mkfifo: Duplicate mode char(%c)\n
+MKFIFO_MKFIFO mkfifo: %s\n
+$set MKFIFO_WARNING
+$set MKFIFO_USAGE
+MKFIFO_USAGE_MKFIFO_M_MODE usage: mkfifo [-m mode] path ...\n
+$set MKFIFO_DEBUG
+$set MKFIFO_NORMAL
+$set EXPAND_ERROR
+EXPAND_BADTABSTOP Bad tab stop spec\n
+$set EXPAND_WARNING
+$set EXPAND_USAGE
+$set EXPAND_DEBUG
+$set EXPAND_NORMAL
+$set NICE_ERROR
+NICE_INVALID_OPERATION nice: invalid operation;  not a time sharing process\n
+NICE_SYS_ERROR nice: %s: %s\n
+$set NICE_WARNING
+$set NICE_USAGE
+NICE_USAGE nice: usage: nice [-n num | -num] command\n
+$set NICE_DEBUG
+$set NICE_NORMAL
+$ xargs strings starts from here 
+$set xargs_ERROR
+XARGS_CANT_ALLOC_MEM Cannot allocate more memory\n
+XARGS_ENV_LARGE Environment is too large (%d); no room left for arguments\n
+XARGS_LINES_POSITIVE #lines must be positive int: %s\n
+XARGS_INVALID_ARG %s invalid: must be > 0 and < %d (varies with environment)\n
+XARGS_ARGS_POSITIVE #args must be positive int: %s\n
+XARGS_CANT_READ_TTY can't read from tty for -p\n
+XARGS_UNKNOWN_OPTION unknown option: %s\n
+XARGS_TOO_MANY_ARGS too many args with %s\n
+XARGS_TOO_MANY_ARGS2 too many xargs command line arguments (%d max)\n
+XARGS_KILLED %s not executed, returned -1 or killed\n
+XARGS_LIST_TOO_LONG arg list too long\n
+XARGS_BIG_ARG single arg or initial list was > than max length (%d) with environment\n
+XARGS_MISSING_QUOTE missing quote?: %s\n
+XARGS_MAX_INSERT_SIZE max arg size with insertion via %s's exceeded\n
+XARGS_OVERFLOW insert-buffer overflow\n
+$set XARGS_WARNING
+$set xargs_USAGE
+XARGS_XARGS xargs: 
+$set xargs_DEBUG
+$set xargs_NORMAL
+$ target strings ends here
+$set SED_ERROR
+SED_SED_COMMAND_GARBLED sed: command garbled: %s\n
+SED_TOO_MUCH_TEXT_FORMAT Too much text: %s\n
+SED_LABEL_TOO_LONG_FORMAT Label too long: %s\n
+SED_NO_ADDRESSES_ALLOWED No addresses allowed: %s\n
+SED_ONLY_ONE_ADDRESS_ALLOWED Only one address allowed: %s\n
+SED_SUFFIX_TOO_LARGE_512 Suffix too large - 512 max: %s\n
+SED_CANNOT_OPEN_PATTERNFILE Cannot open pattern-file: %s\n
+SED_F_REQUIRES_A_SCRIPT -f requires a script file argument\n
+SED_E_REQUIRES_A_SCRIPT -e requires a script argument\n
+SED_UNKNOWN_FLAG_FORMAT Unknown flag: %c\n
+SED_TOO_MANY_S Too many {'s
+SED_FIRST_RE_MAY_NOT_BE First RE may not be null\n
+SED_UNRECOGNIZED_COMMAND Unrecognized command: %s\n
+SED_TOO_MANY_COMMANDS_FORMAT Too many commands: %s\n
+SED_DUPLICATE_LABELS_FORMAT Duplicate labels: %s\n
+SED_TOO_MANY_LABELS_FORMAT Too many labels: %s\n
+SED_TOO_MANY_FILES_IN_W Too many files in w commands\n
+SED_CANNOT_OPEN_FORMAT cannot open %s\n
+SED_CANNOT_CREATE_FORMAT Cannot create %s\n
+SED_TOO_MANY_COMMANDS_LAST Too many commands, last: %s\n
+SED_TOO_MANY_LINE_NUMBERS Too many line numbers\n
+SED_UNDEFINED_LABEL_FORMAT Undefined label: %s\n
+SED_CANNOT_ALLOCATE_FORMAT Cannot allocate %d bytes of working storage\n
+SED_CANT_OPEN_FORMAT_S Can't open %s\n
+SED_ERROR_TOO_MANY_SUBEXPRESSIONS Error: too many subexpressions in regular expression\n
+SED_OUTPUT_LINE_TOO_LONG Output line too long.\n
+SED_TOO_MANY_APPENDS_AFTER Too many appends after line %ld\n
+SED_FORMAT_LD %ld\n
+SED_TOO_MANY_READS_AFTER Too many reads after line%ld\n
+SED_FORMAT_S %s\n
+$set SED_WARNING
+$set SED_USAGE
+$set SED_DEBUG
+$set SED_NORMAL
+MT_EOF_MARK Write [count] end-of-file marks
+MT_WRITE_SET_MARK Write [count] set marks
+MT_SP_FWD_FILE_MARK Space forward [count] file marks
+MT_SP_FWD_REC Space forward [count] records
+MT_SP_BWD_FILE_MARK Space backward [count] file marks
+MT_SP_BWD_REC Space backward [count] records
+MT_SP_SET_MARK Space [count] set marks
+MT_REW_TAPE_DEV Rewind tape device
+MT_SP_PART_CNT Space to partition 'count'
+MT_CREATE_2_PART_TAPE Create two partition tape; first is 'count' Mbytes long
+MT_RENTENSION_TAPE Retension tape
+MT_SP_TO_EOD Space to end of data
+MT_TAKE_TAPE_OFFLINE Take tape offline
+MT_UNLOAD_TAPE Unload tape from drive
+MT_ERASE_TO_EOT Erase from current position to EOT
+MT_EXIT_STATUS Exit status 0 if tape drive exists
+MT_READ_TAPE_STATUS Read tape status
+MT_RET_DEF_TAPE_BSIZE Return default tape block size
+MT_SET_BSIZE Set block size for some scsi tape drives
+MT_ENABLE_ERR_REPORTING Enable recoverable error reporting
+MT_DISABLE_ERR_REPORTING Disable recoverable error reporting
+MT_SUPPRESS_ILL_LEN_IND Suppress illegal length indicator
+MT_ENABLE_ILL_LEN_IND Enable illegal length indicator
+MT_OBSOLETE Obsolete -- use 'scsiha -r' to reset SCSI bus now
+MT_SET_AUDIO Set audio (1) or data (0) mode for writing
+MT_SEEK_TO_BLOCK Seek to given block (program # in audio mode)
+MT_HELP Help printout of this message
+MT_FAILED failed
+MT_CANT_GET_BSIZE mt: can't get blksize
+MT_CANT_GET_STATUS mt: can't get status
+MT_TAPE_DRIVER_NOT_LOADED (tape driver not loaded?)
+MT_TAPE_NOT_LOADABLE (tape driver no longer loadable?)
+MT_NO_TAPE_DRIVE (device file present, but no tape drive)
+MT_IN_FS in filesystem
+MT_IO_SIZE Recommended tape I/O size:
+MT_MIN_BSIZE Minimum block size:
+MT_MAX_BSIZE Maximum block size:
+MT_CURRENT_BSIZE Current block size:
+MT_VAR Variable
+MT_DEF_TAPE_BSIZE Default Tape Block Size
+MT_RESET_NOT_SUPPORTED The SCSI bus reset operation is no longer supported by mt.  Please use 'scsiha'
+MT_ARG_NEEDED You must give an argument with
+MT_NOT_VALID_NUM is not a valid number
+MT_UNKNOWN_DRIVER_TYPE unknown driver type
+MT_CONTR_SCSI Controller: SCSI
+MT_DEVICE Device
+MT_STATUS Status
+MT_UNKNOWN_TYPE unknown type
+MT_DRIVE_TYPE Drive type
+MT_MEDIA_READY Media : READY
+MT_MEDIA_NOT_READY Media : Not READY
+MT_COMMAND_USAGE mt [-f /dev/tapename] command [count]
+MT_COMMAND *** commands ***	
+MT_512_BYTE_BLK 512-byte blocks
+MT_WRITE_PROTECTED write protected
+MT_WRITABLE writable
+STTY_USAGE usage: stty [-ag] [modes]\n
+STTY_UNKNOWN_MODE unknown mode:
+TABS_SPECIFY_TERM_TYPE tabs: Need to specify a terminal type for the -T option\n
+TABS_NO_TERM_VALUE tabs: No value for $TERM and no -T specified\n
+TABS_DB_NOT_FOUND tabs: Could not find `%s' in terminfo data base\n
+TABS_CANNOT_SET_TYPE tabs: terminal type `%s' does not have the ability to set tabs\n
+TABS_UNKNOWN_TAB_CODE unknown tab code
+TABS_ILLEGAL_INCREMENT illegal increment
+TABS_ILLEGAL_TABS illegal tabs
+TABS_FILE_INDIRECTION file indirectionA
+TABS_CANT_OPEN can't open
+DEROFF_USAGE usage: deroff [ -w ] [ -m (m s l) ] [ -i ] [ file ] ... \n
+CANNOT_ALLOC_LINEBUFMEM can't allocate memory for line buffer\n
+CANNOT_REALLOC_LINEBUFMEM can't reallocate memory for line buffer\n
+CANNOT_ALLOC_MEM Cannot allocate memory
+CANNOT_INIT_HASH cannot initialize hash table\n
+TROUBLE_WRITE_HASH trouble writing hash table\n
+INSUFFICIENT_ARG Insufficient argument\n
+UNKNOWN_USER %s: unknown user \n
+TOP_DISPLAY_COUNT %s: warning: display count should be positive -- option ignored\n
+TOP_SECONDS_DELAY %s: warning: seconds delay should be non-negative -- using default\n
+TOP_ROOT_OPTION %s: warning: `-q' option can only be used by root\n
+TOP_PLATFORM_ORDERING %s: this platform does not support arbitrary ordering. Sorry.\n
+TOP_USAGE Top version %s\n Usage: %s [-ISbinquT] [-d x] [-s x] [-o field] [-U username] [number]\n
+TOP_PROCESS_COUNT %s: warning: process display count should be non-negative -- using default\n
+TOP_SORT_ORDER %s: '%s' is not a recognized sorting order.\n
+TOP_TRY_THESE  Try one of these:
+CANNOT_ALLOC_SUFF_MEM %s: can't allocate sufficient memory\n
+TOP_TERMINAL_PROCESSES %s: warning: this terminal can only display %d processes.\n
+COMMAND_NOT_UNDERSTOOD  Command not understood
+COMMAND_NOT_HANDLED  Command cannot be handled by this terminal
+HIT_KEY_CONTINUE Hit any key to continue:
+NO_ERROR_REPORT  Currently no errors to report.
+NUM_PROCESS_SHOW Number of processes to show: 
+DISPLAY_N_PROCESSES This terminal can only display %d processes.
+SECONDS_DELAY Seconds to delay: 
+DISPLAYS_TO_SHOW Displays to show (currently %s): 
+USERNAME_SHOW Username to show: 
+ORDER_SORT Order to sort: 
+UNRECOGNIZED_SORT_ORDER  %s: unrecognized sorting order. Try 'h' for help
+BAD_CASE   BAD CASE IN SWITCH!
+TOO_MANY_ERRORS  too many errors occurred
+DISPLAY_ERR_LIST  Many errors occurred.  Press `e' to display the list of errors.
+NO_PROCESS_KILL  kill: no processes specified
+INVALID_SIGNAL_NUM  invalid signal number
+BAD_SIGNAL_NAME  bad signal name
+BAD_PRI_VAL  bad priority value
+NO_PROCESS_SPECIFIED \tno processes specified
+CANT_OPEN_TERMCAP %s: can't open termcap file\n
+NO_TERMCAP_ENTRY %s: no termcap entry for a `%s' terminal\n
+TOP_OVERSTRIKE_HELP \n Other commands are also available, but this terminal is not\n sophisticated enough to handle those commands gracefully.\n\n
+TOP_HELP1 \n\nA top users display for Unix\n\nThese single-character commands are available:\n\n^L      - redraw screen\nq       - quit\nh or ?  - help; show this text\n
+TOP_HELP2 d       - change number of displays to show\ne       - list errors generated by last \"kill\" or \"renice\" command\ni       - toggle the displaying of idle processes\nI       - same as 'i'\nk       - kill processes; send a signal to a list of processes\nn or #  - change number of processes to display\n
+TOP_HELP3 o       - specify sort order (size, res, cpu, time, state, command)\n\t[string prefixes, like 'os', instead of 'osize', are allowed]\n
+TOP_HELP4 r       - renice a process\ns       - change number of seconds to delay between updates\nS       - toggle the displaying of system processes\nu       - display processes for only one user (+ selects all users)\n\n\n
+TOP_DISPLAYING_IDLE_PROCESSES Displaying idle processes.
+TOP_NOT_DISPLAYING_IDLE_PROCESSES Not displaying idle processes.
+TOP_DISPLAYING_SYS_PROCESSES Displaying system processes.
+TOP_NOT_DISPLAYING_SYS_PROCESSES Not displaying system processes.
+TOP_LOAD_AVERAGES load averages:
+TOP_PROCESSES processes:
+TOP_UNKNOWN_OPT : unknown option, -
+TOP_ARG_MISSING : argument missing for -

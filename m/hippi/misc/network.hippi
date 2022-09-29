@@ -1,0 +1,17 @@
+#
+# network.hippi
+#
+# Called inline from /etc/init.d/network to initialize HIPPI
+# TCP/IP interface's IP address to I-field table.
+#
+#
+
+HIPMAP=/usr/etc/hipmap
+HIPMAPFILE=/usr/etc/hippi.imap
+
+if [ $1 = "start" ]; then
+	$HIPMAP -f $HIPMAPFILE
+elif [ $1 = "stop" ]; then
+	$HIPMAP -D
+fi
+

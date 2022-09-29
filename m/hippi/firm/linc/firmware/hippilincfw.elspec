@@ -1,0 +1,66 @@
+# /**************************************************************************
+#  *                                                                        *
+#  *               Copyright (C) 1997, Silicon Graphics, Inc                *
+#  *                                                                        *
+#  *  These coded instructions, statements, and computer programs  contain  *
+#  *  unpublished  proprietary  information of Silicon Graphics, Inc., and  *
+#  *  are protected by Federal copyright law.  They  may  not be disclosed  *
+#  *  to  third  parties  or copied or duplicated in any form, in whole or  *
+#  *  in part, without the prior written consent of Silicon Graphics, Inc.  *
+#  *                                                                        *
+#  **************************************************************************/
+#
+# hippilincfw.elspec
+#
+# $Revision: 1.5 $
+#
+
+beginseg
+    segtype LOAD
+    vaddr 0x80000000
+    segalign 0x1000
+    segflags R W X 
+    contents
+    noheaders
+    beginscn .text
+        scntype PROGBITS
+        scnflags ALLOC EXECINSTR 
+        section .text
+    endscn
+    beginscn .MIPS.options
+        scntype 0x7000000d
+        scnflags ALLOC NOSTRIP 
+        scnalign 0x4
+        section .MIPS.options
+    endscn
+    beginscn .reginfo
+        scntype 0x70000006
+        scnflags ALLOC 
+        scnalign 0x4
+        section .reginfo
+    endscn
+    beginscn .data
+	scntype PROGBITS
+	scnflags ALLOC WRITE 
+	section .data
+    endscn
+    beginscn .rodata
+        scntype PROGBITS
+        scnflags ALLOC WRITE 
+        section .rodata
+    endscn
+endseg
+beginseg
+    name bss
+    segtype LOAD
+    vaddr 0x80014000
+    segalign 0x1000
+    segflags R W 
+    contents
+    noheaders
+    beginscn .bss
+        scntype NOBITS
+        scnflags ALLOC WRITE 
+        section .bss
+    endscn
+endseg

@@ -1,0 +1,41 @@
+
+The diags in this directory were written for debugging specific 
+RR SRAM problems. They are meant to be used in conjunction with
+rrdbg. To use, run the make, then copy the resultant *.fw files,
+along with the listing files *.list, and the diag.tcl file to some
+directory on the target system.
+
+On the target system, cd to that directory, run rrdbg there in the
+mode which puts the LINC in reset (i.e. no "-l" flag), so:
+
+1. rrdbg <-S or -D> [-i ioslot]
+     (-S specifies SRC LINC, i.e. LINC 1, -D specifies Dst LINC i.e. LINC 0)
+
+2. Now source the diag.tcl file to pick up the defined procedures:
+   rr_dbg> source diag.tcl
+
+3. To run host-based SRAM tests built into rrdbg, 10, 100 or 1000 times:
+   rr_dbg> s10
+   rr_dbg> s100
+   rr_dbg> s1k
+
+4. To run walking 1 test 1, 10, 100 times
+   rr_dbg> w1 
+   rr_dbg> w10
+   rr_dbg> w100
+
+5. To run data=address test 1, 10, 100 times:
+   rr_dbg> deqa1 
+   rr_dbg> deqa10
+   rr_dbg> deqa100
+
+6. To run data=~address test 1, 10, 100 times:
+   rr_dbg> deqna1 
+   rr_dbg> deqna10
+   rr_dbg> deqna100
+
+
+
+
+
+

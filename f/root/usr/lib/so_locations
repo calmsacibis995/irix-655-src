@@ -1,0 +1,1068 @@
+# Rationales for an official so_locations file:
+# 1) to save kernel space reserved for page table -- each active
+# 4Meg of user virtual space requires 4K of kernel page table space;
+# 2) to save kernel virtual space (tlb) required to map each page of
+# page tables.
+# 3) to give rqsall information to help it place all the libraries so
+#	that they quickstart.
+# 
+# 1) Put all libraries that you think are likely to be linked by the same
+# program in the same 4Meg segment. This saves kernel page table space
+# and can potentially speed up the program.
+#
+# 2) Allow adequate space between 4Meg segments of non-related libraries
+# so that redistribution of one ISM type does not mess up other ISMs.
+#
+# 3) All libraries should be listed. If packing isn't an issue
+#	then use the 'catch-all' range at the end.
+# 4) There are 2 ways to pack - take a 4Mb chunk and have each .so
+#	specify the entire 4Mb range. ld(1) will do the packing.
+#	This has the advantage of dealing well with one or more
+#	libraries changing size - each build will straighten things out
+#	unless the total size gets too large. It has a few disadvantages:
+#	a) if you have more than one version of the library with the same
+#		soname (this file matches on soname), and one is alot
+#		large than the other, you can run into trouble if
+#		the smaller one is built first, then another library in the
+#		range is built, followed by the larger version. The larger
+#		version won't fit.
+#	b) if the libraries come from different isms and something goes
+#		wrong with the build, its more likely that libraries
+#		will collide.
+#	The second way is to create a separate range for each .so. This
+#	will guarentee no overlaps, but of course if the library grows
+#	too large ...
+# 5) Don't put libs in here that aren't shipped - we'll run out of space!
+#
+# This file is used for both o32 and n32
+#
+# The range 0x0f800000-0x0fc00000 is reserved for system related libraries.
+# rld heap (128K max) at 0x0fbe0000 (rld heap can grow beyond 0x0fc00000).
+rld.heap \
+		:st = $range 0x0fbe0000, 0x00020000:\
+		:st = .data 0x0fbe0000, 0x00020000:\
+
+# rld text (384 K max) at 0x0fb60000, data (128 K max) at 0x0fbc0000
+# this is so that we can reserve this slot for rld.
+rld \
+		:st = $range 0x0fb60000, 0x000080000:\
+		:st = .text 0x0fb60000, 0x00060000:\
+		:st = .data 0x0fbc0000, 0x00020000:\
+
+#
+# we explicitly set the text and data since all h*ll breaks out if
+# we ever have data below text
+#
+libc.so.1 \
+		:st = $range 0x0fa00000, 0x00160000:\
+		:st = .text 0x0fa00000, 0x00140000:\
+		:st = .data 0x0fb40000, 0x00010000:
+libcurses.so \
+		:st = $range 0x0f9b0000, 0x00050000:\
+		:st = .text 0x0f9c0000, 0x00030000:\
+		:st = .data 0x0f9f0000, 0x00010000:
+libadm.so \
+		:st = $range 0x0f980000, 0x00030000:\
+		:st = .text 0x0f980000, 0x00020000:\
+		:st = .data 0x0f9a0000, 0x00010000:
+libcrypt.so \
+		:st = $range 0x0f960000, 0x00020000:\
+		:st = .text 0x0f960000, 0x00010000:\
+		:st = .data 0x0f970000, 0x00010000:
+libdl.so \
+		:st = $range 0x0f940000, 0x00020000:\
+		:st = .text 0x0f940000, 0x00010000:\
+		:st = .data 0x0f950000, 0x00010000:
+libgen.so \
+		:st = $range 0x0f920000, 0x00020000:\
+		:st = .text 0x0f920000, 0x00010000:\
+		:st = .data 0x0f930000, 0x00010000:
+libmalloc.so \
+		:st = $range 0x0f900000, 0x00020000:\
+		:st = .text 0x0f900000, 0x00010000:\
+		:st = .data 0x0f910000, 0x00010000:
+librpcsvc.so \
+		:st = $range 0x0f8e0000, 0x00020000:\
+		:st = .text 0x0f8e0000, 0x00010000:\
+		:st = .data 0x0f8f0000, 0x00010000:
+libw.so \
+		:st = $range 0x0f8c0000, 0x00020000:\
+		:st = .text 0x0f8c0000, 0x00010000:\
+		:st = .data 0x0f8d0000, 0x00010000:
+libC.so \
+		:st = $range 0x0f890000, 0x000030000:
+libC.so.2 \
+		:st = $range 0x0ac00000, 0x00400000:\
+libm.so \
+		:st = $range 0x0f830000, 0x000060000:
+libmutex.so \
+		:st = $range 0x0f810000, 0x00020000:\
+		:st = .text 0x0f810000, 0x00010000:\
+		:st = .data 0x0f820000, 0x00010000:
+
+# The range 0x0f400000-0x0f800000 is reserved for X libraries
+libX11.so.1 \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f6f0000, 0x00100000:\
+		:st = .data 0x0f7f0000, 0x00010000:
+libXt.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f620000, 0x00080000:\
+		:st = .data 0x0f6a0000, 0x00020000:
+libXaw.so.2 \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f590000, 0x00050000:\
+		:st = .data 0x0f5e0000, 0x00010000:
+libXmu.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f5f0000, 0x00020000:\
+		:st = .data 0x0f610000, 0x00010000:
+libXext.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f6c0000, 0x00020000:\
+		:st = .data 0x0f6e0000, 0x00010000:
+libXi.so \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f570000, 0x00010000:\
+		:st = .data 0x0f580000, 0x00010000:
+libXpm.so.1 \
+		:st = $range 0x0f400000, 0x00400000:\
+		:st = .text 0x0f550000, 0x00010000:\
+		:st = .data 0x0f560000, 0x00010000:
+
+# The range 0x0e800000-0x0ec00000 is currently reserved for future expansion
+# of the above X libraries.
+reserv1 \
+		:st = $range 0x0e800000, 0x400000:
+
+# The range 0x0f000000-0x0f400000 is reserved for libgl,libfm,libgltrace
+# we give libgl its own space since it generates potentially lots of versions
+libfm.so \
+		:st = $range 0x0f200000, 0x00200000:\
+		:st = .text 0x0f370000, 0x00060000:\
+		:st = .data 0x0f3d0000, 0x00030000:
+libgltrace.so \
+		:st = $range 0x0f160000, 0x0a0000:
+libgl.so \
+		:st = $range 0x0f000000, 0x00160000:\
+		:st = .text 0x0f060000, 0x000e0000:\
+		:st = .data 0x0f020000, 0x00020000:
+
+
+# The range 0x0ec00000-0x0f000000 is currently reserved for future expansion
+# of the above gl and font manager libraries.
+reserve2 \
+		:st = $range 0x0ec00000, 0x400000:
+
+# The range 0x0e400000 - 0x0e800000 is reserved for libraires used by toto
+libCadmin.so \
+		:st = $range 0x0e400000, 0x400000:
+
+# The range 0x0dc00000 - 0x0e400000 is reserved for image libraries (IFL/IL)
+libifl.so \
+		:st = $range 0x0dc00000, 0x800000:
+libil.so \
+		:st = $range 0x0dc00000, 0x800000:
+libilVk.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflJFIF.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflTIFF.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflFIT.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflGIF.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflPNG.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflSGI.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflPPM.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflPhotoCD.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflRaw.so \
+		:st = $range 0x0dc00000, 0x800000:
+libcifl.so \
+		:st = $range 0x0dc00000, 0x800000:
+libcil.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflAlias.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflSOFTIMAGE.so \
+		:st = $range 0x0dc00000, 0x800000:
+libilTCL.so \
+		:st = $range 0x0dc00000, 0x800000:
+libiflYUV.so \
+		:st = $range 0x0dc00000, 0x800000:
+libilMon.so \
+		:st = $range 0x0dc00000, 0x800000:
+
+# The range 0x0d800000 - 0x0dc00000 is reserved for opengl/gl libraires
+# see also 0x0a800000
+# In order to prevent libGLcore from getting crowded out, we break the
+# bottom 4MB into two 2MB pieces and give one to libGLcore.
+libGL.so \
+		:st = $range 0x0d800000, 0x00200000:\
+		:st = .text 0x0d9b0000, 0x00040000:\
+		:st = .data 0x0d9f0000, 0x00010000:
+libGLcore.so \
+		:st = $range 0x0da00000, 0x00200000:\
+		:st = .text 0x0da10000, 0x00140000:\
+		:st = .data 0x0dbe0000, 0x00020000:
+
+# The range 0x0d400000 - 0x0d800000 is reserved for libraries used by toto
+
+libvkSGI.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d510000, 0x00010000:\
+		:st = .data 0x0d520000, 0x00010000:
+libvkhelp.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d6f0000, 0x00010000:\
+		:st = .data 0x0d700000, 0x00010000:
+libvk.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d710000, 0x000c0000:\
+		:st = .data 0x0d7d0000, 0x00030000:
+libvkmsg.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d6a0000, 0x00020000:\
+		:st = .data 0x0d6c0000, 0x00010000:
+libdesktopUtil.so \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d610000, 0x00020000:\
+		:st = .data 0x0d630000, 0x00020000:
+libdesktopIcon.so \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d530000, 0x000c0000:\
+		:st = .data 0x0d5f0000, 0x00020000:
+libdesktopFileicon.so \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d670000, 0x00020000:\
+		:st = .data 0x0d690000, 0x00010000:
+libvkwebhelp.so.1 \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d6d0000, 0x00010000:\
+		:st = .data 0x0d6e0000, 0x00010000:
+libhelpmsg.so \
+		:st = $range 0x0d400000, 0x400000:
+libdesktopGallery.so \
+		:st = $range 0x0d400000, 0x00400000:\
+		:st = .text 0x0d650000, 0x00010000:\
+		:st = .data 0x0d660000, 0x00010000:
+# tooltalk
+libtt.so \
+		:st = $range 0x0d400000, 0x400000:
+
+
+# The range 0x0d000000 - 0x0d400000 is reserved for dmedia libraries
+libaudiofile.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d270000, 0x00060000:\
+		:st = .data 0x0d2d0000, 0x00020000:
+libaudioutil.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d250000, 0x00010000:\
+		:st = .data 0x0d260000, 0x00010000:
+libmidi.so \
+		:st = $range 0x0d000000, 0x400000:
+libawareaudio.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d330000, 0x00010000:\
+		:st = .data 0x0d310000, 0x00020000:
+libdmedia.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d350000, 0x00070000:\
+		:st = .data 0x0d3c0000, 0x00020000:
+libmediaclient.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d3e0000, 0x00010000:\
+		:st = .data 0x0d3f0000, 0x00010000:
+libaudio.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d2f0000, 0x00020000:\
+		:st = .data 0x0d340000, 0x00010000:
+libvice.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d230000, 0x00010000:\
+		:st = .data 0x0d240000, 0x00010000:
+libVkCapture.so \
+		:st = $range 0x0d000000, 0x00400000:\
+		:st = .text 0x0d1a0000, 0x00070000:\
+		:st = .data 0x0d210000, 0x00020000:
+
+# The range 0x0cc00000 - 0x0d000000 is reserved for il8n libraries
+libwnn.so \
+		:st = $range 0x0cc00000, 0x400000:
+libjgl.so \
+		:st = $range 0x0cc00000, 0x400000:
+libXawI18n.so \
+		:st = $range 0x0cc00000, 0x400000:
+
+# The double range 0x0c400000-0x0cc00000 is reserved for Inventor libraries.
+#  Note: n32 inventor is bigger than 1 block, but o32 fits.
+
+libInventor.so.3 \
+                :st = $range 0x0c670000, 0x00590000:
+libInventorXt.so.3 \
+                :st = $range 0x0c400000, 0x00270000:
+
+
+# The range 0x0c000000 - 0x0c400000 is reserved for lesser used system libs
+libpthread.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c230000, 0x00020000:\
+		:st = .data 0x0c250000, 0x00010000:
+libudma.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c1f0000, 0x00010000:\
+		:st = .data 0x0c200000, 0x00010000:
+libl.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c2c0000, 0x00010000:\
+		:st = .data 0x0c2d0000, 0x00010000:
+libmediad.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c2a0000, 0x00010000:\
+		:st = .data 0x0c2b0000, 0x00010000:
+libpkg.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c260000, 0x00010000:\
+		:st = .data 0x0c270000, 0x00010000:
+libnls.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c280000, 0x00010000:\
+		:st = .data 0x0c290000, 0x00010000:
+libmx.so \
+		:st = $range 0x0c000000, 0x400000:
+libgrio.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c340000, 0x00010000:\
+		:st = .data 0x0c350000, 0x000b0000:
+libdm.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c2e0000, 0x00010000:\
+		:st = .data 0x0c2f0000, 0x00010000:
+libirixpmda.so \
+		:st = $range 0x0c000000, 0x400000:
+libabi.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c1d0000, 0x00010000:\
+		:st = .data 0x0c1e0000, 0x00010000:
+libarray.so \
+		:st = $range 0x0c000000, 0x400000:
+libdisk.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c300000, 0x00010000:\
+		:st = .data 0x0c310000, 0x00010000:
+libdpipe.so \
+		:st = $range 0x0c000000, 0x400000:
+libnanothread.so \
+		:st = $range 0x0c000000, 0x400000:
+librsvp.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c320000, 0x00010000:\
+		:st = .data 0x0c330000, 0x00010000:
+libAS.so \
+		:st = $range 0x0c000000, 0x400000:
+libprio.so \
+		:st = $range 0x0c000000, 0x400000:
+libperfex.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c210000, 0x00010000:\
+		:st = .data 0x0c220000, 0x00010000:
+libdprof.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c180000, 0x00010000:\
+		:st = .data 0x0c190000, 0x00010000:
+libdplace.so \
+		:st = $range 0x0c000000, 0x00400000:\
+		:st = .text 0x0c1a0000, 0x00010000:\
+		:st = .data 0x0c1b0000, 0x00020000:
+libfetchop.so \
+		:st = $range 0x0c000000, 0x400000:
+
+# The range 0x0bc00000 - 0x0c000000 is reserved for video libraries
+libvl.so \
+		:st = $range 0x0bc00000, 0x00400000:\
+		:st = .text 0x0bfc0000, 0x00020000:\
+		:st = .data 0x0bfe0000, 0x00010000:
+Sirius.so \
+		:st = $range 0x0bc00000, 0x400000:
+SiriusVL.so \
+		:st = $range 0x0bc00000, 0x400000:
+vino.so \
+		:st = $range 0x0bc00000, 0x00400000:\
+		:st = .text 0x0bf60000, 0x00010000:\
+		:st = .data 0x0bf40000, 0x00020000:
+ev1.so \
+		:st = $range 0x0bc00000, 0x00400000:\
+		:st = .text 0x0bf70000, 0x00030000:\
+		:st = .data 0x0bfa0000, 0x00020000:
+sv1.so \
+		:st = $range 0x0bc00000, 0x400000:
+cl_cosmo.so \
+		:st = $range 0x0bc00000, 0x400000:
+cosmo.so \
+		:st = $range 0x0bc00000, 0x400000:
+
+
+# The range 0x0b800000 - 0x0bc00000 is reserved for less-used Motif librairies
+libMrm.so.1 \
+		:st = $range 0x0b800000, 0x00400000:\
+		:st = .text 0x0bbc0000, 0x00020000:\
+		:st = .data 0x0bbe0000, 0x00020000:
+libUil.so.1 \
+		:st = $range 0x0b800000, 0x00400000:\
+		:st = .text 0x0bb50000, 0x00030000:\
+		:st = .data 0x0bb80000, 0x00040000:
+
+# The range 0x0b400000 - 0x0b800000 is reserved for SVR4 net libraries
+libnsl.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b7c0000, 0x00030000:\
+		:st = .data 0x0b7f0000, 0x00010000:
+libsocket.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b7a0000, 0x00010000:\
+		:st = .data 0x0b7b0000, 0x00010000:
+nis.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b780000, 0x00010000:\
+		:st = .data 0x0b790000, 0x00010000:
+resolv.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b760000, 0x00010000:\
+		:st = .data 0x0b770000, 0x00010000:
+straddr.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b740000, 0x00010000:\
+		:st = .data 0x0b750000, 0x00010000:
+tcpip.so \
+		:st = $range 0x0b400000, 0x00400000:\
+		:st = .text 0x0b720000, 0x00010000:\
+		:st = .data 0x0b730000, 0x00010000:
+
+# The range 0x0b000000 - 0x0b400000 is reserved for motif libraries
+libXm.so.1 \
+		:st = $range 0x0b000000, 0x00400000:\
+		:st = .text 0x0b240000, 0x00190000:\
+		:st = .data 0x0b3d0000, 0x00030000:
+libSgm.so.1 \
+		:st = $range 0x0b000000, 0x00400000:\
+		:st = .text 0x0b180000, 0x000a0000:\
+		:st = .data 0x0b220000, 0x00020000:
+
+# The range 0x0ac00000 - 0x0b000000 is reserved for other compiler libs
+libexc.so \
+		:st = $range 0x0ac00000, 0x400000:
+libftn.so \
+		:st = $range 0x0ac00000, 0x400000:
+libfpe.so \
+		:st = $range 0x0ac00000, 0x400000:
+libfastm.so \
+		:st = $range 0x0ac00000, 0x400000:
+libmp.so \
+		:st = $range 0x0ac00000, 0x400000:
+libcomplex.so \
+		:st = $range 0x0ac00000, 0x400000:
+libm43.so \
+		:st = $range 0x0ac00000, 0x400000:
+libCsup.so \
+                :st = $range 0x0ac00000, 0x400000:
+
+# The range 0x0a800000 - 0x0ac00000 is reserved for other OpenGL libraries
+libGLS.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0aa50000, 0x000e0000:\
+		:st = .data 0x0ab30000, 0x00020000:
+libGLC.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0a980000, 0x00010000:\
+		:st = .data 0x0a990000, 0x00020000:
+libGLU.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0ab50000, 0x00090000:\
+		:st = .data 0x0abe0000, 0x00020000:
+libFL.so \
+		:st = $range 0x0a800000, 0x00400000:\
+		:st = .text 0x0a9b0000, 0x00060000:\
+		:st = .data 0x0aa10000, 0x00040000:
+
+# The range 0x0a000000 - 0x0a800000 is reserved for cmplrs
+libftn90.so \
+		:st = $range 0x0a000000, 0x800000:
+libfortran.so \
+		:st = $range 0x0a000000, 0x800000:
+libffio.so \
+		:st = $range 0x0a000000, 0x800000:
+
+
+# Catch-all range
+# If a .so is shipped, and its not in one of the above ranges - place it
+# here. This is also where we place $start_address (for SGI build)
+# so that any non-spec'd .so's will be placed somewhere in here.
+# This range is from 0x02000000 -> 0x0a000000 - 128Mb.
+libmd.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x093a0000, 0x00010000:\
+		:st = .data 0x093b0000, 0x00010000:
+libmalloc_cv.so \
+		:st = $range 0x02000000, 0x08000000:
+libMMmalloc.so \
+		:st = $range 0x02000000, 0x08000000:
+libogldebug.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x080d0000, 0x00090000:\
+		:st = .data 0x08160000, 0x00010000:
+liblim.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09fa0000, 0x00010000:\
+		:st = .data 0x09fb0000, 0x00010000:
+libgd.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x081e0000, 0x000b0000:\
+		:st = .data 0x08290000, 0x00020000:
+libwebviewer.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libwio.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libwioutil.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libcwio.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libwwwhelp.so \
+		:st = $range 0x02000000, 0x08000000:
+libsgihelp.so \
+		:st = $range 0x02000000, 0x08000000:
+libshowcaseui.so \
+		:st = $range 0x02000000, 0x08000000:
+libshowcase_shareext.so \
+		:st = $range 0x02000000, 0x08000000:
+libshowcase3d.so \
+		:st = $range 0x02000000, 0x08000000:
+libcl.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09ac0000, 0x00030000:\
+		:st = .data 0x09da0000, 0x00010000:
+libdmc.so \
+		:st = $range 0x02000000, 0x08000000:
+libdn.so \
+		:st = $range 0x02000000, 0x08000000:
+libsnmp.so \
+		:st = $range 0x02000000, 0x08000000:
+libX11.so.2 \
+		:st = $range 0x02000000, 0x08000000:
+libblas.so \
+		:st = $range 0x02000000, 0x08000000:
+libblas_mp.so \
+		:st = $range 0x02000000, 0x08000000:
+libufm.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09af0000, 0x00070000:\
+		:st = .data 0x09b60000, 0x00040000:
+libMediaViewer.so \
+		:st = $range 0x02000000, 0x08000000:
+libfxplugmgr.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x090f0000, 0x00020000:\
+		:st = .data 0x09160000, 0x00010000:
+libfxplugutils.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09130000, 0x00030000:\
+		:st = .data 0x09110000, 0x00020000:
+libmpi.so \
+		:st = $range 0x02000000, 0x08000000:
+libsma.so \
+		:st = $range 0x02000000, 0x08000000:
+libpvm3.so \
+		:st = $range 0x02000000, 0x08000000:
+libpvm3-i8.so \
+		:st = $range 0x02000000, 0x08000000:
+libst.so \
+		:st = $range 0x02000000, 0x08000000:
+
+# tcl libs
+libOratcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libSybtcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libitcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libtclObjSrv.so \
+		:st = $range 0x02000000, 0x08000000:
+libtkGLXAux.so \
+		:st = $range 0x02000000, 0x08000000:
+libtkGLX.so \
+		:st = $range 0x02000000, 0x08000000:
+libexpectk.so \
+		:st = $range 0x02000000, 0x08000000:
+libtclMotif.so \
+		:st = $range 0x02000000, 0x08000000:
+libexpect.so \
+		:st = $range 0x02000000, 0x08000000:
+libtkX.so \
+		:st = $range 0x02000000, 0x08000000:
+libtclX.so \
+		:st = $range 0x02000000, 0x08000000:
+libtcl.so \
+		:st = $range 0x02000000, 0x08000000:
+libpvtcl.so \
+		:st = $range 0x02000000, 0x08000000:
+
+# Performance Co-Pilot libraries and PMDAs
+libpcp.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_lite.so.1 \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_pmda.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x09f10000, 0x00010000:\
+		:st = .data 0x09f20000, 0x00010000:
+libpcp_wio.so \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_wioutil.so \
+		:st = $range 0x02000000, 0x08000000:
+libpcp_socks.so \
+		:st = $range 0x02000000, 0x08000000:
+pmda_pmcd.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x085d0000, 0x00010000:\
+		:st = .data 0x085e0000, 0x00010000:
+pmda_proc.so \
+		:st = $range 0x02000000, 0x08000000:\
+		:st = .text 0x085b0000, 0x00010000:\
+		:st = .data 0x085c0000, 0x00010000:
+pmda_environ.so \
+		:st = $range 0x02000000, 0x08000000:
+libvkpcp.so \
+		:st = $range 0x02000000, 0x08000000:
+
+# All DSO's need to be below 0x10000000 (start of data/heap). This is so
+# that we don't use up valuable heap/stack space by fragmenting
+# the address space. So we pile them all in below 0x0a000000.
+$start_address=0x0a000000
+libcpr.so \
+		:st = .text 0x09fe0000, 0x00010000:\
+		:st = .data 0x09ff0000, 0x00010000:
+libtoolroot.so \
+		:st = .text 0x09fc0000, 0x00010000:\
+		:st = .data 0x09fd0000, 0x00010000:
+libmdbm.so \
+		:st = .text 0x09f80000, 0x00010000:\
+		:st = .data 0x09f90000, 0x00010000:
+libpcp.so \
+		:st = .text 0x09f30000, 0x00040000:\
+		:st = .data 0x09f70000, 0x00010000:
+librt.so \
+		:st = .text 0x09ef0000, 0x00010000:\
+		:st = .data 0x09f00000, 0x00010000:
+libsatmp.so \
+		:st = .text 0x09ed0000, 0x00010000:\
+		:st = .data 0x09ee0000, 0x00010000:
+libspypt.so \
+		:st = .text 0x09eb0000, 0x00010000:\
+		:st = .data 0x09ec0000, 0x00010000:
+libtserialio.so \
+		:st = .text 0x09e90000, 0x00010000:\
+		:st = .data 0x09ea0000, 0x00010000:
+libxnet.so \
+		:st = .text 0x09e50000, 0x00030000:\
+		:st = .data 0x09e80000, 0x00010000:
+liblp.so \
+		:st = .text 0x09e30000, 0x00010000:\
+		:st = .data 0x09e40000, 0x00010000:
+libimdFtrDB.so \
+		:st = .text 0x09e00000, 0x00020000:\
+		:st = .data 0x09e20000, 0x00010000:
+libX11.so.3 \
+		:st = .text 0x09cc0000, 0x000e0000:\
+		:st = .data 0x09dc0000, 0x00030000:
+libXt.so.3 \
+		:st = .text 0x09c00000, 0x00080000:\
+		:st = .data 0x09c80000, 0x00020000:
+libXsgivc.so \
+		:st = .text 0x09db0000, 0x00010000:\
+		:st = .data 0x09df0000, 0x00010000:
+libnurbs.so \
+		:st = .text 0x09ba0000, 0x00060000:\
+		:st = .data 0x09ca0000, 0x00020000:
+libaudioconvert.so \
+		:st = .text 0x09a60000, 0x00050000:\
+		:st = .data 0x09a40000, 0x00020000:
+libaudiorateconv.so \
+		:st = .text 0x099d0000, 0x00040000:\
+		:st = .data 0x09a10000, 0x00030000:
+libmpeg1audio.so \
+		:st = .text 0x099a0000, 0x00030000:\
+		:st = .data 0x09980000, 0x00020000:
+libmultirate.so \
+		:st = .text 0x098f0000, 0x00060000:\
+		:st = .data 0x09950000, 0x00020000:
+libdvaudio.so \
+		:st = .text 0x09ab0000, 0x00010000:\
+		:st = .data 0x098c0000, 0x00030000:
+libdviaudio.so \
+		:st = .text 0x098b0000, 0x00010000:\
+		:st = .data 0x09970000, 0x00010000:
+libg711.so \
+		:st = .text 0x09890000, 0x00010000:\
+		:st = .data 0x098a0000, 0x00010000:
+libg722.so \
+		:st = .text 0x09870000, 0x00010000:\
+		:st = .data 0x09880000, 0x00010000:
+libg726.so \
+		:st = .text 0x09850000, 0x00010000:\
+		:st = .data 0x09860000, 0x00010000:
+libg728.so \
+		:st = .text 0x09830000, 0x00010000:\
+		:st = .data 0x09840000, 0x00010000:
+libgsm.so \
+		:st = .text 0x09810000, 0x00010000:\
+		:st = .data 0x09820000, 0x00010000:
+libfs1016.so \
+		:st = .text 0x097e0000, 0x00010000:\
+		:st = .data 0x097f0000, 0x00020000:
+libcvid.so \
+		:st = .text 0x097a0000, 0x00030000:\
+		:st = .data 0x097d0000, 0x00010000:
+libhdcc.so \
+		:st = .text 0x09780000, 0x00010000:\
+		:st = .data 0x09790000, 0x00010000:
+libindeo.so \
+		:st = .text 0x09720000, 0x00030000:\
+		:st = .data 0x09750000, 0x00030000:
+liboldjpeg.so \
+		:st = .text 0x096e0000, 0x00030000:\
+		:st = .data 0x09710000, 0x00010000:
+libjpeg.so \
+		:st = .text 0x096b0000, 0x00020000:\
+		:st = .data 0x096d0000, 0x00010000:
+libmpeg1video.so \
+		:st = .text 0x09640000, 0x00050000:\
+		:st = .data 0x09690000, 0x00010000:
+libmpeg2.so \
+		:st = .text 0x09620000, 0x00020000:\
+		:st = .data 0x096a0000, 0x00010000:
+libmvc1.so \
+		:st = .text 0x095b0000, 0x00020000:\
+		:st = .data 0x095d0000, 0x00050000:
+libmvc2.so \
+		:st = .text 0x09590000, 0x00010000:\
+		:st = .data 0x09570000, 0x00020000:
+libmvc3.so \
+		:st = .text 0x09560000, 0x00010000:\
+		:st = .data 0x095a0000, 0x00010000:
+libqtanim.so \
+		:st = .text 0x094e0000, 0x00010000:\
+		:st = .data 0x094f0000, 0x00070000:
+libqtvideo.so \
+		:st = .text 0x09460000, 0x00010000:\
+		:st = .data 0x09470000, 0x00070000:
+librle.so \
+		:st = .text 0x09440000, 0x00010000:\
+		:st = .data 0x09450000, 0x00010000:
+librle24.so \
+		:st = .text 0x09420000, 0x00010000:\
+		:st = .data 0x09430000, 0x00010000:
+librle32.so \
+		:st = .text 0x09400000, 0x00010000:\
+		:st = .data 0x09410000, 0x00010000:
+librice.so \
+		:st = .text 0x093e0000, 0x00010000:\
+		:st = .data 0x093f0000, 0x00010000:
+libdataudio2.so \
+		:st = .text 0x093c0000, 0x00010000:\
+		:st = .data 0x093d0000, 0x00010000:
+libmoviefile.so \
+		:st = .text 0x092e0000, 0x000a0000:\
+		:st = .data 0x09380000, 0x00020000:
+libmovieplay.so \
+		:st = .text 0x092a0000, 0x00030000:\
+		:st = .data 0x092d0000, 0x00010000:
+libmovie.so \
+		:st = .text 0x09280000, 0x00010000:\
+		:st = .data 0x09290000, 0x00010000:
+mvaudio.so \
+		:st = .text 0x09260000, 0x00010000:\
+		:st = .data 0x09270000, 0x00010000:
+mvcosmo1.so \
+		:st = .text 0x09240000, 0x00010000:\
+		:st = .data 0x09250000, 0x00010000:
+mvimpactcomp.so \
+		:st = .text 0x09220000, 0x00010000:\
+		:st = .data 0x09230000, 0x00010000:
+mvopenglx.so \
+		:st = .text 0x09200000, 0x00010000:\
+		:st = .data 0x091e0000, 0x00020000:
+mvvideo.so \
+		:st = .text 0x091c0000, 0x00020000:\
+		:st = .data 0x09210000, 0x00010000:
+mvrenderGL.so \
+		:st = .text 0x09190000, 0x00020000:\
+		:st = .data 0x091b0000, 0x00010000:
+mvrendergl.so \
+		:st = .text 0x09170000, 0x00010000:\
+		:st = .data 0x09180000, 0x00010000:
+libksync.so \
+		:st = .text 0x090d0000, 0x00010000:\
+		:st = .data 0x090e0000, 0x00010000:
+libdmnet.so \
+		:st = .text 0x090b0000, 0x00010000:\
+		:st = .data 0x090c0000, 0x00010000:
+hippi-fp.so \
+		:st = .text 0x09090000, 0x00010000:\
+		:st = .data 0x090a0000, 0x00010000:
+libcosmojpeg.so \
+		:st = .text 0x09070000, 0x00010000:\
+		:st = .data 0x09080000, 0x00010000:
+impactcomp.so \
+		:st = .text 0x08460000, 0x00010000:\
+		:st = .data 0x09050000, 0x00020000:
+libdmu_generic.so \
+		:st = .text 0x09010000, 0x00020000:\
+		:st = .data 0x09030000, 0x00010000:
+libdmu_generic_32_M2.so \
+		:st = .text 0x08fe0000, 0x00020000:\
+		:st = .data 0x09000000, 0x00010000:
+libdmu_generic21_32_M2.so \
+		:st = .text 0x08fb0000, 0x00020000:\
+		:st = .data 0x08fd0000, 0x00010000:
+CENTRONICS.so \
+		:st = .text 0x08f90000, 0x00010000:\
+		:st = .data 0x08fa0000, 0x00010000:
+NETPRINTER.so \
+		:st = .text 0x08f70000, 0x00010000:\
+		:st = .data 0x08f80000, 0x00010000:
+SERIAL.so \
+		:st = .text 0x08f50000, 0x00010000:\
+		:st = .data 0x08f60000, 0x00010000:
+SCSI.so \
+		:st = .text 0x08f20000, 0x00020000:\
+		:st = .data 0x08f40000, 0x00010000:
+libdvc.so \
+		:st = .text 0x08e60000, 0x00020000:\
+		:st = .data 0x08db0000, 0x000b0000:
+haven.so \
+		:st = .text 0x08f00000, 0x00010000:\
+		:st = .data 0x08f10000, 0x00010000:
+libh261.so \
+		:st = .text 0x08ec0000, 0x00020000:\
+		:st = .data 0x08e90000, 0x00030000:
+libcursesBSD.so \
+		:st = .text 0x08ee0000, 0x00010000:\
+		:st = .data 0x08ef0000, 0x00010000:
+libdlook.so \
+		:st = .text 0x08da0000, 0x00010000:\
+		:st = .data 0x08e80000, 0x00010000:
+audio_dcoffset.so \
+		:st = .text 0x08d80000, 0x00010000:\
+		:st = .data 0x08d90000, 0x00010000:
+audio_echo.so \
+		:st = .text 0x08d60000, 0x00010000:\
+		:st = .data 0x08d70000, 0x00010000:
+audio_eq.so \
+		:st = .text 0x08d30000, 0x00020000:\
+		:st = .data 0x08d50000, 0x00010000:
+audio_fadein.so \
+		:st = .text 0x08d10000, 0x00010000:\
+		:st = .data 0x08d20000, 0x00010000:
+audio_fadeout.so \
+		:st = .text 0x08cf0000, 0x00010000:\
+		:st = .data 0x08d00000, 0x00010000:
+audio_normalize.so \
+		:st = .text 0x08cd0000, 0x00010000:\
+		:st = .data 0x08ce0000, 0x00010000:
+audio_reverse.so \
+		:st = .text 0x08cb0000, 0x00010000:\
+		:st = .data 0x08cc0000, 0x00010000:
+audio_volume.so \
+		:st = .text 0x08c90000, 0x00010000:\
+		:st = .data 0x08ca0000, 0x00010000:
+Image.so \
+		:st = .text 0x08c70000, 0x00010000:\
+		:st = .data 0x08c80000, 0x00010000:
+Audio.so \
+		:st = .text 0x08c50000, 0x00010000:\
+		:st = .data 0x08c60000, 0x00010000:
+BlackWhite.so \
+		:st = .text 0x08c30000, 0x00010000:\
+		:st = .data 0x08c40000, 0x00010000:
+Blur.so \
+		:st = .text 0x08c10000, 0x00010000:\
+		:st = .data 0x08c20000, 0x00010000:
+BlurMore.so \
+		:st = .text 0x08bf0000, 0x00010000:\
+		:st = .data 0x08c00000, 0x00010000:
+BrightnessContrast.so \
+		:st = .text 0x08bd0000, 0x00010000:\
+		:st = .data 0x08be0000, 0x00010000:
+Clip.so \
+		:st = .text 0x08bb0000, 0x00010000:\
+		:st = .data 0x08bc0000, 0x00010000:
+ColorBalance.so \
+		:st = .text 0x08b90000, 0x00010000:\
+		:st = .data 0x08ba0000, 0x00010000:
+ConvolutionKernel.so \
+		:st = .text 0x08b70000, 0x00010000:\
+		:st = .data 0x08b80000, 0x00010000:
+Crop.so \
+		:st = .text 0x08b50000, 0x00010000:\
+		:st = .data 0x08b60000, 0x00010000:
+DissolveIn.so \
+		:st = .text 0x08b30000, 0x00010000:\
+		:st = .data 0x08b40000, 0x00010000:
+DissolveOut.so \
+		:st = .text 0x08b10000, 0x00010000:\
+		:st = .data 0x08b20000, 0x00010000:
+Emboss.so \
+		:st = .text 0x08af0000, 0x00010000:\
+		:st = .data 0x08b00000, 0x00010000:
+Fade.so \
+		:st = .text 0x08ad0000, 0x00010000:\
+		:st = .data 0x08ae0000, 0x00010000:
+FindEdges.so \
+		:st = .text 0x08ab0000, 0x00010000:\
+		:st = .data 0x08ac0000, 0x00010000:
+HorizontalFlip.so \
+		:st = .text 0x08a90000, 0x00010000:\
+		:st = .data 0x08aa0000, 0x00010000:
+GaussianBlur.so \
+		:st = .text 0x08a70000, 0x00010000:\
+		:st = .data 0x08a80000, 0x00010000:
+GaussianSharpen.so \
+		:st = .text 0x08a50000, 0x00010000:\
+		:st = .data 0x08a60000, 0x00010000:
+GradientWipe.so \
+		:st = .text 0x08a30000, 0x00010000:\
+		:st = .data 0x08a40000, 0x00010000:
+LumaKey.so \
+		:st = .text 0x08a10000, 0x00010000:\
+		:st = .data 0x08a20000, 0x00010000:
+Negative.so \
+		:st = .text 0x089f0000, 0x00010000:\
+		:st = .data 0x08a00000, 0x00010000:
+Reverse.so \
+		:st = .text 0x089d0000, 0x00010000:\
+		:st = .data 0x089e0000, 0x00010000:
+Sharpen.so \
+		:st = .text 0x089b0000, 0x00010000:\
+		:st = .data 0x089c0000, 0x00010000:
+SharpenEdges.so \
+		:st = .text 0x08990000, 0x00010000:\
+		:st = .data 0x089a0000, 0x00010000:
+SharpenMore.so \
+		:st = .text 0x08970000, 0x00010000:\
+		:st = .data 0x08980000, 0x00010000:
+Sphere.so \
+		:st = .text 0x08950000, 0x00010000:\
+		:st = .data 0x08960000, 0x00010000:
+VerticalFlip.so \
+		:st = .text 0x08930000, 0x00010000:\
+		:st = .data 0x08940000, 0x00010000:
+fxbuiltFilter.so \
+		:st = .text 0x088d0000, 0x00040000:\
+		:st = .data 0x08910000, 0x00020000:
+fxbuiltTransition.so \
+		:st = .text 0x08870000, 0x00040000:\
+		:st = .data 0x088b0000, 0x00020000:
+BarnDoors.so \
+		:st = .text 0x08850000, 0x00010000:\
+		:st = .data 0x08860000, 0x00010000:
+CenterMerge.so \
+		:st = .text 0x08830000, 0x00010000:\
+		:st = .data 0x08840000, 0x00010000:
+CenterSplit.so \
+		:st = .text 0x08810000, 0x00010000:\
+		:st = .data 0x08820000, 0x00010000:
+ClockWipe.so \
+		:st = .text 0x087f0000, 0x00010000:\
+		:st = .data 0x08800000, 0x00010000:
+CrossDissolve.so \
+		:st = .text 0x087d0000, 0x00010000:\
+		:st = .data 0x087e0000, 0x00010000:
+CrossStretch.so \
+		:st = .text 0x087b0000, 0x00010000:\
+		:st = .data 0x087c0000, 0x00010000:
+Direct.so \
+		:st = .text 0x08790000, 0x00010000:\
+		:st = .data 0x087a0000, 0x00010000:
+Inset.so \
+		:st = .text 0x08770000, 0x00010000:\
+		:st = .data 0x08780000, 0x00010000:
+IrisCross.so \
+		:st = .text 0x08750000, 0x00010000:\
+		:st = .data 0x08760000, 0x00010000:
+IrisRound.so \
+		:st = .text 0x08730000, 0x00010000:\
+		:st = .data 0x08740000, 0x00010000:
+IrisSquare.so \
+		:st = .text 0x08710000, 0x00010000:\
+		:st = .data 0x08720000, 0x00010000:
+Push.so \
+		:st = .text 0x086f0000, 0x00010000:\
+		:st = .data 0x08700000, 0x00010000:
+Slide.so \
+		:st = .text 0x086d0000, 0x00010000:\
+		:st = .data 0x086e0000, 0x00010000:
+Split.so \
+		:st = .text 0x086b0000, 0x00010000:\
+		:st = .data 0x086c0000, 0x00010000:
+Stretch.so \
+		:st = .text 0x08690000, 0x00010000:\
+		:st = .data 0x086a0000, 0x00010000:
+Swap.so \
+		:st = .text 0x08670000, 0x00010000:\
+		:st = .data 0x08680000, 0x00010000:
+Take.so \
+		:st = .text 0x08650000, 0x00010000:\
+		:st = .data 0x08660000, 0x00010000:
+WedgeWipe.so \
+		:st = .text 0x08630000, 0x00010000:\
+		:st = .data 0x08640000, 0x00010000:
+Wipe.so \
+		:st = .text 0x08610000, 0x00010000:\
+		:st = .data 0x08620000, 0x00010000:
+Zoom.so \
+		:st = .text 0x085f0000, 0x00010000:\
+		:st = .data 0x08600000, 0x00010000:
+libsdtidv.so \
+		:st = .text 0x08590000, 0x00010000:\
+		:st = .data 0x085a0000, 0x00010000:
+libvlxc.so \
+		:st = .text 0x08570000, 0x00010000:\
+		:st = .data 0x08580000, 0x00010000:
+mvp.so \
+		:st = .text 0x08540000, 0x00020000:\
+		:st = .data 0x08560000, 0x00010000:
+impact.so \
+		:st = .text 0x08510000, 0x00020000:\
+		:st = .data 0x08530000, 0x00010000:
+mgv.so \
+		:st = .text 0x084a0000, 0x00050000:\
+		:st = .data 0x084f0000, 0x00020000:
+vicejpeg.so \
+		:st = .text 0x08490000, 0x00010000:\
+		:st = .data 0x09040000, 0x00010000:
+vicempeg.so \
+		:st = .text 0x08470000, 0x00010000:\
+		:st = .data 0x08480000, 0x00010000:
+vicers.so \
+		:st = .text 0x08440000, 0x00010000:\
+		:st = .data 0x08450000, 0x00010000:
+vicedv.so \
+		:st = .text 0x08380000, 0x00020000:\
+		:st = .data 0x083a0000, 0x000a0000:
+vicecopy.so \
+		:st = .text 0x08360000, 0x00010000:\
+		:st = .data 0x08370000, 0x00010000:
+evo.so \
+		:st = .text 0x082d0000, 0x00070000:\
+		:st = .data 0x08340000, 0x00020000:
+libxrx.so \
+		:st = .text 0x082b0000, 0x00010000:\
+		:st = .data 0x082c0000, 0x00010000:
+libdps.so \
+		:st = .text 0x08170000, 0x00050000:\
+		:st = .data 0x081c0000, 0x00020000:

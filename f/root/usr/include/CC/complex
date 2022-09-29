@@ -1,0 +1,525 @@
+#ifndef __sgi_template_complex
+#define __sgi_template_complex
+
+/*
+ * Copyright 1997, Silicon Graphics, Inc.
+ * All Rights Reserved.
+ *
+ * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Silicon Graphics, Inc.;
+ * the contents of this file may not be disclosed to third parties, copied or
+ * duplicated in any form, in whole or in part, without the prior written
+ * permission of Silicon Graphics, Inc.
+ *
+ * RESTRICTED RIGHTS LEGEND:
+ * Use, duplication or disclosure by the Government is subject to restrictions
+ * as set forth in subdivision (c)(1)(ii) of the Rights in Technical Data
+ * and Computer Software clause at DFARS 252.227-7013, and/or in similar or
+ * successor clauses in the FAR, DOD or NASA FAR Supplement. Unpublished -
+ * rights reserved under the Copyright Laws of the United States.
+ */
+
+
+// This header declares the template class complex, as described in 
+//   in the draft C++ standard.  Single-precision complex numbers
+//   are complex<float>, double-precision are complex<double>, and
+//   quad precision are complex<long double>.
+
+// Note that the template class complex is declared within namespace
+//   std, as called for by the draft C++ standard.  If you include
+//   the header <complex.h>, then complex, and all of the associated global
+//   functions, will be imported into the global namespace by a using
+//   declaration.
+
+// There is no way to use the template-based complex class if you turn
+//   off namespaces with the -LANG:namespaces=OFF option.  If you want
+//   to turn off namespaces, then you must use the old non-template 
+//   complex class instead.  To do so, include <complex.h> instead of
+//   <complex>, and define the define the macro _NON_TEMPLATE_COMPLEX 
+//   before including that header.
+
+#include <iostream.h>
+#include <math.h>
+#include <utility>
+
+namespace std {
+
+template <class T>
+struct complex {
+  typedef T value_type;
+
+  // Constructors, destructor, assignment operator.
+  complex() : re(0), im(0) {}
+  complex(const T& x) : re(x), im(0) {}
+  complex(const T& x, const T& y) : re(x), im(y) {}
+  complex(const complex& z) : re(z.re), im(z.im) {}
+
+  complex& operator=(const complex& z) {
+    re = z.re;
+    im = z.im;
+    return *this;
+  }
+
+#ifdef  _MEMBER_TEMPLATES
+  template <class U>
+  explicit complex(const complex<U>& z) : re(z.re), im(z.im) {}
+
+  template <class U>
+  complex& operator=(const complex<U>& z) {
+    re = z.re;
+    im = z.im;
+    return *this;
+  }
+#endif /* _MEMBER_TEMPLATES */
+
+  // Element access.
+  T real() const { return re; }
+  T imag() const { return im; }
+
+  // Arithmetic op= operations involving one real argument.
+
+  complex& operator= (const T& x) {
+    re = x;
+    im = T();
+    return *this;
+  }
+  complex& operator+= (const T& x) {
+    re += x;
+    return *this;
+  }
+  complex& operator-= (const T& x) {
+    re -= x;
+    return *this;
+  }
+  complex& operator*= (const T& x) {
+    re *= x;
+    im *= x;
+    return *this;
+  }
+  complex& operator/= (const T& x) {
+    re /= x;
+    im /= x;
+    return *this;
+  }
+
+  // Arithmetic op= operations involving two complex arguments.
+
+  static void _div(const T& z1_r, const T& z1_i,
+                   const T& z2_r, const T& z2_i,
+                   T& res_r, T& res_i);
+
+  static void _div(const T& z1_r, 
+                   const T& z2_r, const T& z2_i,
+                   T& res_r, T& res_i);
+
+#ifdef  _MEMBER_TEMPLATES
+
+  template <class U> complex& operator+= (const complex<U>& z) {
+    re += z.re;
+    im += z.im;
+    return *this;
+  }
+
+  template <class U> complex& operator-= (const complex<U>& z) {
+    re -= z.re;
+    im -= z.im;
+    return *this;
+  }
+
+  template <class U> complex& operator*= (const complex<U>& z) {
+    T r = re * z.re - im * z.im;
+    T i = re * z.im + im * z.re;
+    re = r;
+    im = i;
+    return *this;
+  }
+
+  template <class U> complex& operator/= (const complex<U>& z) {
+    T r;
+    T i;
+    _div(re, im, z.re, z.im, r, i);
+    re = r;
+    im = i;
+    return *this;
+  }
+
+#else /* _MEMBER_TEMPLATES */
+
+  complex& operator+= (const complex& z) {
+    re += z.re;
+    im += z.im;
+    return *this;
+  }
+
+  complex& operator-= (const complex& z) {
+    re -= z.re;
+    im -= z.im;
+    return *this;
+  }
+  
+  complex& operator*= (const complex& z) {
+    T r = re * z.re - im * z.im;
+    T i = re * z.im + im * z.re;
+    re = r;
+    im = i;
+    return *this;
+  }
+
+  complex& operator/= (const complex& z) {
+    T r;
+    T i;
+    _div(re, im, z.re, z.im, r, i);
+    re = r;
+    im = i;
+    return *this;
+  }
+
+#endif /* _MEMBER_TEMPLATES */
+
+  // Data members.
+  T re;
+  T im;
+};
+
+} // Close namespace std.
+
+namespace __sgilib {
+
+extern "C" {
+  double hypot(double, double);
+  float hypotf(float, float);
+  long double hypotl(long double, long double);
+}
+
+} // Close namespace __sgilib
+
+namespace std {
+
+// Unary non-member arithmetic operators.
+
+template <class T>
+inline complex<T> operator+(const complex<T>& z) {
+  return z;
+}
+
+template <class T>
+inline complex<T> operator-(const complex<T>& z) {
+  return complex<T>(-z.re, -z.im);
+}
+
+// Non-member arithmetic operations involving one real argument.
+
+template <class T> 
+inline complex<T> operator+(const T& x, const complex<T>& z) {
+  return complex<T>(x + z.re, z.im);
+}
+
+template <class T> 
+inline complex<T> operator+(const complex<T>& z, const T& x) {
+  return complex<T>(z.re + x, z.im);
+}
+
+template <class T> 
+inline complex<T> operator-(const T& x, const complex<T>& z) {
+  return complex<T>(x - z.re, -z.im);
+}
+
+template <class T> 
+inline complex<T> operator-(const complex<T>& z, const T& x) {
+  return complex<T>(z.re - x, z.im);
+}
+
+template <class T> 
+inline complex<T> operator*(const T& x, const complex<T>& z) {
+  return complex<T>(x * z.re, x * z.im);
+}
+
+template <class T> 
+inline complex<T> operator*(const complex<T>& z, const T& x) {
+  return complex<T>(z.re * x, z.im * x);
+}
+
+template <class T> 
+inline complex<T> operator/(const T& x, const complex<T>& z) {
+  complex<T> result;
+  complex<T>::_div(x, z.re, z.im, result.re, result.im);
+  return result;
+}
+
+template <class T> 
+inline complex<T> operator/(const complex<T>& z, const T& x) {
+  return complex<T>(z.re / x, z.im / x);
+}
+
+// Non-member arithmetic operations involving two complex arguments
+
+template <class T> 
+inline complex<T> operator+(const complex<T>& z1, const complex<T>& z2) {
+  return complex<T>(z1.re + z2.re, z1.im + z2.im);
+}
+
+template <class T> 
+inline complex<T> operator-(const complex<T>& z1, const complex<T>& z2) {
+  return complex<T>(z1.re - z2.re, z1.im - z2.im);
+}
+
+template <class T> 
+inline complex<T> operator*(const complex<T>& z1, const complex<T>& z2) {
+  return complex<T>(z1.re * z2.re - z1.im * z2.im,
+                    z1.re * z2.im + z1.im * z2.re);
+}
+
+template <class T> 
+inline complex<T> operator/(const complex<T>& z1, const complex<T>& z2) {
+  complex<T> result;
+  complex<T>::_div(z1.re, z1.im, z2.re, z2.im, result.re, result.im);
+  return result;
+}
+
+// Comparison operators.
+
+template <class T>
+inline bool operator==(const complex<T>& z1, const complex<T>& z2) {
+  return z1.re == z2.re && z1.im == z2.im;
+}
+
+template <class T>
+inline bool operator==(const complex<T>& z, const T& x) {
+  return z.re == x && z.im == 0;
+}
+
+template <class T>
+inline bool operator==(const T& x, const complex<T>& z) {
+  return x == z.re && 0 == z.im;
+}
+
+#if 0                           // We'll use the template from <utility>
+template <class T>
+inline bool operator!=(const complex<T>& z1, const complex<T>& z2) {
+  return z1.re != z2.re || z1.im != z2.im;
+}
+#endif
+
+template <class T>
+inline bool operator!=(const complex<T>& z, const T& x) {
+  return z.re != x || z.im != 0;
+}
+
+template <class T>
+inline bool operator!=(const T& x, const complex<T>& z) {
+  return x != z.re || 0 != z.im;
+}
+
+// Other basic arithmetic operations
+
+template <class T>
+inline T real(const complex<T>& z) {
+  return z.re;
+}
+
+template <class T>
+inline T imag(const complex<T>& z) {
+  return z.im;
+}
+
+template <class T>
+inline T abs(const complex<T>& z) {
+  return ::__sgilib::hypot(z.re, z.im);
+}
+
+inline float abs(const complex<float>& z) {
+  return ::__sgilib::hypotf(z.re, z.im);
+}
+
+inline long double abs(const complex<long double>& z) {
+  return ::__sgilib::hypotl(z.re, z.im);
+}
+
+template <class T>
+inline T arg(const complex<T>& z) {
+  return ::atan2(z.im, z.re);
+}
+
+inline float arg(const complex<float>& z) {
+  return ::atan2f(z.im, z.re);
+}
+
+inline long double arg(const complex<long double>& z) {
+  return ::atan2l(z.im, z.re);
+}
+
+template <class T>
+inline T norm(const complex<T>& z) {
+  return z.re * z.re + z.im * z.im;
+}
+
+template <class T>
+inline complex<T> conj(const complex<T>& z) {
+  return complex<T>(z.re, -z.im);
+}
+
+template <class T>
+inline complex<T> polar(const T& rho) {
+  return complex<T>(rho, 0);
+}
+
+template <class T>
+inline complex<T> polar(const T& rho, const T& phi) {
+  return complex<T>(rho * ::cos(phi), rho * ::sin(phi));
+}
+
+inline complex<float> polar(const float& rho, const float& phi) {
+  return complex<float>(rho * ::cosf(phi), rho * ::sinf(phi));
+}
+
+inline complex<long double>
+polar(const long double& rho, const long double& phi) {
+  return complex<long double>(rho * ::cosl(phi), rho * ::sinl(phi));
+}
+
+// Non-inline member functions.
+
+template <class T>
+void complex<T>::_div(const T& z1_r, const T& z1_i,
+                      const T& z2_r, const T& z2_i,
+                      T& res_r, T& res_i) {
+  T ar = z2_r >= 0 ? z2_r : -z2_r;
+  T ai = z2_i >= 0 ? z2_i : -z2_i;
+
+  if (ar <= ai) {
+    T ratio = z2_r / z2_i;
+    T denom = z2_i * (1 + ratio * ratio);
+    res_r = (z1_r * ratio + z1_i) / denom;
+    res_i = (z1_i * ratio - z1_r) / denom;
+  }
+  else {
+    T ratio = z2_i / z2_r;
+    T denom = z2_r * (1 + ratio * ratio);
+    res_r = (z1_r + z1_i * ratio) / denom;
+    res_i = (z1_i - z1_r * ratio) / denom;
+  }
+}
+
+template <class T>
+void complex<T>::_div(const T& z1_r,
+                      const T& z2_r, const T& z2_i,
+                      T& res_r, T& res_i) {
+  T ar = z2_r >= 0 ? z2_r : -z2_r;
+  T ai = z2_i >= 0 ? z2_i : -z2_i;
+
+  if (ar <= ai) {
+    T ratio = z2_r / z2_i;
+    T denom = z2_i * (1 + ratio * ratio);
+    res_r = (z1_r * ratio) / denom;
+    res_i = - z1_r / denom;
+  }
+  else {
+    T ratio = z2_i / z2_r;
+    T denom = z2_r * (1 + ratio * ratio);
+    res_r = z1_r / denom;
+    res_i = - (z1_r * ratio) / denom;
+  }
+}
+
+// I/O.
+
+template <class T>
+ostream& operator<<(ostream& s, const complex<T>& z)
+{
+  return s << "( " << z.re <<", " << z.im <<")";
+}
+
+template <class T>
+istream& operator>>(istream& s, complex<T>& a)
+{
+  T re = 0, im = 0;
+  char 	c = 0;
+
+  s >> c;
+  if (c == '(') {
+    s >> re>> c;
+    if (c == ',') s >> im >>c;
+    if (c != ')') s.clear(ios::badbit);
+  }
+  else {
+    s.putback(c);
+    s >> re;
+  }
+
+  if (s) a = complex<T>(re, im);
+  return s;
+}
+
+// Transcendental functions.  These are defined only for float, 
+//  double, and long double.  (Sqrt isn't transcendental, of course,
+//  but it's included in this section anyway.)
+
+
+complex<float> sqrt(const complex<float>&);
+
+complex<float> exp(const complex<float>&);
+complex<float> log(const complex<float>&);
+complex<float> log10(const complex<float>&);
+
+complex<float> pow(const complex<float>&, int);
+complex<float> pow(const complex<float>&, const float&);
+complex<float> pow(const float&, const complex<float>&);
+complex<float> pow(const complex<float>&, const complex<float>&);
+
+complex<float> sin(const complex<float>&);
+complex<float> cos(const complex<float>&);
+complex<float> tan(const complex<float>&);
+
+complex<float> sinh(const complex<float>&);
+complex<float> cosh(const complex<float>&);
+complex<float> tanh(const complex<float>&);
+
+
+
+complex<double> sqrt(const complex<double>&);
+
+complex<double> exp(const complex<double>&);
+complex<double> log(const complex<double>&);
+complex<double> log10(const complex<double>&);
+
+complex<double> pow(const complex<double>&, int);
+complex<double> pow(const complex<double>&, const double&);
+complex<double> pow(const double&, const complex<double>&);
+complex<double> pow(const complex<double>&, const complex<double>&);
+
+complex<double> sin(const complex<double>&);
+complex<double> cos(const complex<double>&);
+complex<double> tan(const complex<double>&);
+
+complex<double> sinh(const complex<double>&);
+complex<double> cosh(const complex<double>&);
+complex<double> tanh(const complex<double>&);
+
+
+
+complex<long double> sqrt(const complex<long double>&);
+
+complex<long double> exp(const complex<long double>&);
+complex<long double> log(const complex<long double>&);
+complex<long double> log10(const complex<long double>&);
+
+complex<long double> pow(const complex<long double>&, int);
+complex<long double> pow(const complex<long double>&, const long double&);
+complex<long double> pow(const long double&, const complex<long double>&);
+complex<long double> pow(const complex<long double>&,
+                         const complex<long double>&);
+
+complex<long double> sin(const complex<long double>&);
+complex<long double> cos(const complex<long double>&);
+complex<long double> tan(const complex<long double>&);
+
+complex<long double> sinh(const complex<long double>&);
+complex<long double> cosh(const complex<long double>&);
+complex<long double> tanh(const complex<long double>&);
+
+} // Close namespace std.
+
+#endif /* __sgi_template_complex */
+
+// Local Variables:
+// mode:C++
+// End:

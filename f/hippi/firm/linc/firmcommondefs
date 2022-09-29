@@ -1,0 +1,86 @@
+#
+# firmcommondefs
+#
+# Supported DEFINE's include
+#	TRACE - store R4640 event traces to memory (uncached)
+#	GDB_MAKEFILE_DBG - sets up everything needed to run GDB through the 
+#		serial ports.
+#	GDB - compile with GDB on for serial port debug. Must use DEBUG.
+#	BREAKPOINTS - turn on a breakpoint to sync up with GDB at boot time.
+#	DEBUG - compile with debug printf statements, symbols, etc.
+#
+#	RINGBUS_WAR - include workaround for RINGBUS h/w bug in Linc.
+#	BRIDGE_B_WAR - include workaround for Bridge Rev B
+#	PEER_TO_PEER_DMA_WAR - use dma's to and from host memory instead of
+#		peer to peer IDMA's to implement dead-man-timer
+#		and better definition of lighting the LINK LED status. This
+#		is for what currently looks like a LINK Rev 1.0 h/w bug.
+#
+#	USE_MAILBOX - use mailbox pios instead of timer to check the d2b
+#		queue for descriptors, currently disabled due to problem where
+#               the fw seems to stop seeing the bit set after a half hour of
+#               stress
+#
+# $Revision: 1.19 $
+#
+
+SDRAM_SIZE=0x400000
+
+FIRMDIR=$(DEPTH)/firm/linc
+
+HEADERS_SUBDIR=$(FIRMDIR)/include
+KERN_HEADERS_SUBDIR=$(FIRMDIR)/../../kern/sys
+RR_HEADERS=$(FIRMDIR)/../rr
+
+TOOLS_SUBDIR=$(FIRMDIR)/tools
+LIB_SUBDIR=$(FIRMDIR)/lib
+
+DIS=$(TOOLROOT)/usr/bin/dis
+NM=$(TOOLROOT)/usr/bin/nm
+ELFDUMP=$(TOOLROOT)/usr/bin/elfdump
+
+
+# uncomment the following line to make image with gdb - must do
+# a "make clobber".
+# GDB_MAKEFILE_DBG = 1
+
+# use these defines for a debug environment that sends printf's to the serial port 
+#   NOTE: the behaviour of the image depends on how lib is compiled. 
+#   changing lib/Makefile
+#	use RDBGOBJ= rdbg_gdb.o for gdb debug of the image
+#	use RDBGOBJ= rdbg_cmdl.o for printf's going to serial port.
+#		(no debug msgs will be sent if -DDEBUG is removed)
+#
+
+#if  defined(GDB_MAKEFILE_DBG)
+BREAKPOINTS = 1
+DEFINES=-DSTANDALONE -D_STANDALONE -DR4000 -DR4650 -D_K32U32 \
+	-DTRACE -DDEBUG -DGDB -D_LINC_FIRMWARE -DRINGBUS_WAR \
+	-DBRIDGE_B_WAR -DPEER_TO_PEER_DMA_WAR $(LDEFINES)
+GFLAG=-G 0
+
+CFLAGS= -g2  -xansi -fullwarn -non_shared -nostdinc \
+	$(GFLAG) -I$(HEADERS_SUBDIR) -I$(DEPTH)/kern/sys \
+	-I$(RR_HEADERS) \
+	-I$(ROOT)/usr/include -o32 -mips2 $(DEFINES)
+
+#else
+BREAKPOINTS = 0
+DEFINES=-DSTANDALONE -D_STANDALONE -DR4000 -DR4650 -D_K32U32 \
+	-DNO_BREAKPOINTS -D_LINC_FIRMWARE -DRINGBUS_WAR \
+	-DBRIDGE_B_WAR -DPEER_TO_PEER_DMA_WAR $(LDEFINES)
+
+GFLAG=-G 0
+
+CFLAGS= -g0 -O2 -xansi -fullwarn -non_shared -nostdinc \
+	$(GFLAG) -I$(HEADERS_SUBDIR) -I$(DEPTH)/kern/sys \
+	-I$(RR_HEADERS) \
+	-I$(ROOT)/usr/include -o32 -mips2 $(DEFINES)
+
+#endif
+
+ASFLAGS=-g -non_shared -nostdinc -o32 -mips2 $(GFLAG) \
+	-I$(HEADERS_SUBDIR) -I$(DEPTH)/kern/sys \
+	-I$(ROOT)/usr/include $(DEFINES)
+LDFLAGS= -o32 -rom $(GFLAG) -non_shared -nostdlib -L$(LIB_SUBDIR) $(LLDFLAGS)
+

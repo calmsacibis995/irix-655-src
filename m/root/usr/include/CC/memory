@@ -1,0 +1,107 @@
+/*
+ * Copyright (c) 1997
+ * Silicon Graphics Computer Systems, Inc.
+ *
+ * Permission to use, copy, modify, distribute and sell this software
+ * and its documentation for any purpose is hereby granted without fee,
+ * provided that the above copyright notice appear in all copies and
+ * that both that copyright notice and this permission notice appear
+ * in supporting documentation.  Silicon Graphics makes no
+ * representations about the suitability of this software for any
+ * purpose.  It is provided "as is" without express or implied warranty.
+ *
+ */
+
+#ifndef __SGI_STL_MEMORY
+#define __SGI_STL_MEMORY
+
+#include <stl_algobase.h>
+#include <stl_alloc.h>
+#include <stl_construct.h>
+#include <stl_tempbuf.h>
+#include <stl_uninitialized.h>
+#include <stl_raw_storage_iter.h>
+
+
+#if defined(__STL_MEMBER_TEMPLATES)
+
+__STL_BEGIN_NAMESPACE
+
+template <class X> class auto_ptr {
+private:
+  X* ptr;
+
+public:
+  typedef X element_type;
+  explicit auto_ptr(X* p = 0) __STL_NOTHROW : ptr(p) {}
+  auto_ptr(auto_ptr& a) __STL_NOTHROW : ptr(a.release()) {}
+  template <class Y> auto_ptr(auto_ptr<Y>& a) __STL_NOTHROW
+    : ptr(a.release()) {}
+  auto_ptr& operator=(auto_ptr& a) __STL_NOTHROW {
+    if (&a != this) {
+      delete ptr;
+      ptr = a.release();
+    }
+    return *this;
+  }
+  template <class Y> auto_ptr& operator=(auto_ptr<Y>& a) __STL_NOTHROW {
+    if (a.get() != this->get()) {
+      delete ptr;
+      ptr = a.release();
+    }
+    return *this;
+  }
+  ~auto_ptr() __STL_NOTHROW { delete ptr; }
+
+  X& operator*() const __STL_NOTHROW {
+    return *ptr;
+  }
+  X* operator->() const __STL_NOTHROW {
+    return ptr;
+  }
+  X* get() const __STL_NOTHROW {
+    return ptr;
+  }
+  X* release() __STL_NOTHROW {
+    X* tmp = ptr;
+    ptr = 0;
+    return tmp;
+  }
+  void reset(X* p = 0) __STL_NOTHROW {
+    delete ptr;
+    ptr = p;
+  }
+
+  // According to the C++ standard, these conversions are required.  Most
+  // present-day compilers, however, do not enforce that requirement---and, 
+  // in fact, most present-day compilers do not support the language 
+  // features that these conversions rely on.
+  
+#ifdef __SGI_STL_USE_AUTO_PTR_CONVERSIONS
+
+private:
+  template<class Y> struct auto_ptr_ref {
+    Y* ptr;
+    auto_ptr_ref(Y* p) : ptr(p) {}
+  };
+
+public:
+  auto_ptr(auto_ptr_ref<X> ref) __STL_NOTHROW
+    : ptr(ref.ptr) {}
+  template <class Y> operator auto_ptr_ref<Y>() __STL_NOTHROW 
+    { return auto_ptr_ref<X>(this.release()); }
+  template <class Y> operator auto_ptr<Y>() __STL_NOTHROW
+    { return auto_ptr<Y>(this->release()) }
+
+#endif /* __SGI_STL_USE_AUTO_PTR_CONVERSIONS */
+};
+
+__STL_END_NAMESPACE
+#endif /* member templates */
+
+#endif /* __SGI_STL_MEMORY */
+
+
+// Local Variables:
+// mode:C++
+// End:

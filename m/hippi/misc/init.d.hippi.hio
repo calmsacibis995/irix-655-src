@@ -1,0 +1,51 @@
+#!/sbin/sh
+
+#
+# Initialize/Shutdown the standard and optional hippi software
+#
+# $Revision: 1.1 $
+#
+# hipcntl first checks the revision ID of the firmware on board the
+# HIPPI interfaces.  If the firmware not the proper revision to
+# work with the installed software, the correct firmware is written
+# to flash EEPROM memory.
+#
+
+HIPCNTL=/usr/etc/hipcntl
+
+case "$1" in
+'start')
+
+	# start up all HIPPIs
+
+	$HIPCNTL -q hippi0 startup
+	$HIPCNTL -q hippi1 startup
+	$HIPCNTL -q hippi2 startup
+	$HIPCNTL -q hippi3 startup
+	$HIPCNTL -q hippi4 startup
+	$HIPCNTL -q hippi5 startup
+	$HIPCNTL -q hippi6 startup
+	$HIPCNTL -q hippi7 startup
+
+	;;
+
+'stop')
+
+	# shut down all HIPPIs
+
+	$HIPCNTL -q hippi0 shutdown
+	$HIPCNTL -q hippi1 shutdown
+	$HIPCNTL -q hippi2 shutdown
+	$HIPCNTL -q hippi3 shutdown
+	$HIPCNTL -q hippi4 shutdown
+	$HIPCNTL -q hippi5 shutdown
+	$HIPCNTL -q hippi6 shutdown
+	$HIPCNTL -q hippi7 shutdown
+
+	;;
+
+*)
+	echo "usage $0  {start|stop}"
+	;;
+esac
+

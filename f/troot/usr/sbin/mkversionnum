@@ -1,0 +1,93 @@
+#!/bin/ksh -p
+#
+#	This program calculates a ten digit version number.
+#	The Usage function shows input options including a brief description.
+#
+typeset -r fullprog=$0
+prog=${0%/}
+typeset -r prog=${prog##*/}
+
+Usage () {
+	echo "\nUsage:	$prog -r relnum [-b builder] [-t treeid]"
+	echo "	$prog -P patrel -p patnum"
+	echo "	$prog -f vnum"
+	echo ""
+	echo "	-h		Help text (this stuff)."
+	echo "	-r relnum	Three digit major release number (no default)."
+	echo "	-b builder	Builder digit (default 0)."
+	echo "	-t treeid	Tree-id digit (default 0)."
+	echo "	-P patrel	Eight digit Patch release number (no default)."
+	echo "	-p patnum	Patch number (no default)."
+	echo "	-f vnum		Version number (no default)."
+}
+
+UseExit() {
+	[ "$1" ] && echo "$*" >&2
+	Usage >&2
+	exit 1
+}
+
+unset relnum patrel patnum builder treeid verbose vnum
+while getopts :hr:b:t:P:p:f: flag; do
+	case $flag in
+	h | \?) Usage; exit ;;
+	r)	relnum=$OPTARG ;;
+	b)	builder=$OPTARG ;;
+	t)	treeid=$OPTARG ;;
+	P)	patrel=$OPTARG ;;
+	p)	patnum=$OPTARG ;;
+	f)	vnum=$OPTARG ;;
+	esac
+done
+shift OPTIND-1
+(($#>0)) && UseExit
+
+typeset -i numloop=0 i j
+if [[ "$vnum" != "" ]]; then
+	if  [ "${vnum##[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]}" ]; then
+		UseExit "Invalid -f version number option ($vnum)"
+	else
+		version=$vnum
+	fi
+elif [[ "$patrel" != "" || "$patnum" != "" ]]; then
+	if [[ "$patrel" = "" || "$patnum" = "" ]]; then
+		UseExit "-P ($patrel) and -p ($patnum) options must be together"
+	elif [ "${patrel##[0-9][0-9][0-9][0-9][0-9][0-9][0-9]+([0-9])}" ]; then
+		UseExit "Invalid -P patch release option ($patrel)"
+	else
+		base=${patrel%%${patrel##????????}}
+	fi
+	if [ "${patnum##*([0-9])[0-9]}" ]; then
+		UseExit "Invalid -p patch number option ($patnum)"
+	else 
+		numloop="(patnum-1)/70"
+		i=base+numloop
+		j=patnum-70*numloop+29
+		if ((j<10)); then
+			version="${i}0$j"
+		else
+			version="$i$j"
+		fi
+	fi
+else
+	[  "$relnum" ] || 
+		UseExit "You must supply -r major release number option"
+	[ "${relnum#[0-9][0-9][0-9]}" ] && 
+		UseExit "Invalid -r major release number option ($relnum)"
+	i=$relnum
+	((i<101 || i>213)) &&
+		UseExit "Out of range major release number option ($relnum)"
+	[  "$builder" ] || builder=0
+	[ "${builder#[012]}" ] && 
+		UseExit "Invalid -b who built option ($builder)"
+	[  "$treeid" ] || treeid=0
+	[ "${treeid#[0-9]}" ] && 
+		UseExit "Invalid -t tree id option ($treeid)"
+	TZ=GMT00
+	export TZ
+	i=$(date +"%H+24*(%j-1+365*(%Y-1993)+(%Y-1993)/4)")
+	hours="00000$i"
+	hours=${hours##${hours%%?????}}
+	version=$relnum$hours$builder$treeid
+fi
+echo $version
